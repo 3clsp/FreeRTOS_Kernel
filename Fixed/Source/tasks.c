@@ -266,7 +266,7 @@ typedef struct tskTaskControlBlock       /* The old naming convention is used to
     ListItem_t xEventListItem;                  /*< Used to reference a task from an event list. */
     UBaseType_t uxPriority;                     /*< The priority of the task.  0 is the lowest priority. */
     _Ptr<StackType_t> pxStack;                      /*< Points to the start of the stack. */
-    char pcTaskName[12] : itype(char _Checked[ configMAX_TASK_NAME_LEN ]); /*< Descriptive name given to the task when created.  Facilitates debugging only. */ /*lint !e971 Unqualified char types are allowed for strings and single characters only. */
+    char pcTaskName _Checked[ configMAX_TASK_NAME_LEN ]; /*< Descriptive name given to the task when created.  Facilitates debugging only. */ /*lint !e971 Unqualified char types are allowed for strings and single characters only. */
 
     #if ( ( portSTACK_GROWTH > 0 ) || ( configRECORD_STACK_HIGH_ADDRESS == 1 ) )
         _Ptr<StackType_t> pxEndOfStack; /*< Points to the highest valid address for the stack. */
@@ -287,7 +287,7 @@ typedef struct tskTaskControlBlock       /* The old naming convention is used to
     #endif
 
     #if ( configUSE_APPLICATION_TASK_TAG == 1 )
-        TaskHookFunction_t pxTaskTag : itype(_Ptr<BaseType_t (_Ptr<void>)>);
+        TaskHookFunction_t pxTaskTag;
     #endif
 
     #if ( configNUM_THREAD_LOCAL_STORAGE_POINTERS > 0 )
@@ -303,8 +303,8 @@ typedef struct tskTaskControlBlock       /* The old naming convention is used to
     #endif
 
     #if ( configUSE_TASK_NOTIFICATIONS == 1 )
-        volatile uint32_t ulNotifiedValue[1] : itype(volatile uint32_t _Checked[ configTASK_NOTIFICATION_ARRAY_ENTRIES ]);
-        volatile uint8_t ucNotifyState[1] : itype(volatile uint8_t _Checked[ configTASK_NOTIFICATION_ARRAY_ENTRIES ]);
+        volatile uint32_t ulNotifiedValue _Checked[ configTASK_NOTIFICATION_ARRAY_ENTRIES ];
+        volatile uint8_t ucNotifyState _Checked[ configTASK_NOTIFICATION_ARRAY_ENTRIES ];
     #endif
 
     /* See the comments in FreeRTOS.h with the definition of
@@ -409,7 +409,7 @@ PRIVILEGED_DATA static volatile UBaseType_t uxSchedulerSuspended = ( UBaseType_t
  */
 #if ( INCLUDE_vTaskSuspend == 1 )
 
-    static BaseType_t prvTaskIsTaskSuspended(const TaskHandle_t xTask : itype(const _Ptr<struct tskTaskControlBlock>)) PRIVILEGED_FUNCTION;
+    static BaseType_t prvTaskIsTaskSuspended(const TaskHandle_t xTask) PRIVILEGED_FUNCTION;
 
 #endif /* INCLUDE_vTaskSuspend */
 
@@ -441,7 +441,7 @@ static portTASK_FUNCTION_PROTO( prvIdleTask, pvParameters ) PRIVILEGED_FUNCTION;
  */
 #if ( INCLUDE_vTaskDelete == 1 )
 
-    static void prvDeleteTCB(TCB_t *pxTCB : itype(_Ptr<TCB_t>)) PRIVILEGED_FUNCTION;
+    static void prvDeleteTCB(_Ptr<TCB_t> pxTCB) PRIVILEGED_FUNCTION;
 
 #endif
 
@@ -469,7 +469,7 @@ static void prvAddCurrentTaskToDelayedList( TickType_t xTicksToWait,
  */
 #if ( configUSE_TRACE_FACILITY == 1 )
 
-    static UBaseType_t prvListTasksWithinSingleList(TaskStatus_t *pxTaskStatusArray : itype(_Array_ptr<TaskStatus_t>), List_t *pxList : itype(_Ptr<List_t>), eTaskState eState) PRIVILEGED_FUNCTION;
+    static UBaseType_t prvListTasksWithinSingleList(_Array_ptr<TaskStatus_t> pxTaskStatusArray, _Ptr<List_t> pxList, eTaskState eState) PRIVILEGED_FUNCTION;
 
 #endif
 
@@ -479,7 +479,7 @@ static void prvAddCurrentTaskToDelayedList( TickType_t xTicksToWait,
  */
 #if ( INCLUDE_xTaskGetHandle == 1 )
 
-    static TCB_t *prvSearchForNameWithinSingleList(List_t *pxList : itype(_Ptr<List_t>), const char *pcNameToQuery : itype(_Array_ptr<const char>) count(12)) : itype(_Ptr<TCB_t>) PRIVILEGED_FUNCTION;
+    static _Ptr<TCB_t> prvSearchForNameWithinSingleList(_Ptr<List_t> pxList, _Array_ptr<const char> pcNameToQuery : count(12)) PRIVILEGED_FUNCTION;
 
 #endif
 
@@ -490,7 +490,7 @@ static void prvAddCurrentTaskToDelayedList( TickType_t xTicksToWait,
  */
 #if ( ( configUSE_TRACE_FACILITY == 1 ) || ( INCLUDE_uxTaskGetStackHighWaterMark == 1 ) || ( INCLUDE_uxTaskGetStackHighWaterMark2 == 1 ) )
 
-    static configSTACK_DEPTH_TYPE prvTaskCheckFreeStackSpace(const uint8_t *pucStackByte : itype(_Array_ptr<const uint8_t>)) PRIVILEGED_FUNCTION;
+    static configSTACK_DEPTH_TYPE prvTaskCheckFreeStackSpace(_Array_ptr<const uint8_t> pucStackByte) PRIVILEGED_FUNCTION;
 
 #endif
 
@@ -1193,7 +1193,7 @@ static void prvAddNewTaskToReadyList(_Ptr<TCB_t> pxNewTCB)
 
 #if ( INCLUDE_xTaskDelayUntil == 1 )
 
-    BaseType_t xTaskDelayUntil(TickType_t *const pxPreviousWakeTime : itype(const _Ptr<TickType_t>), const TickType_t xTimeIncrement)
+    BaseType_t xTaskDelayUntil(const _Ptr<TickType_t> pxPreviousWakeTime, const TickType_t xTimeIncrement)
     {
         TickType_t xTimeToWake;
         BaseType_t xAlreadyYielded, xShouldDelay = pdFALSE;
@@ -1757,7 +1757,7 @@ static void prvAddNewTaskToReadyList(_Ptr<TCB_t> pxNewTCB)
 
 #if ( INCLUDE_vTaskSuspend == 1 )
 
-    static BaseType_t prvTaskIsTaskSuspended(const TaskHandle_t xTask : itype(const _Ptr<struct tskTaskControlBlock>))
+    static BaseType_t prvTaskIsTaskSuspended(const TaskHandle_t xTask)
     {
         BaseType_t xReturn = pdFALSE;
         _Ptr<const TCB_t> const pxTCB = xTask;
@@ -2318,7 +2318,7 @@ UBaseType_t uxTaskGetNumberOfTasks( void )
 }
 /*-----------------------------------------------------------*/
 
-char *pcTaskGetName(TaskHandle_t xTaskToQuery : itype(_Ptr<struct tskTaskControlBlock>)) : itype(_Ptr<char>) /*lint !e971 Unqualified char types are allowed for strings and single characters only. */
+_Ptr<char> pcTaskGetName(TaskHandle_t xTaskToQuery) /*lint !e971 Unqualified char types are allowed for strings and single characters only. */
 {
     _Ptr<TCB_t> pxTCB = NULL;
 
@@ -2332,7 +2332,7 @@ char *pcTaskGetName(TaskHandle_t xTaskToQuery : itype(_Ptr<struct tskTaskControl
 
 #if ( INCLUDE_xTaskGetHandle == 1 )
 
-    static TCB_t *prvSearchForNameWithinSingleList(List_t *pxList : itype(_Ptr<List_t>), const char *pcNameToQuery : itype(_Array_ptr<const char>) count(12)) : itype(_Ptr<TCB_t>)
+    static _Ptr<TCB_t> prvSearchForNameWithinSingleList(_Ptr<List_t> pxList, _Array_ptr<const char> pcNameToQuery : count(12))
     {
         _Ptr<TCB_t> pxNextTCB = NULL;
         _Ptr<TCB_t> pxFirstTCB = NULL;
@@ -2402,7 +2402,7 @@ char *pcTaskGetName(TaskHandle_t xTaskToQuery : itype(_Ptr<struct tskTaskControl
 
 #if ( INCLUDE_xTaskGetHandle == 1 )
 
-    TaskHandle_t xTaskGetHandle(const char *pcNameToQuery : itype(_Array_ptr<const char>) count(12)) : itype(_Ptr<struct tskTaskControlBlock>) /*lint !e971 Unqualified char types are allowed for strings and single characters only. */
+    TaskHandle_t xTaskGetHandle(_Array_ptr<const char> pcNameToQuery : count(12)) /*lint !e971 Unqualified char types are allowed for strings and single characters only. */
     {
         UBaseType_t uxQueue = configMAX_PRIORITIES;
         _Ptr<TCB_t> pxTCB = NULL;
@@ -2466,7 +2466,7 @@ char *pcTaskGetName(TaskHandle_t xTaskToQuery : itype(_Ptr<struct tskTaskControl
 
 #if ( configUSE_TRACE_FACILITY == 1 )
 
-    UBaseType_t uxTaskGetSystemState(TaskStatus_t *const pxTaskStatusArray : itype(const _Array_ptr<TaskStatus_t>) count(uxArraySize), const UBaseType_t uxArraySize, uint32_t *const pulTotalRunTime : itype(const _Ptr<uint32_t>))
+    UBaseType_t uxTaskGetSystemState(const _Array_ptr<TaskStatus_t> pxTaskStatusArray : count(uxArraySize), const UBaseType_t uxArraySize, const _Ptr<uint32_t> pulTotalRunTime)
     {
         UBaseType_t uxTask = 0, uxQueue = configMAX_PRIORITIES;
 
@@ -2617,7 +2617,7 @@ BaseType_t xTaskCatchUpTicks( TickType_t xTicksToCatchUp )
 
 #if ( INCLUDE_xTaskAbortDelay == 1 )
 
-    BaseType_t xTaskAbortDelay( TaskHandle_t xTask: itype(_Ptr<struct tskTaskControlBlock>) )
+    BaseType_t xTaskAbortDelay( TaskHandle_t xTask)
     {
         _Ptr<TCB_t> pxTCB = xTask;
         BaseType_t xReturn;
@@ -3141,7 +3141,7 @@ void vTaskPlaceOnUnorderedEventList( _Ptr<List_t> pxEventList,
 #endif /* configUSE_TIMERS */
 /*-----------------------------------------------------------*/
 
-BaseType_t xTaskRemoveFromEventList(const List_t *const pxEventList : itype(const _Ptr<const List_t>))
+BaseType_t xTaskRemoveFromEventList(const _Ptr<const List_t> pxEventList)
 {
     _Ptr<TCB_t> pxUnblockedTCB = NULL;
     BaseType_t xReturn;
@@ -3209,7 +3209,7 @@ BaseType_t xTaskRemoveFromEventList(const List_t *const pxEventList : itype(cons
 }
 /*-----------------------------------------------------------*/
 
-void vTaskRemoveFromUnorderedEventList(ListItem_t *pxEventListItem : itype(_Ptr<ListItem_t>), const TickType_t xItemValue)
+void vTaskRemoveFromUnorderedEventList(_Ptr<ListItem_t> pxEventListItem, const TickType_t xItemValue)
 {
     _Ptr<TCB_t> pxUnblockedTCB = NULL;
 
@@ -3687,7 +3687,7 @@ static void prvCheckTasksWaitingTermination( void )
 
 #if ( configUSE_TRACE_FACILITY == 1 )
 
-    void vTaskGetInfo(TaskHandle_t xTask : itype(_Ptr<struct tskTaskControlBlock>), TaskStatus_t *pxTaskStatus : itype(_Ptr<TaskStatus_t>), BaseType_t xGetFreeStackSpace, eTaskState eState)
+    void vTaskGetInfo(TaskHandle_t xTask, _Ptr<TaskStatus_t> pxTaskStatus, BaseType_t xGetFreeStackSpace, eTaskState eState)
     {
         _Ptr<TCB_t> pxTCB = NULL;
 
@@ -3787,7 +3787,7 @@ static void prvCheckTasksWaitingTermination( void )
 
 #if ( configUSE_TRACE_FACILITY == 1 )
 
-    static UBaseType_t prvListTasksWithinSingleList(TaskStatus_t *pxTaskStatusArray : itype(_Array_ptr<TaskStatus_t>), List_t *pxList : itype(_Ptr<List_t>), eTaskState eState)
+    static UBaseType_t prvListTasksWithinSingleList(_Array_ptr<TaskStatus_t> pxTaskStatusArray, _Ptr<List_t> pxList, eTaskState eState)
     {
         configLIST_VOLATILE _Ptr<TCB_t> pxNextTCB = NULL;
         configLIST_VOLATILE _Ptr<TCB_t> pxFirstTCB = NULL;
@@ -3821,7 +3821,7 @@ static void prvCheckTasksWaitingTermination( void )
 
 #if ( ( configUSE_TRACE_FACILITY == 1 ) || ( INCLUDE_uxTaskGetStackHighWaterMark == 1 ) || ( INCLUDE_uxTaskGetStackHighWaterMark2 == 1 ) )
 
-    static configSTACK_DEPTH_TYPE prvTaskCheckFreeStackSpace(const uint8_t *pucStackByte : itype(_Array_ptr<const uint8_t>))
+    static configSTACK_DEPTH_TYPE prvTaskCheckFreeStackSpace(_Array_ptr<const uint8_t> pucStackByte)
     {
         uint32_t ulCount = 0U;
 
@@ -3909,7 +3909,7 @@ static void prvCheckTasksWaitingTermination( void )
 
 #if ( INCLUDE_vTaskDelete == 1 )
 
-    static void prvDeleteTCB(TCB_t *pxTCB : itype(_Ptr<TCB_t>))
+    static void prvDeleteTCB(_Ptr<TCB_t> pxTCB)
     {
         /* This call is required specifically for the TriCore port.  It must be
          * above the vPortFree() calls.  The call is also used by ports/demos that
@@ -3985,7 +3985,7 @@ static void prvResetNextTaskUnblockTime( void )
 
 #if ( ( INCLUDE_xTaskGetCurrentTaskHandle == 1 ) || ( configUSE_MUTEXES == 1 ) )
 
-    TaskHandle_t xTaskGetCurrentTaskHandle( void ): itype(_Ptr<struct tskTaskControlBlock>)
+    TaskHandle_t xTaskGetCurrentTaskHandle( void )
     {
         TaskHandle_t xReturn = NULL;
 
@@ -4740,7 +4740,7 @@ TickType_t uxTaskResetEventItemValue( void )
 
 #if ( configUSE_TASK_NOTIFICATIONS == 1 )
 
-    BaseType_t xTaskGenericNotifyWait(UBaseType_t uxIndexToWait, uint32_t ulBitsToClearOnEntry, uint32_t ulBitsToClearOnExit, uint32_t *pulNotificationValue : itype(_Ptr<uint32_t>), TickType_t xTicksToWait)
+    BaseType_t xTaskGenericNotifyWait(UBaseType_t uxIndexToWait, uint32_t ulBitsToClearOnEntry, uint32_t ulBitsToClearOnExit, _Ptr<uint32_t> pulNotificationValue, TickType_t xTicksToWait)
     {
         BaseType_t xReturn;
         _Ptr<TCB_t> tmp = pxCurrentTCB;
@@ -4827,7 +4827,7 @@ TickType_t uxTaskResetEventItemValue( void )
 
 #if ( configUSE_TASK_NOTIFICATIONS == 1 )
 
-    BaseType_t xTaskGenericNotify(TaskHandle_t xTaskToNotify : itype(_Ptr<struct tskTaskControlBlock>), UBaseType_t uxIndexToNotify, uint32_t ulValue, eNotifyAction eAction, uint32_t *pulPreviousNotificationValue : itype(_Ptr<uint32_t>))
+    BaseType_t xTaskGenericNotify(TaskHandle_t xTaskToNotify, UBaseType_t uxIndexToNotify, uint32_t ulValue, eNotifyAction eAction, _Ptr<uint32_t> pulPreviousNotificationValue)
     {
         _Ptr<TCB_t> pxTCB = NULL;
         BaseType_t xReturn = pdPASS;
@@ -4946,7 +4946,7 @@ TickType_t uxTaskResetEventItemValue( void )
 
 #if ( configUSE_TASK_NOTIFICATIONS == 1 )
 
-    BaseType_t xTaskGenericNotifyFromISR(TaskHandle_t xTaskToNotify : itype(_Ptr<struct tskTaskControlBlock>), UBaseType_t uxIndexToNotify, uint32_t ulValue, eNotifyAction eAction, uint32_t *pulPreviousNotificationValue : itype(_Ptr<uint32_t>), BaseType_t *pxHigherPriorityTaskWoken : itype(_Ptr<BaseType_t>))
+    BaseType_t xTaskGenericNotifyFromISR(TaskHandle_t xTaskToNotify, UBaseType_t uxIndexToNotify, uint32_t ulValue, eNotifyAction eAction, _Ptr<uint32_t> pulPreviousNotificationValue, _Ptr<BaseType_t> pxHigherPriorityTaskWoken)
     {
         _Ptr<TCB_t> pxTCB = NULL;
         uint8_t ucOriginalNotifyState;
@@ -5080,7 +5080,7 @@ TickType_t uxTaskResetEventItemValue( void )
 
 #if ( configUSE_TASK_NOTIFICATIONS == 1 )
 
-    void vTaskGenericNotifyGiveFromISR(TaskHandle_t xTaskToNotify : itype(_Ptr<struct tskTaskControlBlock>), UBaseType_t uxIndexToNotify, BaseType_t *pxHigherPriorityTaskWoken : itype(_Ptr<BaseType_t>))
+    void vTaskGenericNotifyGiveFromISR(TaskHandle_t xTaskToNotify, UBaseType_t uxIndexToNotify, _Ptr<BaseType_t> pxHigherPriorityTaskWoken)
     {
         _Ptr<TCB_t> pxTCB = NULL;
         uint8_t ucOriginalNotifyState;

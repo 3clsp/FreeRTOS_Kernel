@@ -51,7 +51,7 @@ typedef _Ptr<void (CoRoutineHandle_t, UBaseType_t )> crCOROUTINE_CODE;
 
 typedef struct corCoRoutineControlBlock
 {
-    crCOROUTINE_CODE pxCoRoutineFunction : itype(_Ptr<void (CoRoutineHandle_t, UBaseType_t)>);
+    crCOROUTINE_CODE pxCoRoutineFunction;
     ListItem_t xGenericListItem; /*< List item used to place the CRCB in ready and blocked queues. */
     ListItem_t xEventListItem;   /*< List item used to place the CRCB in event lists. */
     UBaseType_t uxPriority;      /*< The priority of the co-routine in relation to other co-routines. */
@@ -132,7 +132,7 @@ typedef struct corCoRoutineControlBlock
  * \defgroup xCoRoutineCreate xCoRoutineCreate
  * \ingroup Tasks
  */
-BaseType_t xCoRoutineCreate(crCOROUTINE_CODE pxCoRoutineCode : itype(_Ptr<void (CoRoutineHandle_t, UBaseType_t)>), UBaseType_t uxPriority, UBaseType_t uxIndex);
+BaseType_t xCoRoutineCreate(crCOROUTINE_CODE pxCoRoutineCode, UBaseType_t uxPriority, UBaseType_t uxIndex);
 
 
 /**
@@ -729,7 +729,7 @@ void vCoRoutineSchedule( void );
  * Removes the current co-routine from its ready list and places it in the
  * appropriate delayed list.
  */
-void vCoRoutineAddToDelayedList(TickType_t xTicksToDelay, List_t *pxEventList : itype(_Ptr<List_t>));
+void vCoRoutineAddToDelayedList(TickType_t xTicksToDelay, _Ptr<List_t> pxEventList);
 
 /*
  * This function is intended for internal use by the queue implementation only.
@@ -738,7 +738,7 @@ void vCoRoutineAddToDelayedList(TickType_t xTicksToDelay, List_t *pxEventList : 
  * Removes the highest priority co-routine from the event list and places it in
  * the pending ready list.
  */
-BaseType_t xCoRoutineRemoveFromEventList(const List_t *pxEventList : itype(_Ptr<const List_t>));
+BaseType_t xCoRoutineRemoveFromEventList(_Ptr<const List_t> pxEventList);
 
 /* *INDENT-OFF* */
 #ifdef __cplusplus

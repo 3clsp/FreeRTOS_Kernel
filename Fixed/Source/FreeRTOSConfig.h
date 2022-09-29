@@ -117,7 +117,7 @@ void vConfigureTimerForRunTimeStats( void );    /* Prototype of function that in
     #define sbSEND_COMPLETED( pxStreamBuffer )    vGenerateCoreBInterrupt( pxStreamBuffer )
 #endif /* configINCLUDE_MESSAGE_BUFFER_AMP_DEMO */
 
-extern void vAssertCalled(const char *const pcFileName : itype(const _Ptr<const char>), unsigned long ulLine);
+extern void vAssertCalled(const _Ptr<const char> pcFileName, unsigned long ulLine);
 
 /* projCOVERAGE_TEST should be defined on the command line so this file can be
  * used with multiple project configurations.  If it is
@@ -160,7 +160,7 @@ extern void vAssertCalled(const char *const pcFileName : itype(const _Ptr<const 
 /* Prototype for the function used to print out.  In this case it prints to the
  * console before the network is connected then a UDP port after the network has
  * connected. */
-extern void vLoggingPrintf(const char *pcFormatString : itype(_Ptr<const char>), ...);
+extern void vLoggingPrintf(_Ptr<const char> pcFormatString, ...);
 
 /* Set to 1 to print out debug messages.  If ipconfigHAS_DEBUG_PRINTF is set to
  * 1 then FreeRTOS_debug_printf should be defined to the function used to print
