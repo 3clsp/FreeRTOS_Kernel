@@ -151,7 +151,7 @@ typedef xQUEUE Queue_t;
  * more user friendly. */
     typedef struct QUEUE_REGISTRY_ITEM
     {
-        _Ptr<const char> pcQueueName; /*lint !e971 Unqualified char types are allowed for strings and single characters only. */
+        _Nt_array_ptr<const char> pcQueueName; /*lint !e971 Unqualified char types are allowed for strings and single characters only. */
         QueueHandle_t xHandle;
     } xQueueRegistryItem;
 
@@ -195,12 +195,12 @@ static BaseType_t prvIsQueueFull(_Ptr<const Queue_t> pxQueue) PRIVILEGED_FUNCTIO
  * Copies an item into the queue, either at the front of the queue or the
  * back of the queue.
  */
-static BaseType_t prvCopyDataToQueue(const _Array_ptr<Queue_t> pxQueue: count(1), _Ptr<const void> pvItemToQueue, const BaseType_t xPosition) PRIVILEGED_FUNCTION;
+static BaseType_t prvCopyDataToQueue(const _Ptr<Queue_t> pxQueue, _Ptr<const void> pvItemToQueue, const BaseType_t xPosition) PRIVILEGED_FUNCTION;
 
 /*
  * Copies an item out of a queue.
  */
-static void prvCopyDataFromQueue(const _Array_ptr<Queue_t> pxQueue: count(1), _Ptr<void> const pvBuffer) PRIVILEGED_FUNCTION;
+static void prvCopyDataFromQueue(const _Ptr<Queue_t> pxQueue, _Ptr<void> const pvBuffer) PRIVILEGED_FUNCTION;
 
 #if ( configUSE_QUEUE_SETS == 1 )
 
@@ -291,7 +291,7 @@ static void prvInitialiseNewQueue(const UBaseType_t uxQueueLength, const UBaseTy
 BaseType_t xQueueGenericReset(QueueHandle_t xQueue, BaseType_t xNewQueue)
 {
     BaseType_t xReturn = pdPASS;
-    const _Array_ptr<Queue_t> pxQueue: count(1) = xQueue;
+    const _Ptr<Queue_t> pxQueue = xQueue;
 
     configASSERT( pxQueue );
 
@@ -358,7 +358,7 @@ BaseType_t xQueueGenericReset(QueueHandle_t xQueue, BaseType_t xNewQueue)
 
     QueueHandle_t xQueueGenericCreateStatic(const UBaseType_t uxQueueLength, const UBaseType_t uxItemSize, _Ptr<uint8_t> pucQueueStorage, _Ptr<StaticQueue_t> pxStaticQueue, const uint8_t ucQueueType)
     {
-        _Ptr<Queue_t> pxNewQueue = ((void*)0);
+        _Ptr<Queue_t> pxNewQueue = NULL;
 
         /* The StaticQueue_t structure and the queue storage area must be
          * supplied. */
@@ -417,9 +417,10 @@ BaseType_t xQueueGenericReset(QueueHandle_t xQueue, BaseType_t xNewQueue)
 
     QueueHandle_t xQueueGenericCreate(const UBaseType_t uxQueueLength, const UBaseType_t uxItemSize, const uint8_t ucQueueType)
     {
-        _Ptr<Queue_t> pxNewQueue = ((void*)0);
+        _Ptr<Queue_t> pxNewQueue = NULL;
         size_t xQueueSizeInBytes;
-
+        _Array_ptr<uint8_t> pucQueueStorage: count(sizeof( Queue_t ) + (uxQueueLength * uxItemSize)) = NULL;
+        
         if( ( uxQueueLength > ( UBaseType_t ) 0 ) &&
             /* Check for multiplication overflow. */
             ( ( SIZE_MAX / uxQueueLength ) >= uxItemSize ) &&
@@ -440,8 +441,6 @@ BaseType_t xQueueGenericReset(QueueHandle_t xQueue, BaseType_t xNewQueue)
              * are greater than or equal to the pointer to char requirements the cast
              * is safe.  In other cases alignment requirements are not strict (one or
              * two bytes). */
-             //////// FIXME FIXME FIXME
-             _Array_ptr<uint8_t> pucQueueStorage: count(sizeof( Queue_t ) + xQueueSizeInBytes) = ((void*)0);
             pxNewQueue = pvPortMalloc<Queue_t>( sizeof( Queue_t ) + xQueueSizeInBytes ); /*lint !e9087 !e9079 see comment above. */
 
             if( pxNewQueue != NULL )
@@ -492,12 +491,12 @@ static void prvInitialiseNewQueue(const UBaseType_t uxQueueLength, const UBaseTy
          * be set to NULL because NULL is used as a key to say the queue is used as
          * a mutex.  Therefore just set pcHead to point to the queue as a benign
          * value that is known to be within the memory map. */
-        pxNewQueue->pcHead = ( _Ptr<int8_t> ) pxNewQueue;
+        pxNewQueue->pcHead = ( _Array_ptr<int8_t> ) pxNewQueue;
     }
     else
     {
         /* Set the head to the start of the queue storage area. */
-        pxNewQueue->pcHead = ( _Ptr<int8_t> ) pucQueueStorage;
+        pxNewQueue->pcHead = ( _Array_ptr<int8_t> ) pucQueueStorage;
     }
 
     /* Initialise the queue members as described where the queue type is
@@ -556,7 +555,7 @@ static void prvInitialiseNewQueue(const UBaseType_t uxQueueLength, const UBaseTy
 
     QueueHandle_t xQueueCreateMutex(const uint8_t ucQueueType)
     {
-        QueueHandle_t xNewQueue = ((void *)0);
+        QueueHandle_t xNewQueue = NULL;
         const UBaseType_t uxMutexLength = ( UBaseType_t ) 1, uxMutexSize = ( UBaseType_t ) 0;
 
         xNewQueue = xQueueGenericCreate( uxMutexLength, uxMutexSize, ucQueueType );
@@ -572,7 +571,7 @@ static void prvInitialiseNewQueue(const UBaseType_t uxQueueLength, const UBaseTy
 
     QueueHandle_t xQueueCreateMutexStatic(const uint8_t ucQueueType, _Ptr<StaticQueue_t> pxStaticQueue)
     {
-        QueueHandle_t xNewQueue = ((void *)0);
+        QueueHandle_t xNewQueue = NULL;
         const UBaseType_t uxMutexLength = ( UBaseType_t ) 1, uxMutexSize = ( UBaseType_t ) 0;
 
         /* Prevent compiler warnings about unused parameters if
@@ -592,7 +591,7 @@ static void prvInitialiseNewQueue(const UBaseType_t uxQueueLength, const UBaseTy
 
     TaskHandle_t xQueueGetMutexHolder(QueueHandle_t xSemaphore)
     {
-        TaskHandle_t pxReturn = ((void *)0);
+        TaskHandle_t pxReturn = NULL;
         const _Ptr<Queue_t> pxSemaphore = (_Ptr<Queue_t> ) xSemaphore;
 
         configASSERT( xSemaphore );
@@ -625,7 +624,7 @@ static void prvInitialiseNewQueue(const UBaseType_t uxQueueLength, const UBaseTy
 
     TaskHandle_t xQueueGetMutexHolderFromISR(QueueHandle_t xSemaphore)
     {
-        TaskHandle_t pxReturn = ((void *)0);
+        TaskHandle_t pxReturn = NULL;
 
         configASSERT( xSemaphore );
 
@@ -1711,7 +1710,7 @@ BaseType_t xQueuePeek(QueueHandle_t xQueue, _Ptr<void> const pvBuffer, TickType_
 {
     BaseType_t xEntryTimeSet = pdFALSE;
     TimeOut_t xTimeOut;
-    _Array_ptr<int8_t> pcOriginalReadPosition = ((void*)0);
+    _Array_ptr<int8_t> pcOriginalReadPosition = NULL;
     const _Ptr<Queue_t> pxQueue = xQueue;
 
     /* Check the pointer is not NULL. */
@@ -1950,7 +1949,7 @@ BaseType_t xQueuePeekFromISR(QueueHandle_t xQueue, _Ptr<void> const pvBuffer)
 {
     BaseType_t xReturn;
     UBaseType_t uxSavedInterruptStatus;
-    _Array_ptr<int8_t> pcOriginalReadPosition = ((void*)0);
+    _Array_ptr<int8_t> pcOriginalReadPosition = NULL;
     const _Ptr<Queue_t> pxQueue = xQueue;
 
     configASSERT( pxQueue );
@@ -2144,7 +2143,7 @@ void vQueueDelete(QueueHandle_t xQueue)
 #endif /* configUSE_MUTEXES */
 /*-----------------------------------------------------------*/
 
-static BaseType_t prvCopyDataToQueue(const _Array_ptr<Queue_t> pxQueue: count(1), _Ptr<const void> pvItemToQueue, const BaseType_t xPosition)
+static BaseType_t prvCopyDataToQueue(const _Ptr<Queue_t> pxQueue, _Ptr<const void> pvItemToQueue, const BaseType_t xPosition)
 {
     BaseType_t xReturn = pdFALSE;
     UBaseType_t uxMessagesWaiting;
@@ -2173,7 +2172,7 @@ static BaseType_t prvCopyDataToQueue(const _Array_ptr<Queue_t> pxQueue: count(1)
     else if( xPosition == queueSEND_TO_BACK )
     {
         _Unchecked{
-        ( void ) memcpy( ( void* ) pxQueue->pcWriteTo, pvItemToQueue, ( size_t ) pxQueue->uxItemSize ); /*lint !e961 !e418 !e9087 MISRA exception as the casts are only redundant for some ports, plus previous logic ensures a null pointer can only be passed to memcpy() if the copy size is 0.  Cast to void required by function signature and safe as no alignment requirement and copy length specified in bytes. */
+            ( void ) memcpy( ( void* ) pxQueue->pcWriteTo, pvItemToQueue, ( size_t ) pxQueue->uxItemSize ); /*lint !e961 !e418 !e9087 MISRA exception as the casts are only redundant for some ports, plus previous logic ensures a null pointer can only be passed to memcpy() if the copy size is 0.  Cast to void required by function signature and safe as no alignment requirement and copy length specified in bytes. */
         }
         pxQueue->pcWriteTo += pxQueue->uxItemSize;                                                       /*lint !e9016 Pointer arithmetic on char types ok, especially in this use case where it is the clearest way of conveying intent. */
 
@@ -2229,7 +2228,7 @@ static BaseType_t prvCopyDataToQueue(const _Array_ptr<Queue_t> pxQueue: count(1)
 }
 /*-----------------------------------------------------------*/
 
-static void prvCopyDataFromQueue(const _Array_ptr<Queue_t> pxQueue: count(1), _Ptr<void> const pvBuffer)
+static void prvCopyDataFromQueue(const _Ptr<Queue_t> pxQueue, _Ptr<void> const pvBuffer)
 {
     if( pxQueue->uxItemSize != ( UBaseType_t ) 0 )
     {
@@ -2457,7 +2456,7 @@ BaseType_t xQueueIsQueueFullFromISR(const QueueHandle_t xQueue)
 #if ( configUSE_CO_ROUTINES == 1 )
 
     BaseType_t xQueueCRSend( QueueHandle_t xQueue,
-                             const void * pvItemToQueue,
+                             _Ptr<const void> pvItemToQueue,
                              TickType_t xTicksToWait )
     {
         BaseType_t xReturn;
@@ -2536,7 +2535,7 @@ BaseType_t xQueueIsQueueFullFromISR(const QueueHandle_t xQueue)
 #if ( configUSE_CO_ROUTINES == 1 )
 
     BaseType_t xQueueCRReceive( QueueHandle_t xQueue,
-                                void * pvBuffer,
+                                _Ptr<void> pvBuffer,
                                 TickType_t xTicksToWait )
     {
         BaseType_t xReturn;
@@ -2589,8 +2588,9 @@ BaseType_t xQueueIsQueueFullFromISR(const QueueHandle_t xQueue)
                 }
 
                 --( pxQueue->uxMessagesWaiting );
-                ( void ) memcpy( ( void * ) pvBuffer, ( void * ) pxQueue->u.xQueue.pcReadFrom, ( unsigned ) pxQueue->uxItemSize );
-
+                _Unchecked{
+                    ( void ) memcpy( ( void * ) pvBuffer, ( void * ) pxQueue->u.xQueue.pcReadFrom, ( unsigned ) pxQueue->uxItemSize );
+                }
                 xReturn = pdPASS;
 
                 /* Were any co-routines waiting for space to become available? */
@@ -2630,7 +2630,7 @@ BaseType_t xQueueIsQueueFullFromISR(const QueueHandle_t xQueue)
 #if ( configUSE_CO_ROUTINES == 1 )
 
     BaseType_t xQueueCRSendFromISR( QueueHandle_t xQueue,
-                                    const void * pvItemToQueue,
+                                    _Ptr<const void> pvItemToQueue,
                                     BaseType_t xCoRoutinePreviouslyWoken )
     {
         _Ptr<Queue_t> const pxQueue = xQueue;
@@ -2680,8 +2680,8 @@ BaseType_t xQueueIsQueueFullFromISR(const QueueHandle_t xQueue)
 #if ( configUSE_CO_ROUTINES == 1 )
 
     BaseType_t xQueueCRReceiveFromISR( QueueHandle_t xQueue,
-                                       void * pvBuffer,
-                                       BaseType_t * pxCoRoutineWoken )
+                                       _Ptr<void> pvBuffer,
+                                       _Ptr<BaseType_t> pxCoRoutineWoken )
     {
         BaseType_t xReturn;
         _Ptr<Queue_t> const pxQueue = xQueue;
@@ -2703,8 +2703,9 @@ BaseType_t xQueueIsQueueFullFromISR(const QueueHandle_t xQueue)
             }
 
             --( pxQueue->uxMessagesWaiting );
-            ( void ) memcpy( ( void * ) pvBuffer, ( void * ) pxQueue->u.xQueue.pcReadFrom, ( unsigned ) pxQueue->uxItemSize );
-
+            _Unchecked{
+                ( void ) memcpy( ( void * ) pvBuffer, ( void * ) pxQueue->u.xQueue.pcReadFrom, ( unsigned ) pxQueue->uxItemSize );
+            }
             if( ( *pxCoRoutineWoken ) == pdFALSE )
             {
                 if( listLIST_IS_EMPTY( &( pxQueue->xTasksWaitingToSend ) ) == pdFALSE )
@@ -2743,7 +2744,7 @@ BaseType_t xQueueIsQueueFullFromISR(const QueueHandle_t xQueue)
 
 #if ( configQUEUE_REGISTRY_SIZE > 0 )
 
-    void vQueueAddToRegistry(QueueHandle_t xQueue, _Ptr<const char> pcQueueName) /*lint !e971 Unqualified char types are allowed for strings and single characters only. */
+    void vQueueAddToRegistry(QueueHandle_t xQueue, _Nt_array_ptr<const char> pcQueueName) /*lint !e971 Unqualified char types are allowed for strings and single characters only. */
     {
         UBaseType_t ux;
         _Ptr<QueueRegistryItem_t> pxEntryToWrite = NULL;
@@ -2789,10 +2790,10 @@ BaseType_t xQueueIsQueueFullFromISR(const QueueHandle_t xQueue)
 
 #if ( configQUEUE_REGISTRY_SIZE > 0 )
 
-    _Ptr<const char> pcQueueGetName(QueueHandle_t xQueue) /*lint !e971 Unqualified char types are allowed for strings and single characters only. */
+    _Nt_array_ptr<const char> pcQueueGetName(QueueHandle_t xQueue) /*lint !e971 Unqualified char types are allowed for strings and single characters only. */
     {
         UBaseType_t ux;
-        _Ptr<const char> pcReturn = NULL; /*lint !e971 Unqualified char types are allowed for strings and single characters only. */
+        _Nt_array_ptr<const char> pcReturn = NULL; /*lint !e971 Unqualified char types are allowed for strings and single characters only. */
 
         configASSERT( xQueue );
 
@@ -2893,7 +2894,7 @@ BaseType_t xQueueIsQueueFullFromISR(const QueueHandle_t xQueue)
 
     QueueSetHandle_t xQueueCreateSet(const UBaseType_t uxEventQueueLength)
     {
-        QueueSetHandle_t pxQueue = ((void *)0);
+        QueueSetHandle_t pxQueue = NULL;
 
         pxQueue = xQueueGenericCreate( uxEventQueueLength, ( UBaseType_t ) sizeof( _Ptr<Queue_t> ), queueQUEUE_TYPE_SET );
 

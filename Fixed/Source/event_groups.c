@@ -98,7 +98,7 @@ static BaseType_t prvTestWaitCondition( const EventBits_t uxCurrentEventBits,
     EventGroupHandle_t xEventGroupCreateStatic(_Ptr<StaticEventGroup_t> pxEventGroupBuffer)
     {
         //EventGroup_t * pxEventBits;
-        _Ptr<EventGroup_t> pxEventBits = (_Ptr<EventGroup_t>)0;
+        _Ptr<EventGroup_t> pxEventBits = NULL;
         /* A StaticEventGroup_t object must be provided. */
         configASSERT( pxEventGroupBuffer );
 
@@ -147,7 +147,7 @@ static BaseType_t prvTestWaitCondition( const EventBits_t uxCurrentEventBits,
 
     EventGroupHandle_t  xEventGroupCreate(void)
     {
-        _Ptr<EventGroup_t> pxEventBits = (_Ptr<EventGroup_t>)0;
+        _Ptr<EventGroup_t> pxEventBits = NULL;
 
         /* Allocate the event group.  Justification for MISRA deviation as
          * follows:  pvPortMalloc() always ensures returned memory blocks are
@@ -467,7 +467,9 @@ EventBits_t xEventGroupClearBits(EventGroupHandle_t xEventGroup,
         BaseType_t xReturn;
 
         traceEVENT_GROUP_CLEAR_BITS_FROM_ISR( xEventGroup, uxBitsToClear );
-        xReturn = xTimerPendFunctionCallFromISR<struct EventGroupDef_t>(vEventGroupClearBitsCallback, xEventGroup, ( uint32_t ) uxBitsToClear, NULL); /*lint !e9087 Can't avoid cast to void* as a generic callback function not specific to this use case. Callback casts back to original type so safe. */
+        _Unchecked{
+            xReturn = xTimerPendFunctionCallFromISR((void (*)(void *, unsigned int))vEventGroupClearBitsCallback, (void *)xEventGroup, ( uint32_t ) uxBitsToClear, NULL); /*lint !e9087 Can't avoid cast to void* as a generic callback function not specific to this use case. Callback casts back to original type so safe. */
+        }
 
         return xReturn;
     }
@@ -494,12 +496,10 @@ EventBits_t xEventGroupGetBitsFromISR(EventGroupHandle_t xEventGroup)
 EventBits_t xEventGroupSetBits(EventGroupHandle_t xEventGroup,
                                 const EventBits_t uxBitsToSet )
 {
-    _Ptr<ListItem_t> pxListItem = ((void *)0);
-    _Ptr<ListItem_t> pxNext = ((void *)0);
-    /// HAVE TO FIND A BETTER WAY TO DO THIS
-    /// I CHANGED THE TYPE OF THE LIST ITEM TO MINILISTITEM TO AVOID ERROR
-    _Ptr<const ListItem_t> pxListEnd = ((void *)0);
-    _Ptr<const List_t> pxList = ((void *)0);
+    _Ptr<ListItem_t> pxListItem = NULL;
+    _Ptr<ListItem_t> pxNext = NULL;
+    _Ptr<const ListItem_t> pxListEnd = NULL;
+    _Ptr<const List_t> pxList = NULL;
     EventBits_t uxBitsToClear = 0, uxBitsWaitedFor, uxControlBits;
     _Ptr<EventGroup_t> pxEventBits = xEventGroup;
     BaseType_t xMatchFound = pdFALSE;
@@ -585,7 +585,7 @@ EventBits_t xEventGroupSetBits(EventGroupHandle_t xEventGroup,
 void vEventGroupDelete(EventGroupHandle_t xEventGroup)
 {
     _Ptr<EventGroup_t> pxEventBits = xEventGroup;
-    _Ptr<const List_t> pxTasksWaitingForBits = ((void *)0);
+    _Ptr<const List_t> pxTasksWaitingForBits = NULL;
 
     configASSERT( pxEventBits );
 
@@ -599,7 +599,7 @@ void vEventGroupDelete(EventGroupHandle_t xEventGroup)
         {
             /* Unblock the task, returning 0 as the event list is being deleted
              * and cannot therefore have any bits set. */
-            configASSERT( pxTasksWaitingForBits->xListEnd.pxNext != ( const ListItem_t * ) &( pxTasksWaitingForBits->xListEnd ) );
+            configASSERT( pxTasksWaitingForBits->xListEnd.pxNext != ( _Ptr<const ListItem_t> ) &( pxTasksWaitingForBits->xListEnd ) );
             vTaskRemoveFromUnorderedEventList( pxTasksWaitingForBits->xListEnd.pxNext, eventUNBLOCKED_DUE_TO_BIT_SET );
         }
     }
@@ -609,7 +609,7 @@ void vEventGroupDelete(EventGroupHandle_t xEventGroup)
     {
         /* The event group can only have been allocated dynamically - free
          * it again. */
-        vPortFree( pxEventBits );
+        vPortFree<EventGroup_t>( pxEventBits );
     }
     #elif ( ( configSUPPORT_DYNAMIC_ALLOCATION == 1 ) && ( configSUPPORT_STATIC_ALLOCATION == 1 ) )
     {
@@ -682,7 +682,9 @@ static BaseType_t prvTestWaitCondition( const EventBits_t uxCurrentEventBits,
         BaseType_t xReturn;
 
         traceEVENT_GROUP_SET_BITS_FROM_ISR( xEventGroup, uxBitsToSet );
-        xReturn = xTimerPendFunctionCallFromISR<struct EventGroupDef_t>(vEventGroupSetBitsCallback, xEventGroup, ( uint32_t ) uxBitsToSet, pxHigherPriorityTaskWoken ); /*lint !e9087 Can't avoid cast to void* as a callback function not specific to this use case. Callback casts back to original type so safe. */
+        _Unchecked{
+            xReturn = xTimerPendFunctionCallFromISR((void (*)(void *, unsigned int))vEventGroupSetBitsCallback, (void*)xEventGroup, ( uint32_t ) uxBitsToSet, pxHigherPriorityTaskWoken ); /*lint !e9087 Can't avoid cast to void* as a callback function not specific to this use case. Callback casts back to original type so safe. */
+        }
         return xReturn;
     }
 

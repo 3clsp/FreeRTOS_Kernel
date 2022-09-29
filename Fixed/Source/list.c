@@ -128,7 +128,7 @@ void vListInsertEnd(const _Ptr<List_t> pxList, const _Ptr<ListItem_t> pxNewListI
 
 void vListInsert(const _Ptr<List_t> pxList, const _Ptr<ListItem_t> pxNewListItem)
 {
-    _Ptr<ListItem_t> pxIterator = ((void*)0);
+    _Ptr<ListItem_t> pxIterator = NULL;
     const TickType_t xValueOfInsertion = pxNewListItem->xItemValue;
 
     /* Only effective when configASSERT() is also defined, these tests may catch
@@ -201,8 +201,7 @@ UBaseType_t uxListRemove(const _Ptr<ListItem_t> pxItemToRemove)
 {
 /* The list item knows which list it is in.  Obtain the list from the list
  * item. */
-    _Array_ptr<List_t> pxList : count(sizeof(List_t))= _Dynamic_bounds_cast<_Array_ptr<List_t>>(pxItemToRemove->pxContainer, count(sizeof(List_t)));
-
+    _Ptr<List_t> pxList = pxItemToRemove->pxContainer;
     pxItemToRemove->pxNext->pxPrevious = pxItemToRemove->pxPrevious;
     pxItemToRemove->pxPrevious->pxNext = pxItemToRemove->pxNext;
 

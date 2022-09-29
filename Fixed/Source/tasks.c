@@ -4679,7 +4679,6 @@ TickType_t uxTaskResetEventItemValue( void )
             {
                 /* Mark this task as waiting for a notification. */
                 tmp->ucNotifyState[ uxIndexToWait ] = taskWAITING_NOTIFICATION;
-                pxCurrentTCB = tmp;
 
                 if( xTicksToWait > ( TickType_t ) 0 )
                 {
@@ -4714,12 +4713,10 @@ TickType_t uxTaskResetEventItemValue( void )
                 if( xClearCountOnExit != pdFALSE )
                 {
                     tmp->ulNotifiedValue[ uxIndexToWait ] = 0UL;
-                    pxCurrentTCB = tmp;
                 }
                 else
                 {
                     tmp->ulNotifiedValue[ uxIndexToWait ] = ulReturn - ( uint32_t ) 1;
-                    pxCurrentTCB = tmp;
                 }
             }
             else
@@ -4728,7 +4725,6 @@ TickType_t uxTaskResetEventItemValue( void )
             }
 
             tmp->ucNotifyState[ uxIndexToWait ] = taskNOT_WAITING_NOTIFICATION;
-            pxCurrentTCB = tmp;
         }
         taskEXIT_CRITICAL();
 
@@ -4756,11 +4752,9 @@ TickType_t uxTaskResetEventItemValue( void )
                  * set  by the notifying task or interrupt.  This can be used to
                  * clear the value to zero. */
                 tmp->ulNotifiedValue[ uxIndexToWait ] &= ~ulBitsToClearOnEntry;
-                pxCurrentTCB = tmp;
 
                 /* Mark this task as waiting for a notification. */
                 tmp->ucNotifyState[ uxIndexToWait ] = taskWAITING_NOTIFICATION;
-                pxCurrentTCB = tmp;
 
                 if( xTicksToWait > ( TickType_t ) 0 )
                 {
@@ -4810,12 +4804,10 @@ TickType_t uxTaskResetEventItemValue( void )
                 /* A notification was already pending or a notification was
                  * received while the task was waiting. */
                 tmp->ulNotifiedValue[ uxIndexToWait ] &= ~ulBitsToClearOnExit;
-                pxCurrentTCB = tmp;
                 xReturn = pdTRUE;
             }
 
             tmp->ucNotifyState[ uxIndexToWait ] = taskNOT_WAITING_NOTIFICATION;
-            pxCurrentTCB = tmp;
         }
         taskEXIT_CRITICAL();
 

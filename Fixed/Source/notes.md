@@ -1,13 +1,20 @@
-## Done
+## Issues
 
 - croutine.c
+	- listGET_OWNER_OF_NEXT_ENTRY macro casts from void* to struct that depends on the caller. Not allowed to cast like that. 
 - event_groups.c
+	- To Fix: Line 471, 686
 - list.c
+	- struct xLIST_ITEM have a void* member
+	- listGET_OWNER_OF_NEXT_ENTRY: Argument 1 is not necessarily a TCB_t *
 
-## Kind of done
 - queue.c
-	- Had to put memcpy in Unchecked region
-	- Moved a variable decalration to after to another variable declaration so that the second one can be used as bounds for the first one in Funtion `xQueueGenericCreate`.
+	- Bounds for struct members needed?
+	- Bounds given to array_ptr vaiable in `xQueueGenericCreate`.
+	- void* in parameter of copy functions: Most likey of size QueueDefinition
+
+
+## Pending
 
 - timers.c
 	- Type argument not accepted since callback function is member of a struct.
@@ -19,6 +26,3 @@
 	- Added bounds for a variable manually after looking at how it is used. This is just a way to remove the error. Not a good way.
 - tasks.c
 	- Created temporary TCB_t to be passed into list_end_insert and some other funtions. This might not work properly everywhere.
-
-## Pending
-- tasks.c
