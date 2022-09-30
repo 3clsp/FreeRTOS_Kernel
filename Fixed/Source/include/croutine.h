@@ -44,10 +44,11 @@
 /* Used to hide the implementation of the co-routine control block.  The
  * control block structure however has to be included in the header due to
  * the macro implementation of the co-routine functionality. */
-typedef void * CoRoutineHandle_t;
+typedef _Ptr<void> CoRoutineHandle_t;
 
 /* Defines the prototype to which co-routine functions must conform. */
-typedef _Ptr<void (CoRoutineHandle_t, UBaseType_t )> crCOROUTINE_CODE;
+typedef _Ptr<void ( CoRoutineHandle_t,
+                                   UBaseType_t )> crCOROUTINE_CODE;
 
 typedef struct corCoRoutineControlBlock
 {
@@ -209,7 +210,7 @@ void vCoRoutineSchedule( void );
  * \ingroup Tasks
  */
 #define crSTART( pxCRCB )                            \
-    switch( ( ( CRCB_t * ) ( pxCRCB ) )->uxState ) { \
+    switch( ( ( _Ptr<CRCB_t> ) ( pxCRCB ) )->uxState ) { \
         case 0:
 
 /**
@@ -250,10 +251,10 @@ void vCoRoutineSchedule( void );
  * only.  The macros should not be used directly by application writers.
  */
 #define crSET_STATE0( xHandle )                                       \
-    ( ( CRCB_t * ) ( xHandle ) )->uxState = ( __LINE__ * 2 ); return; \
+    ( ( _Ptr<CRCB_t> ) ( xHandle ) )->uxState = ( __LINE__ * 2 ); return; \
     case ( __LINE__ * 2 ):
 #define crSET_STATE1( xHandle )                                               \
-    ( ( CRCB_t * ) ( xHandle ) )->uxState = ( ( __LINE__ * 2 ) + 1 ); return; \
+    ( ( _Ptr<CRCB_t> ) ( xHandle ) )->uxState = ( ( __LINE__ * 2 ) + 1 ); return; \
     case ( ( __LINE__ * 2 ) + 1 ):
 
 /**

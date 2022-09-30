@@ -418,7 +418,7 @@ EventBits_t xEventGroupClearBits( EventGroupHandle_t xEventGroup,
     BaseType_t xEventGroupClearBitsFromISR(EventGroupHandle_t xEventGroup, const EventBits_t uxBitsToClear) PRIVILEGED_FUNCTION;
 #else
     #define xEventGroupClearBitsFromISR( xEventGroup, uxBitsToClear ) \
-    xTimerPendFunctionCallFromISR( vEventGroupClearBitsCallback, ( void * ) xEventGroup, ( uint32_t ) uxBitsToClear, NULL )
+    xTimerPendFunctionCallFromISR( (void (*)(void *, unsigned int)) vEventGroupClearBitsCallback, ( void * ) xEventGroup, ( uint32_t ) uxBitsToClear, NULL )
 #endif
 
 /**
@@ -572,7 +572,7 @@ EventBits_t xEventGroupSetBits(EventGroupHandle_t xEventGroup,
     BaseType_t xEventGroupSetBitsFromISR(EventGroupHandle_t xEventGroup, const EventBits_t uxBitsToSet, _Ptr<BaseType_t> pxHigherPriorityTaskWoken) PRIVILEGED_FUNCTION;
 #else
     #define xEventGroupSetBitsFromISR( xEventGroup, uxBitsToSet, pxHigherPriorityTaskWoken ) \
-    xTimerPendFunctionCallFromISR( vEventGroupSetBitsCallback, ( void * ) xEventGroup, ( uint32_t ) uxBitsToSet, pxHigherPriorityTaskWoken )
+        xTimerPendFunctionCallFromISR( (void (*)(void *, unsigned int)) vEventGroupSetBitsCallback, ( void * ) xEventGroup, ( uint32_t ) uxBitsToSet, pxHigherPriorityTaskWoken )
 #endif
 
 /**

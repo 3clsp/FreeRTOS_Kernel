@@ -358,7 +358,7 @@ typedef _Ptr<void ( StreamBufferHandle_t xStreamBuffer,
  * \ingroup StreamBufferManagement
  */
 size_t xStreamBufferSend( StreamBufferHandle_t xStreamBuffer,
-                          _Ptr<const void> pvTxData,
+                          _Ptr<const uint8_t> pvTxData,
                           size_t xDataLengthBytes,
                           TickType_t xTicksToWait ) PRIVILEGED_FUNCTION;
 
@@ -459,7 +459,7 @@ size_t xStreamBufferSend( StreamBufferHandle_t xStreamBuffer,
  * \ingroup StreamBufferManagement
  */
 size_t xStreamBufferSendFromISR( StreamBufferHandle_t xStreamBuffer,
-                                 _Ptr<const void> pvTxData,
+                                 _Ptr<const uint8_t> pvTxData,
                                  size_t xDataLengthBytes,
                                  const _Ptr<BaseType_t> pxHigherPriorityTaskWoken ) PRIVILEGED_FUNCTION;
 
@@ -548,7 +548,7 @@ size_t xStreamBufferSendFromISR( StreamBufferHandle_t xStreamBuffer,
  * \ingroup StreamBufferManagement
  */
 size_t xStreamBufferReceive( StreamBufferHandle_t xStreamBuffer,
-                             _Ptr<void> pvRxData,
+                             _Array_ptr<uint8_t> pvRxData,
                              size_t xBufferLengthBytes,
                              TickType_t xTicksToWait ) PRIVILEGED_FUNCTION;
 
@@ -634,7 +634,7 @@ size_t xStreamBufferReceive( StreamBufferHandle_t xStreamBuffer,
  * \ingroup StreamBufferManagement
  */
 size_t xStreamBufferReceiveFromISR( StreamBufferHandle_t xStreamBuffer,
-                                    _Ptr<void> pvRxData,
+                                    _Array_ptr<uint8_t> pvRxData,
                                     size_t xBufferLengthBytes,
                                     const _Ptr<BaseType_t> pxHigherPriorityTaskWoken ) PRIVILEGED_FUNCTION;
 
@@ -895,7 +895,7 @@ StreamBufferHandle_t xStreamBufferGenericCreate( size_t xBufferSizeBytes,
 StreamBufferHandle_t xStreamBufferGenericCreateStatic( size_t xBufferSizeBytes,
                                                        size_t xTriggerLevelBytes,
                                                        BaseType_t xIsMessageBuffer,
-                                                       const _Ptr<uint8_t> pucStreamBufferStorageArea,
+                                                       const _Array_ptr<uint8_t> pucStreamBufferStorageArea,
                                                        const _Ptr<StaticStreamBuffer_t> pxStaticStreamBuffer,
                                                        StreamBufferCallbackFunction_t pxSendCompletedCallback,
                                                        StreamBufferCallbackFunction_t pxReceiveCompletedCallback)PRIVILEGED_FUNCTION;

@@ -102,7 +102,6 @@
         _Ptr<Timer_t> pxTimer;        /*<< The timer to which the command will be applied. */
     } TimerParameter_t;
 
-
     typedef struct tmrCallbackParameters
     {
         PendedFunction_t pxCallbackFunction; /* << The callback function to execute. */
@@ -138,8 +137,8 @@
  * static qualifier. */
     PRIVILEGED_DATA static List_t xActiveTimerList1;
     PRIVILEGED_DATA static List_t xActiveTimerList2;
-    PRIVILEGED_DATA static _Ptr<List_t> pxCurrentTimerList = ((void *)0);
-    PRIVILEGED_DATA static _Ptr<List_t> pxOverflowTimerList = ((void *)0);
+    PRIVILEGED_DATA static _Ptr<List_t> pxCurrentTimerList = NULL;
+    PRIVILEGED_DATA static _Ptr<List_t> pxOverflowTimerList = NULL;
 
 /* A queue that is used to send commands to the timer service task. */
     PRIVILEGED_DATA static _Ptr<struct QueueDefinition> xTimerQueue = NULL;
@@ -279,7 +278,7 @@
 
         TimerHandle_t xTimerCreate(const _Ptr<const char> pcTimerName, const TickType_t xTimerPeriodInTicks, const BaseType_t xAutoReload, _Ptr<void> const pvTimerID, TimerCallbackFunction_t pxCallbackFunction)
         {
-            _Ptr<Timer_t> pxNewTimer = ((void *)0);
+            _Ptr<Timer_t> pxNewTimer = NULL;
 
             pxNewTimer = pvPortMalloc<Timer_t>( sizeof( Timer_t ) ); /*lint !e9087 !e9079 All values returned by pvPortMalloc() have at least the alignment required by the MCU's stack, and the first member of Timer_t is always a pointer to the timer's mame. */
 
@@ -302,7 +301,7 @@
 
         TimerHandle_t xTimerCreateStatic(const _Ptr<const char> pcTimerName, const TickType_t xTimerPeriodInTicks, const BaseType_t xAutoReload, _Ptr<void> const pvTimerID, TimerCallbackFunction_t pxCallbackFunction, _Ptr<StaticTimer_t> pxTimerBuffer)
         {
-            _Ptr<Timer_t> pxNewTimer = ((void *)0);
+            _Ptr<Timer_t> pxNewTimer = NULL;
 
             #if ( configASSERT_DEFINED == 1 )
             {
@@ -728,7 +727,7 @@
     static void prvProcessReceivedCommands( void )
     {
         DaemonTaskMessage_t xMessage = {};
-        _Ptr<Timer_t> pxTimer = ((void*)0);
+        _Ptr<Timer_t> pxTimer = NULL;
         BaseType_t xTimerListsWereSwitched;
         TickType_t xTimeNow;
 
@@ -876,7 +875,7 @@
     static void prvSwitchTimerLists( void )
     {
         TickType_t xNextExpireTime;
-        _Ptr<List_t> pxTemp = ((void *)0);
+        _Ptr<List_t> pxTemp = NULL;
 
         /* The tick count has overflowed.  The timer lists must be switched.
          * If there are any timers still referenced from the current timer list
@@ -919,7 +918,7 @@
                     PRIVILEGED_DATA static StaticQueue_t xStaticTimerQueue;                                                                          /*lint !e956 Ok to declare in this manner to prevent additional conditional compilation guards in other locations. */
                     PRIVILEGED_DATA static uint8_t ucStaticTimerQueueStorage _Checked[ ( size_t ) configTIMER_QUEUE_LENGTH * sizeof( DaemonTaskMessage_t ) ]; /*lint !e956 Ok to declare in this manner to prevent additional conditional compilation guards in other locations. */
 
-                    xTimerQueue = _Dynamic_bounds_cast<_Ptr<struct QueueDefinition>>(xQueueCreateStatic( ( UBaseType_t ) configTIMER_QUEUE_LENGTH, ( UBaseType_t ) sizeof( DaemonTaskMessage_t ), &( ucStaticTimerQueueStorage[ 0 ] ), &xStaticTimerQueue ));
+                    xTimerQueue = xQueueCreateStatic( ( UBaseType_t ) configTIMER_QUEUE_LENGTH, ( UBaseType_t ) sizeof( DaemonTaskMessage_t ), &( ucStaticTimerQueueStorage[ 0 ] ), &xStaticTimerQueue );
                 }
                 #else
                 {
@@ -977,7 +976,7 @@
     _Ptr<void> pvTimerGetTimerID(const TimerHandle_t xTimer)
     {
         const _Ptr<Timer_t> pxTimer = xTimer;
-        _Ptr<void> pvReturn = ((void *)0);
+        _Ptr<void> pvReturn = NULL;
 
         configASSERT( xTimer );
 
@@ -1007,7 +1006,7 @@
 
     #if ( INCLUDE_xTimerPendFunctionCall == 1 )
 
-        _For_any(T) BaseType_t xTimerPendFunctionCallFromISR(PendedFunction_t xFunctionToPend, _Ptr<T> pvParameter1, uint32_t ulParameter2, _Ptr<BaseType_t> pxHigherPriorityTaskWoken)
+        BaseType_t xTimerPendFunctionCallFromISR(PendedFunction_t xFunctionToPend, _Ptr<void> pvParameter1, uint32_t ulParameter2, _Ptr<BaseType_t> pxHigherPriorityTaskWoken)
         {
             DaemonTaskMessage_t xMessage = {};
             BaseType_t xReturn;
@@ -1031,7 +1030,7 @@
 
     #if ( INCLUDE_xTimerPendFunctionCall == 1 )
 
-        _For_any(T) BaseType_t xTimerPendFunctionCall(PendedFunction_t xFunctionToPend, _Ptr<T> pvParameter1, uint32_t ulParameter2, TickType_t xTicksToWait)
+        BaseType_t xTimerPendFunctionCall(PendedFunction_t xFunctionToPend, _Ptr<void> pvParameter1, uint32_t ulParameter2, TickType_t xTicksToWait)
         {
             DaemonTaskMessage_t xMessage = {};
             BaseType_t xReturn;

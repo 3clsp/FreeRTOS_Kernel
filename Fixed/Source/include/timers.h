@@ -92,7 +92,7 @@ typedef _Ptr<void ( TimerHandle_t xTimer )> TimerCallbackFunction_t;
 //                                   uint32_t );
 
 
-_For_any(T) typedef _Ptr<void (_Ptr<T>, uint32_t)> PendedFunction_t;
+typedef _Ptr<void (_Ptr<void>, uint32_t)> PendedFunction_t;
 
 /**
  * TimerHandle_t xTimerCreate(  const char * const pcTimerName,
@@ -1191,7 +1191,7 @@ TaskHandle_t xTimerGetTimerDaemonTaskHandle(void) PRIVILEGED_FUNCTION;
  *  }
  * @endverbatim
  */
-_For_any(T) BaseType_t xTimerPendFunctionCallFromISR(PendedFunction_t xFunctionToPend, _Ptr<T> pvParameter1, uint32_t ulParameter2, _Ptr<BaseType_t> pxHigherPriorityTaskWoken) PRIVILEGED_FUNCTION;
+BaseType_t xTimerPendFunctionCallFromISR(PendedFunction_t xFunctionToPend, _Ptr<void> pvParameter1, uint32_t ulParameter2, _Ptr<BaseType_t> pxHigherPriorityTaskWoken) PRIVILEGED_FUNCTION;
 
 /**
  * BaseType_t xTimerPendFunctionCall( PendedFunction_t xFunctionToPend,
@@ -1225,7 +1225,7 @@ _For_any(T) BaseType_t xTimerPendFunctionCallFromISR(PendedFunction_t xFunctionT
  * timer daemon task, otherwise pdFALSE is returned.
  *
  */
-_For_any(T) BaseType_t xTimerPendFunctionCall(PendedFunction_t xFunctionToPend, _Ptr<T> pvParameter1, uint32_t ulParameter2, TickType_t xTicksToWait) PRIVILEGED_FUNCTION;
+BaseType_t xTimerPendFunctionCall(PendedFunction_t xFunctionToPend, _Ptr<void> pvParameter1, uint32_t ulParameter2, TickType_t xTicksToWait) PRIVILEGED_FUNCTION;
 
 /**
  * const char * const pcTimerGetName( TimerHandle_t xTimer );

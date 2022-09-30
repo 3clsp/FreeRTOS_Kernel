@@ -1421,10 +1421,10 @@ UBaseType_t uxQueueMessagesWaitingFromISR(const QueueHandle_t xQueue) PRIVILEGED
  * should not be called directly from application code.  Instead use the macro
  * wrappers defined within croutine.h.
  */
-BaseType_t xQueueCRSendFromISR(QueueHandle_t xQueue, const void * pvItemToQueue, BaseType_t xCoRoutinePreviouslyWoken);
-BaseType_t xQueueCRReceiveFromISR(QueueHandle_t xQueue, void * pvBuffer, _Ptr<BaseType_t> pxTaskWoken);
-BaseType_t xQueueCRSend(QueueHandle_t xQueue, const void * pvItemToQueue, TickType_t xTicksToWait);
-BaseType_t xQueueCRReceive(QueueHandle_t xQueue, void * pvBuffer, TickType_t xTicksToWait);
+BaseType_t xQueueCRSendFromISR(QueueHandle_t xQueue, _Ptr<const void> pvItemToQueue, BaseType_t xCoRoutinePreviouslyWoken);
+BaseType_t xQueueCRReceiveFromISR(QueueHandle_t xQueue, _Ptr<void> pvBuffer, _Ptr<BaseType_t> pxTaskWoken);
+BaseType_t xQueueCRSend(QueueHandle_t xQueue, _Ptr<const void> pvItemToQueue, TickType_t xTicksToWait);
+BaseType_t xQueueCRReceive(QueueHandle_t xQueue, _Ptr<void> pvBuffer, TickType_t xTicksToWait);
 
 /*
  * For internal use only.  Use xSemaphoreCreateMutex(),
@@ -1479,7 +1479,7 @@ BaseType_t xQueueGiveMutexRecursive(QueueHandle_t xMutex) PRIVILEGED_FUNCTION;
  * preferably in ROM/Flash), not on the stack.
  */
 #if ( configQUEUE_REGISTRY_SIZE > 0 )
-    void vQueueAddToRegistry(QueueHandle_t xQueue, _Ptr<const char> pcQueueName) PRIVILEGED_FUNCTION; /*lint !e971 Unqualified char types are allowed for strings and single characters only. */
+    void vQueueAddToRegistry(QueueHandle_t xQueue, _Nt_array_ptr<const char> pcQueueName) PRIVILEGED_FUNCTION; /*lint !e971 Unqualified char types are allowed for strings and single characters only. */
 #endif
 
 /*
@@ -1508,7 +1508,7 @@ BaseType_t xQueueGiveMutexRecursive(QueueHandle_t xMutex) PRIVILEGED_FUNCTION;
  * returned.
  */
 #if ( configQUEUE_REGISTRY_SIZE > 0 )
-    _Ptr<const char> pcQueueGetName(QueueHandle_t xQueue) PRIVILEGED_FUNCTION; /*lint !e971 Unqualified char types are allowed for strings and single characters only. */
+    _Nt_array_ptr<const char> pcQueueGetName(QueueHandle_t xQueue) PRIVILEGED_FUNCTION; /*lint !e971 Unqualified char types are allowed for strings and single characters only. */
 #endif
 
 /*
