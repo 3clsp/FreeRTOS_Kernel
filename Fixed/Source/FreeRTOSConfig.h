@@ -179,3 +179,4 @@ extern void vLoggingPrintf(_Ptr<const char> pcFormatString, ...);
     #define FreeRTOS_printf( X )    vLoggingPrintf X
 #endif
 #endif /* FREERTOS_CONFIG_H */
+
