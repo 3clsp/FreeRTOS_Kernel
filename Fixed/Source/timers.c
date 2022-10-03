@@ -104,7 +104,7 @@
 
     typedef struct tmrCallbackParameters
     {
-        PendedFunction_t pxCallbackFunction; /* << The callback function to execute. */
+        PendedFunction_t pxCallbackFunction: itype(_Ptr<void (_Ptr<void>, uint32_t)>) ; /* << The callback function to execute. */
         _Ptr<void> pvParameter1;                 /* << The value that will be used as the callback functions first parameter. */
         uint32_t ulParameter2;               /* << The value that will be used as the callback functions second parameter. */
     } CallbackParameters_t;
@@ -238,14 +238,16 @@
                 _Ptr<StaticTask_t> pxTimerTaskTCBBuffer = NULL;
                 _Ptr<StackType_t> pxTimerTaskStackBuffer = NULL;
                 uint32_t ulTimerTaskStackSize;
+                _Array_ptr<StackType_t> tmpStack: count(ulTimerTaskStackSize) = NULL;
 
                 vApplicationGetTimerTaskMemory( &pxTimerTaskTCBBuffer, &pxTimerTaskStackBuffer, &ulTimerTaskStackSize );
+                tmpStack = _Dynamic_bounds_cast<_Array_ptr<StackType_t>>(pxTimerTaskStackBuffer, count(ulTimerTaskStackSize));
                 xTimerTaskHandle = xTaskCreateStatic( prvTimerTask,
-                                                      configTIMER_SERVICE_TASK_NAME,
+                                                      _Dynamic_bounds_cast<_Array_ptr<const char>>(configTIMER_SERVICE_TASK_NAME, count(configMAX_TASK_NAME_LEN)),
                                                       ulTimerTaskStackSize,
                                                       NULL,
                                                       ( ( UBaseType_t ) configTIMER_TASK_PRIORITY ) | portPRIVILEGE_BIT,
-                                                      pxTimerTaskStackBuffer,
+                                                      tmpStack,
                                                       pxTimerTaskTCBBuffer );
 
                 if( xTimerTaskHandle != NULL )
@@ -1006,7 +1008,7 @@
 
     #if ( INCLUDE_xTimerPendFunctionCall == 1 )
 
-        BaseType_t xTimerPendFunctionCallFromISR(PendedFunction_t xFunctionToPend, _Ptr<void> pvParameter1, uint32_t ulParameter2, _Ptr<BaseType_t> pxHigherPriorityTaskWoken)
+        BaseType_t xTimerPendFunctionCallFromISR(PendedFunction_t xFunctionToPend: itype(_Ptr<void (_Ptr<void>, uint32_t)>), _Ptr<void> pvParameter1, uint32_t ulParameter2, _Ptr<BaseType_t> pxHigherPriorityTaskWoken)
         {
             DaemonTaskMessage_t xMessage = {};
             BaseType_t xReturn;
@@ -1030,7 +1032,7 @@
 
     #if ( INCLUDE_xTimerPendFunctionCall == 1 )
 
-        BaseType_t xTimerPendFunctionCall(PendedFunction_t xFunctionToPend, _Ptr<void> pvParameter1, uint32_t ulParameter2, TickType_t xTicksToWait)
+        BaseType_t xTimerPendFunctionCall(PendedFunction_t xFunctionToPend: itype( _Ptr<void (_Ptr<void>, uint32_t)>), _Ptr<void> pvParameter1, uint32_t ulParameter2, TickType_t xTicksToWait)
         {
             DaemonTaskMessage_t xMessage = {};
             BaseType_t xReturn;

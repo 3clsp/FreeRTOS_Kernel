@@ -119,7 +119,7 @@
     #endif
 #else /* if ( portUSING_MPU_WRAPPERS == 1 ) */
     #if ( portHAS_STACK_OVERFLOW_CHECKING == 1 )
-        _Ptr<StackType_t> pxPortInitialiseStack(_Ptr<StackType_t> pxTopOfStack, _Ptr<StackType_t> pxEndOfStack, TaskFunction_t pxCode, _Ptr<void> pvParameters) PRIVILEGED_FUNCTION;
+        _Ptr<StackType_t> pxPortInitialiseStack(_Array_ptr<StackType_t> pxTopOfStack, _Array_ptr<StackType_t> pxEndOfStack, TaskFunction_t pxCode, _Ptr<void> pvParameters) PRIVILEGED_FUNCTION;
     #else
         StackType_t * pxPortInitialiseStack( StackType_t * pxTopOfStack,
                                              TaskFunction_t pxCode,

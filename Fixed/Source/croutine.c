@@ -30,6 +30,8 @@
 #include "task.h"
 #include "croutine.h"
 
+#pragma CHECKED_SCOPE on
+
 /* Remove the whole file is co-routines are not being used. */
 #if ( configUSE_CO_ROUTINES != 0 )
 
@@ -43,7 +45,7 @@
 
 
 /* Lists for ready and blocked co-routines. --------------------*/
-    static List_t pxReadyCoRoutineLists[ configMAX_CO_ROUTINE_PRIORITIES ]; /*< Prioritised ready co-routines. */
+    static List_t pxReadyCoRoutineLists _Checked[ configMAX_CO_ROUTINE_PRIORITIES ]; /*< Prioritised ready co-routines. */
     static List_t xDelayedCoRoutineList1;                                   /*< Delayed co-routines. */
     static List_t xDelayedCoRoutineList2;                                   /*< Delayed co-routines (two lists are used - one for delays that have overflowed the current tick count. */
     static _Ptr<List_t> pxDelayedCoRoutineList = NULL;                          /*< Points to the delayed co-routine list currently being used. */
@@ -305,9 +307,12 @@
 
             /* listGET_OWNER_OF_NEXT_ENTRY walks through the list, so the co-routines
              * of the same priority get an equal share of the processor time. */
-            listGET_OWNER_OF_NEXT_ENTRY( pxCurrentCoRoutine, &( pxReadyCoRoutineLists[ uxTopCoRoutineReadyPriority ] ) );
+            _Unchecked{
+                void * tmpCRoutine = (void*)pxCurrentCoRoutine;
+                listGET_OWNER_OF_NEXT_ENTRY( tmpCRoutine, &( pxReadyCoRoutineLists[ uxTopCoRoutineReadyPriority ] ) );
+            }
             /* Call the co-routine. */
-            ( pxCurrentCoRoutine->pxCoRoutineFunction )( pxCurrentCoRoutine, pxCurrentCoRoutine->uxIndex );
+            ( pxCurrentCoRoutine->pxCoRoutineFunction )( (_Ptr<void>)pxCurrentCoRoutine, pxCurrentCoRoutine->uxIndex );
         }
     }
 /*-----------------------------------------------------------*/

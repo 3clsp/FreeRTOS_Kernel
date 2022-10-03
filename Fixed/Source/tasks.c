@@ -256,7 +256,7 @@
  */
 typedef struct tskTaskControlBlock       /* The old naming convention is used to prevent breaking kernel aware debuggers. */
 {
-    _Ptr<volatile StackType_t> pxTopOfStack; /*< Points to the location of the last item placed on the tasks stack.  THIS MUST BE THE FIRST MEMBER OF THE TCB STRUCT. */
+    _Array_ptr<volatile StackType_t> pxTopOfStack; /*< Points to the location of the last item placed on the tasks stack.  THIS MUST BE THE FIRST MEMBER OF THE TCB STRUCT. */
 
     #if ( portUSING_MPU_WRAPPERS == 1 )
         xMPU_SETTINGS xMPUSettings; /*< The MPU settings are defined as part of the port layer.  THIS MUST BE THE SECOND MEMBER OF THE TCB STRUCT. */
@@ -265,11 +265,11 @@ typedef struct tskTaskControlBlock       /* The old naming convention is used to
     ListItem_t xStateListItem;                  /*< The list that the state list item of a task is reference from denotes the state of that task (Ready, Blocked, Suspended ). */
     ListItem_t xEventListItem;                  /*< Used to reference a task from an event list. */
     UBaseType_t uxPriority;                     /*< The priority of the task.  0 is the lowest priority. */
-    _Ptr<StackType_t> pxStack;                      /*< Points to the start of the stack. */
+    _Array_ptr<StackType_t> pxStack;                      /*< Points to the start of the stack. */
     char pcTaskName _Checked[ configMAX_TASK_NAME_LEN ]; /*< Descriptive name given to the task when created.  Facilitates debugging only. */ /*lint !e971 Unqualified char types are allowed for strings and single characters only. */
 
     #if ( ( portSTACK_GROWTH > 0 ) || ( configRECORD_STACK_HIGH_ADDRESS == 1 ) )
-        _Ptr<StackType_t> pxEndOfStack; /*< Points to the highest valid address for the stack. */
+        _Array_ptr<StackType_t> pxEndOfStack; /*< Points to the highest valid address for the stack. */
     #endif
 
     #if ( portCRITICAL_NESTING_IN_TCB == 1 )
@@ -291,7 +291,7 @@ typedef struct tskTaskControlBlock       /* The old naming convention is used to
     #endif
 
     #if ( configNUM_THREAD_LOCAL_STORAGE_POINTERS > 0 )
-        void * pvThreadLocalStoragePointers[ configNUM_THREAD_LOCAL_STORAGE_POINTERS ];
+        _Ptr<void> pvThreadLocalStoragePointers[ configNUM_THREAD_LOCAL_STORAGE_POINTERS ];
     #endif
 
     #if ( configGENERATE_RUN_TIME_STATS == 1 )
@@ -532,7 +532,7 @@ static void prvResetNextTaskUnblockTime( void ) PRIVILEGED_FUNCTION;
  * Called after a Task_t structure has been allocated either statically or
  * dynamically to fill in the structure's members.
  */
-static void prvInitialiseNewTask(TaskFunction_t pxTaskCode, const _Array_ptr<const char> pcName: count(4), const uint32_t ulStackDepth, _Ptr<void> const pvParameters, UBaseType_t uxPriority, const _Ptr<TaskHandle_t> pxCreatedTask, _Ptr<TCB_t> pxNewTCB, const _Ptr<const MemoryRegion_t> xRegions) PRIVILEGED_FUNCTION;
+static void prvInitialiseNewTask(TaskFunction_t pxTaskCode, const _Array_ptr<const char> pcName: count(configMAX_TASK_NAME_LEN), const uint32_t ulStackDepth, _Ptr<void> const pvParameters, UBaseType_t uxPriority, const _Ptr<TaskHandle_t> pxCreatedTask, _Ptr<TCB_t> pxNewTCB, const _Ptr<const MemoryRegion_t> xRegions) PRIVILEGED_FUNCTION;
 
 /*
  * Called after a new task has been created and initialised to place the task
@@ -555,7 +555,7 @@ static void prvAddNewTaskToReadyList(_Ptr<TCB_t> pxNewTCB) PRIVILEGED_FUNCTION;
 
 #if ( configSUPPORT_STATIC_ALLOCATION == 1 )
 
-    TaskHandle_t xTaskCreateStatic(TaskFunction_t pxTaskCode, const _Array_ptr<const char> pcName: count(4), const uint32_t ulStackDepth, _Ptr<void> const pvParameters, UBaseType_t uxPriority, const _Array_ptr<StackType_t> puxStackBuffer: count(1), const _Ptr<StaticTask_t> pxTaskBuffer)
+    TaskHandle_t xTaskCreateStatic(TaskFunction_t pxTaskCode, const _Array_ptr<const char> pcName: count(configMAX_TASK_NAME_LEN), const uint32_t ulStackDepth, _Ptr<void> const pvParameters, UBaseType_t uxPriority, const _Array_ptr<StackType_t> puxStackBuffer: count(ulStackDepth), const _Ptr<StaticTask_t> pxTaskBuffer)
     {
         _Ptr<TCB_t> pxNewTCB = NULL;
         TaskHandle_t xReturn = NULL;
@@ -579,10 +579,8 @@ static void prvAddNewTaskToReadyList(_Ptr<TCB_t> pxNewTCB) PRIVILEGED_FUNCTION;
             /* The memory used for the task's TCB and stack are passed into this
              * function - use them. */
             pxNewTCB = ( _Ptr<TCB_t> ) pxTaskBuffer; /*lint !e740 !e9087 Unusual cast is ok as the structures are designed to have the same alignment, and the size is checked by an assert. */
-            _Unchecked{
-                memset( ( void * ) pxNewTCB, 0x00, sizeof( TCB_t ) );
-            }
-            pxNewTCB->pxStack = ( _Ptr<StackType_t> ) puxStackBuffer;
+            memset( pxNewTCB, 0x00, sizeof( TCB_t ) );
+            pxNewTCB->pxStack = puxStackBuffer;
 
             #if ( tskSTATIC_AND_DYNAMIC_ALLOCATION_POSSIBLE != 0 ) /*lint !e731 !e9029 Macro has been consolidated for readability reasons. */
             {
@@ -708,7 +706,7 @@ static void prvAddNewTaskToReadyList(_Ptr<TCB_t> pxNewTCB) PRIVILEGED_FUNCTION;
 
 #if ( configSUPPORT_DYNAMIC_ALLOCATION == 1 )
 
-    BaseType_t xTaskCreate(TaskFunction_t pxTaskCode, const _Array_ptr<const char> pcName : count(4), const configSTACK_DEPTH_TYPE usStackDepth, _Ptr<void> const pvParameters, UBaseType_t uxPriority, const _Ptr<TaskHandle_t> pxCreatedTask)
+    BaseType_t xTaskCreate(TaskFunction_t pxTaskCode, const _Array_ptr<const char> pcName : count(configMAX_TASK_NAME_LEN), const configSTACK_DEPTH_TYPE usStackDepth, _Ptr<void> const pvParameters, UBaseType_t uxPriority, const _Ptr<TaskHandle_t> pxCreatedTask)
     {
         _Ptr<TCB_t> pxNewTCB = NULL;
         BaseType_t xReturn;
@@ -725,18 +723,16 @@ static void prvAddNewTaskToReadyList(_Ptr<TCB_t> pxNewTCB) PRIVILEGED_FUNCTION;
 
             if( pxNewTCB != NULL )
             {
-                _Unchecked{
-                    memset( ( void * ) pxNewTCB, 0x00, sizeof( TCB_t ) );
-                }
+                memset( pxNewTCB, 0x00, sizeof( TCB_t ) );
                 /* Allocate space for the stack used by the task being created.
                  * The base of the stack memory stored in the TCB so the task can
                  * be deleted later if required. */
-                pxNewTCB->pxStack = ( StackType_t * ) pvPortMallocStack( ( ( ( size_t ) usStackDepth ) * sizeof( StackType_t ) ) ); /*lint !e961 MISRA exception as the casts are only redundant for some ports. */
+                pxNewTCB->pxStack = pvPortMallocStack<StackType_t>( ( ( ( size_t ) usStackDepth ) * sizeof( StackType_t ) ) ); /*lint !e961 MISRA exception as the casts are only redundant for some ports. */
 
                 if( pxNewTCB->pxStack == NULL )
                 {
                     /* Could not allocate the stack.  Delete the allocated TCB. */
-                    vPortFree( pxNewTCB );
+                    vPortFree<TCB_t>( pxNewTCB );
                     pxNewTCB = NULL;
                 }
             }
@@ -755,9 +751,7 @@ static void prvAddNewTaskToReadyList(_Ptr<TCB_t> pxNewTCB) PRIVILEGED_FUNCTION;
 
                 if( pxNewTCB != NULL )
                 {
-                    _Unchecked{
-                        memset( ( void * ) pxNewTCB, 0x00, sizeof( TCB_t ) );
-                    }
+                    memset( pxNewTCB, 0x00, sizeof( TCB_t ) );
                     /* Store the stack location in the TCB. */
                     pxNewTCB->pxStack = pxStack;
                 }
@@ -800,9 +794,9 @@ static void prvAddNewTaskToReadyList(_Ptr<TCB_t> pxNewTCB) PRIVILEGED_FUNCTION;
 #endif /* configSUPPORT_DYNAMIC_ALLOCATION */
 /*-----------------------------------------------------------*/
 
-static void prvInitialiseNewTask(TaskFunction_t pxTaskCode, const _Array_ptr<const char> pcName : count(4), const uint32_t ulStackDepth, _Ptr<void> const pvParameters, UBaseType_t uxPriority, const _Ptr<TaskHandle_t> pxCreatedTask, _Ptr<TCB_t> pxNewTCB, const _Ptr<const MemoryRegion_t> xRegions)
+static void prvInitialiseNewTask(TaskFunction_t pxTaskCode, const _Array_ptr<const char> pcName: count(configMAX_TASK_NAME_LEN), const uint32_t ulStackDepth, _Ptr<void> const pvParameters, UBaseType_t uxPriority, const _Ptr<TaskHandle_t> pxCreatedTask, _Ptr<TCB_t> pxNewTCB, const _Ptr<const MemoryRegion_t> xRegions)
 {
-    _Ptr<StackType_t> pxTopOfStack = NULL;
+    _Array_ptr<StackType_t> pxTopOfStack = NULL;
     UBaseType_t x;
 
     #if ( portUSING_MPU_WRAPPERS == 1 )
@@ -837,7 +831,7 @@ static void prvInitialiseNewTask(TaskFunction_t pxTaskCode, const _Array_ptr<con
     #if ( portSTACK_GROWTH < 0 )
     {
         pxTopOfStack = &( pxNewTCB->pxStack[ ulStackDepth - ( uint32_t ) 1 ] );
-        pxTopOfStack = ( _Ptr<StackType_t> ) ( ( ( portPOINTER_SIZE_TYPE ) pxTopOfStack ) & ( ~( ( portPOINTER_SIZE_TYPE ) portBYTE_ALIGNMENT_MASK ) ) ); /*lint !e923 !e9033 !e9078 MISRA exception.  Avoiding casts between pointers and integers is not practical.  Size differences accounted for using portPOINTER_SIZE_TYPE type.  Checked by assert(). */
+        pxTopOfStack = (_Array_ptr<StackType_t>)( ( ( portPOINTER_SIZE_TYPE ) pxTopOfStack ) & ( ~( ( portPOINTER_SIZE_TYPE ) portBYTE_ALIGNMENT_MASK ) ) ); /*lint !e923 !e9033 !e9078 MISRA exception.  Avoiding casts between pointers and integers is not practical.  Size differences accounted for using portPOINTER_SIZE_TYPE type.  Checked by assert(). */
 
         /* Check the alignment of the calculated top of stack is correct. */
         configASSERT( ( ( ( portPOINTER_SIZE_TYPE ) pxTopOfStack & ( portPOINTER_SIZE_TYPE ) portBYTE_ALIGNMENT_MASK ) == 0UL ) );
@@ -1150,7 +1144,7 @@ static void prvAddNewTaskToReadyList(_Ptr<TCB_t> pxNewTCB)
                  * after which it is not possible to yield away from this task -
                  * hence xYieldPending is used to latch that a context switch is
                  * required. */
-                portPRE_TASK_DELETE_HOOK( (_Ptr<void>)pxTCB, &xYieldPending );
+                portPRE_TASK_DELETE_HOOK( pxTCB, &xYieldPending );
             }
             else
             {
@@ -1327,9 +1321,9 @@ static void prvAddNewTaskToReadyList(_Ptr<TCB_t> pxNewTCB)
     eTaskState eTaskGetState( TaskHandle_t xTask )
     {
         eTaskState eReturn;
-        _Ptr<List_t const> pxStateList = ((void*)0);
-        _Ptr<List_t const> pxDelayedList = ((void*)0);
-        _Ptr<List_t const> pxOverflowedDelayedList = ((void*)0);
+        _Ptr<List_t const> pxStateList = NULL;
+        _Ptr<List_t const> pxDelayedList = NULL;
+        _Ptr<List_t const> pxOverflowedDelayedList = NULL;
         _Ptr<const TCB_t> const pxTCB = xTask;
 
         configASSERT( pxTCB );
@@ -1488,7 +1482,7 @@ static void prvAddNewTaskToReadyList(_Ptr<TCB_t> pxNewTCB)
     void vTaskPrioritySet( TaskHandle_t xTask,
                            UBaseType_t uxNewPriority )
     {
-        _Ptr<TCB_t> pxTCB = ((void*)0);
+        _Ptr<TCB_t> pxTCB = NULL;
         UBaseType_t uxCurrentBasePriority, uxPriorityUsedOnEntry;
         BaseType_t xYieldRequired = pdFALSE;
 
@@ -1653,7 +1647,7 @@ static void prvAddNewTaskToReadyList(_Ptr<TCB_t> pxNewTCB)
 
     void vTaskSuspend( TaskHandle_t xTaskToSuspend )
     {
-        _Ptr<TCB_t> pxTCB = ((void*)0);
+        _Ptr<TCB_t> pxTCB = NULL;
 
         taskENTER_CRITICAL();
         {
@@ -1942,16 +1936,19 @@ void vTaskStartScheduler( void )
         _Ptr<StaticTask_t> pxIdleTaskTCBBuffer = NULL;
         _Ptr<StackType_t> pxIdleTaskStackBuffer = NULL;
         uint32_t ulIdleTaskStackSize;
+        _Array_ptr<StackType_t> tmpStack: count(ulIdleTaskStackSize) = NULL;
 
         /* The Idle task is created using user provided RAM - obtain the
          * address of the RAM then create the idle task. */
         vApplicationGetIdleTaskMemory( &pxIdleTaskTCBBuffer, ((_Ptr<_Ptr<StackType_t>>)&pxIdleTaskStackBuffer), &ulIdleTaskStackSize );
+        
+        tmpStack = _Dynamic_bounds_cast<_Array_ptr<StackType_t>>(pxIdleTaskStackBuffer, count(ulIdleTaskStackSize));
         xIdleTaskHandle = xTaskCreateStatic( prvIdleTask,
-                                             configIDLE_TASK_NAME,
+                                             _Dynamic_bounds_cast<_Array_ptr<const char>>(configIDLE_TASK_NAME, count(configMAX_TASK_NAME_LEN)),
                                              ulIdleTaskStackSize,
                                              ( void * ) NULL,       /*lint !e961.  The cast is not redundant for all compilers. */
                                              portPRIVILEGE_BIT,     /* In effect ( tskIDLE_PRIORITY | portPRIVILEGE_BIT ), but tskIDLE_PRIORITY is zero. */
-                                             pxIdleTaskStackBuffer,
+                                             tmpStack,
                                              pxIdleTaskTCBBuffer ); /*lint !e961 MISRA exception, justified as it is not a redundant explicit cast to all supported compilers. */
 
         if( xIdleTaskHandle != NULL )
@@ -2345,8 +2342,7 @@ _Ptr<char> pcTaskGetName(TaskHandle_t xTaskToQuery) /*lint !e971 Unqualified cha
 
         if( listCURRENT_LIST_LENGTH( pxList ) > ( UBaseType_t ) 0 )
         {
-            listGET_OWNER_OF_NEXT_ENTRY( pxFirstTCB, pxList ); /*lint !e9079 void * is used as this macro is used with timers and co-routines too.  Alignment is known to be fine as the type of the pointer stored and retrieved is the same. */
-
+                listGET_OWNER_OF_NEXT_ENTRY( pxFirstTCB, pxList ); /*lint !e9079 void * is used as this macro is used with timers and co-routines too.  Alignment is known to be fine as the type of the pointer stored and retrieved is the same. */
             do
             {
                 listGET_OWNER_OF_NEXT_ENTRY( pxNextTCB, pxList ); /*lint !e9079 void * is used as this macro is used with timers and co-routines too.  Alignment is known to be fine as the type of the pointer stored and retrieved is the same. */
@@ -3611,9 +3607,9 @@ static portTASK_FUNCTION( prvIdleTask, pvParameters )
 #if ( portUSING_MPU_WRAPPERS == 1 )
 
     void vTaskAllocateMPURegions( TaskHandle_t xTaskToModify,
-                                  const MemoryRegion_t * const xRegions )
+                                  _Ptr<const MemoryRegion_t> const xRegions )
     {
-        TCB_t * pxTCB;
+        _Ptr<TCB_t> pxTCB;
 
         /* If null is passed in here then we are modifying the MPU settings of
          * the calling task. */
@@ -3707,7 +3703,7 @@ static void prvCheckTasksWaitingTermination( void )
         #if ( configUSE_MUTEXES == 1 )
         {
             pxTaskStatus->uxBasePriority = pxTCB->uxBasePriority;
-        }
+        }  
         #else
         {
             pxTaskStatus->uxBasePriority = 0;
@@ -3768,11 +3764,11 @@ static void prvCheckTasksWaitingTermination( void )
         {
             #if ( portSTACK_GROWTH > 0 )
             {
-                pxTaskStatus->usStackHighWaterMark = prvTaskCheckFreeStackSpace( ( _Ptr<uint8_t> ) pxTCB->pxEndOfStack );
+                pxTaskStatus->usStackHighWaterMark = prvTaskCheckFreeStackSpace(  (_Array_ptr<const uint8_t>)pxTCB->pxEndOfStack );
             }
             #else
             {
-                pxTaskStatus->usStackHighWaterMark = prvTaskCheckFreeStackSpace( ( _Ptr<uint8_t> ) pxTCB->pxStack );
+                pxTaskStatus->usStackHighWaterMark = prvTaskCheckFreeStackSpace(  (_Array_ptr<const uint8_t>)pxTCB->pxStack );
             }
             #endif
         }
@@ -3826,7 +3822,7 @@ static void prvCheckTasksWaitingTermination( void )
         uint32_t ulCount = 0U;
 
         while( *pucStackByte == ( uint8_t ) tskSTACK_FILL_BYTE )
-        {
+    {
             pucStackByte -= portSTACK_GROWTH;
             ulCount++;
         }
@@ -3849,7 +3845,7 @@ static void prvCheckTasksWaitingTermination( void )
     configSTACK_DEPTH_TYPE uxTaskGetStackHighWaterMark2( TaskHandle_t xTask )
     {
         _Ptr<TCB_t> pxTCB = NULL;
-        _Ptr<uint8_t> pucEndOfStack = NULL;
+        _Array_ptr<uint8_t> pucEndOfStack = NULL;
         configSTACK_DEPTH_TYPE uxReturn;
 
         /* uxTaskGetStackHighWaterMark() and uxTaskGetStackHighWaterMark2() are
@@ -3863,11 +3859,11 @@ static void prvCheckTasksWaitingTermination( void )
 
         #if portSTACK_GROWTH < 0
         {
-            pucEndOfStack = ( _Ptr<uint8_t> ) pxTCB->pxStack;
+            pucEndOfStack = (_Array_ptr<uint8_t>)pxTCB->pxStack;
         }
         #else
         {
-            pucEndOfStack = ( _Ptr<uint8_t> ) pxTCB->pxEndOfStack;
+            pucEndOfStack = ( _Array_ptr<uint8_t> ) pxTCB->pxEndOfStack;
         }
         #endif
 
@@ -3884,18 +3880,18 @@ static void prvCheckTasksWaitingTermination( void )
     UBaseType_t uxTaskGetStackHighWaterMark( TaskHandle_t xTask )
     {
         _Ptr<TCB_t> pxTCB = NULL;
-        _Ptr<uint8_t> pucEndOfStack = NULL;
+        _Array_ptr<uint8_t> pucEndOfStack = NULL;
         UBaseType_t uxReturn;
 
         pxTCB = prvGetTCBFromHandle( xTask );
 
         #if portSTACK_GROWTH < 0
         {
-            pucEndOfStack = ( _Ptr<uint8_t> ) pxTCB->pxStack;
+            pucEndOfStack = ( _Array_ptr<uint8_t> ) pxTCB->pxStack;
         }
         #else
         {
-            pucEndOfStack = ( _Ptr<uint8_t> ) pxTCB->pxEndOfStack;
+            pucEndOfStack = ( _Array_ptr<uint8_t> ) pxTCB->pxEndOfStack;
         }
         #endif
 

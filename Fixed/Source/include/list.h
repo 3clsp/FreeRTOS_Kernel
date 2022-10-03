@@ -284,7 +284,7 @@ typedef struct xLIST
  */
 #define listGET_OWNER_OF_NEXT_ENTRY( pxTCB, pxList )                                           \
     {                                                                                          \
-        _Ptr<List_t> const pxConstList = ( pxList );                                               \
+        _Ptr<List_t> const pxConstList = ( pxList );                                           \
         /* Increment the index to the next item and return the item, ensuring */               \
         /* we don't return the marker used at the end of the list.  */                         \
         ( pxConstList )->pxIndex = ( pxConstList )->pxIndex->pxNext;                           \
@@ -292,7 +292,7 @@ typedef struct xLIST
         {                                                                                      \
             ( pxConstList )->pxIndex = ( pxConstList )->pxIndex->pxNext;                       \
         }                                                                                      \
-        ( pxTCB ) = (_Ptr<void>)( pxConstList )->pxIndex->pvOwner;                                         \
+        ( pxTCB ) = (void*)( pxConstList )->pxIndex->pvOwner;                                  \
     }
 
 /*

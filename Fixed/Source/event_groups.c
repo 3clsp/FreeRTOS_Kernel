@@ -468,7 +468,7 @@ EventBits_t xEventGroupClearBits(EventGroupHandle_t xEventGroup,
 
         traceEVENT_GROUP_CLEAR_BITS_FROM_ISR( xEventGroup, uxBitsToClear );
         _Unchecked{
-            xReturn = xTimerPendFunctionCallFromISR((void (*)(void *, unsigned int))vEventGroupClearBitsCallback, (void *)xEventGroup, ( uint32_t ) uxBitsToClear, NULL); /*lint !e9087 Can't avoid cast to void* as a generic callback function not specific to this use case. Callback casts back to original type so safe. */
+            xReturn = xTimerPendFunctionCallFromISR((void (*)(void*, unsigned int))vEventGroupClearBitsCallback, (void*)xEventGroup, ( uint32_t ) uxBitsToClear, NULL); /*lint !e9087 Can't avoid cast to void* as a generic callback function not specific to this use case. Callback casts back to original type so safe. */
         }
 
         return xReturn;

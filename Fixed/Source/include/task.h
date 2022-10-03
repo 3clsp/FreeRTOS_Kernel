@@ -161,10 +161,10 @@ typedef struct xTASK_STATUS
     UBaseType_t uxCurrentPriority;                /* The priority at which the task was running (may be inherited) when the structure was populated. */
     UBaseType_t uxBasePriority;                   /* The priority to which the task will return if the task's current priority has been inherited to avoid unbounded priority inversion when obtaining a mutex.  Only valid if configUSE_MUTEXES is defined as 1 in FreeRTOSConfig.h. */
     configRUN_TIME_COUNTER_TYPE ulRunTimeCounter; /* The total run time allocated to the task so far, as defined by the run time stats clock.  See https://www.FreeRTOS.org/rtos-run-time-stats.html.  Only valid when configGENERATE_RUN_TIME_STATS is defined as 1 in FreeRTOSConfig.h. */
-    _Ptr<StackType_t> pxStackBase;                    /* Points to the lowest address of the task's stack area. */
+    _Array_ptr<StackType_t> pxStackBase;                    /* Points to the lowest address of the task's stack area. */
     #if ( ( portSTACK_GROWTH > 0 ) && ( configRECORD_STACK_HIGH_ADDRESS == 1 ) )
-        StackType_t * pxTopOfStack;               /* Points to the top address of the task's stack area. */
-        StackType_t * pxEndOfStack;               /* Points to the end address of the task's stack area. */
+        _Array_ptr<StackType_t> pxTopOfStack;               /* Points to the top address of the task's stack area. */
+        _Array_ptr<StackType_t> pxEndOfStack;               /* Points to the end address of the task's stack area. */
     #endif
     configSTACK_DEPTH_TYPE usStackHighWaterMark;  /* The minimum amount of stack space that has remained for the task since the task was created.  The closer this value is to zero the closer the task has come to overflowing its stack. */
 } TaskStatus_t;
@@ -353,7 +353,7 @@ typedef enum
  * \ingroup Tasks
  */
 #if ( configSUPPORT_DYNAMIC_ALLOCATION == 1 )
-    BaseType_t xTaskCreate(TaskFunction_t pxTaskCode, const _Array_ptr<const char> pcName: count(4), const configSTACK_DEPTH_TYPE usStackDepth, _Ptr<void> const pvParameters, UBaseType_t uxPriority, const _Ptr<TaskHandle_t> pxCreatedTask) PRIVILEGED_FUNCTION;
+    BaseType_t xTaskCreate(TaskFunction_t pxTaskCode, const _Array_ptr<const char> pcName: count(configMAX_TASK_NAME_LEN), const configSTACK_DEPTH_TYPE usStackDepth, _Ptr<void> const pvParameters, UBaseType_t uxPriority, const _Ptr<TaskHandle_t> pxCreatedTask) PRIVILEGED_FUNCTION;
 #endif
 
 /**
@@ -465,7 +465,7 @@ typedef enum
  * \ingroup Tasks
  */
 #if ( configSUPPORT_STATIC_ALLOCATION == 1 )
-    TaskHandle_t xTaskCreateStatic(TaskFunction_t pxTaskCode, const _Array_ptr<const char> pcName: count(4), const uint32_t ulStackDepth, _Ptr<void> const pvParameters, UBaseType_t uxPriority, const _Array_ptr<StackType_t> puxStackBuffer: count(1), const _Ptr<StaticTask_t> pxTaskBuffer) PRIVILEGED_FUNCTION;
+    TaskHandle_t xTaskCreateStatic(TaskFunction_t pxTaskCode, const _Array_ptr<const char> pcName: count(configMAX_TASK_NAME_LEN), const uint32_t ulStackDepth, _Ptr<void> const pvParameters, UBaseType_t uxPriority, const _Array_ptr<StackType_t> puxStackBuffer: count(ulStackDepth), const _Ptr<StaticTask_t> pxTaskBuffer) PRIVILEGED_FUNCTION;
 #endif /* configSUPPORT_STATIC_ALLOCATION */
 
 /**
