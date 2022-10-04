@@ -307,10 +307,16 @@
 
             /* listGET_OWNER_OF_NEXT_ENTRY walks through the list, so the co-routines
              * of the same priority get an equal share of the processor time. */
-            _Unchecked{
-                void * tmpCRoutine = (void*)pxCurrentCoRoutine;
-                listGET_OWNER_OF_NEXT_ENTRY( tmpCRoutine, &( pxReadyCoRoutineLists[ uxTopCoRoutineReadyPriority ] ) );
-            }
+            //listGET_OWNER_OF_NEXT_ENTRY( pxCurrentCoRoutine, &( pxReadyCoRoutineLists[ uxTopCoRoutineReadyPriority ] ) );
+
+            // Expanded listGET_OWNER_OF_NEXT_ENTRY
+            _Ptr<List_t> const pxConstList = &( pxReadyCoRoutineLists[ uxTopCoRoutineReadyPriority ] );
+            ( pxConstList )->pxIndex = ( pxConstList )->pxIndex->pxNext;
+            if( ( _Ptr<void> ) ( pxConstList )->pxIndex == ( _Ptr<void> ) &( ( pxConstList )->xListEnd ) ) {
+                ( pxConstList )->pxIndex = ( pxConstList )->pxIndex->pxNext;
+            }   
+             (pxCurrentCoRoutine ) = _Dynamic_bounds_cast<_Ptr<CRCB_t>>(( pxConstList )->pxIndex->pvOwner);
+
             /* Call the co-routine. */
             ( pxCurrentCoRoutine->pxCoRoutineFunction )( (_Ptr<void>)pxCurrentCoRoutine, pxCurrentCoRoutine->uxIndex );
         }

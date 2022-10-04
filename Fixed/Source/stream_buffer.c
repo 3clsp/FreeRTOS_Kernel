@@ -230,7 +230,7 @@ typedef struct StreamBufferDef_t                 /*lint !e9058 Style convention 
     size_t xTriggerLevelBytes;                   /* The number of bytes that must be in the stream buffer before a task that is waiting for data is unblocked. */
     volatile TaskHandle_t xTaskWaitingToReceive; /* Holds the handle of a task waiting for data, or NULL if no tasks are waiting. */
     volatile TaskHandle_t xTaskWaitingToSend;    /* Holds the handle of a task waiting to send data to a message buffer that is full. */
-   _Array_ptr<uint8_t> pucBuffer;/* Points to the buffer itself - that is - the RAM that stores the data passed through the buffer. */
+   _Array_ptr<uint8_t> pucBuffer: count(xLength);/* Points to the buffer itself - that is - the RAM that stores the data passed through the buffer. */
     uint8_t ucFlags;
 
     #if ( configUSE_TRACE_FACILITY == 1 )
@@ -259,7 +259,7 @@ static size_t prvBytesInBuffer(const _Ptr<const StreamBuffer_t> pxStreamBuffer) 
  * To mark the write as complete, manually set the buffer's xHead field with the
  * returned xHead from this function.
  */
-static size_t prvWriteBytesToBuffer(const _Ptr<StreamBuffer_t> pxStreamBuffer, _Array_ptr<const uint8_t> pucData, size_t xCount, size_t xHead) PRIVILEGED_FUNCTION;
+static size_t prvWriteBytesToBuffer(const _Ptr<StreamBuffer_t> pxStreamBuffer, _Array_ptr<const uint8_t> pucData: count(xCount), size_t xCount, size_t xHead) PRIVILEGED_FUNCTION;
 
 /*
  * If the stream buffer is being used as a message buffer, then reads an entire
@@ -268,7 +268,7 @@ static size_t prvWriteBytesToBuffer(const _Ptr<StreamBuffer_t> pxStreamBuffer, _
  * prvReadBytesFromBuffer() is called to actually extract the bytes from the
  * buffer's data storage area.
  */
-static size_t prvReadMessageFromBuffer(_Ptr<StreamBuffer_t> pxStreamBuffer, _Array_ptr<uint8_t> pvRxData, size_t xBufferLengthBytes, size_t xBytesAvailable) PRIVILEGED_FUNCTION;
+static size_t prvReadMessageFromBuffer(_Ptr<StreamBuffer_t> pxStreamBuffer, _Ptr<uint8_t> pvRxData, size_t xBufferLengthBytes, size_t xBytesAvailable) PRIVILEGED_FUNCTION;
 
 /*
  * If the stream buffer is being used as a message buffer, then writes an entire
@@ -291,13 +291,13 @@ static size_t prvWriteMessageToBuffer(const _Ptr<StreamBuffer_t> pxStreamBuffer,
  * To mark the read as complete, manually set the buffer's xTail field with the
  * returned xTail from this function.
  */
-static size_t prvReadBytesFromBuffer(_Ptr<StreamBuffer_t> pxStreamBuffer, _Array_ptr<uint8_t> pucData, size_t xCount, size_t xTail) PRIVILEGED_FUNCTION;
+static size_t prvReadBytesFromBuffer(_Ptr<StreamBuffer_t> pxStreamBuffer, _Array_ptr<uint8_t> pucData: count(xCount), size_t xCount, size_t xTail) PRIVILEGED_FUNCTION;
 
 /*
  * Called by both pxStreamBufferCreate() and pxStreamBufferCreateStatic() to
  * initialise the members of the newly created stream buffer structure.
  */
-static void prvInitialiseNewStreamBuffer(const _Ptr<StreamBuffer_t> pxStreamBuffer, const _Array_ptr<uint8_t> pucBuffer, size_t xBufferSizeBytes, size_t xTriggerLevelBytes, uint8_t ucFlags, StreamBufferCallbackFunction_t pxSendCompletedCallback, StreamBufferCallbackFunction_t pxReceiveCompletedCallback) PRIVILEGED_FUNCTION;
+static void prvInitialiseNewStreamBuffer(const _Ptr<StreamBuffer_t> pxStreamBuffer, const _Array_ptr<uint8_t> pucBuffer: count(xBufferSizeBytes), size_t xBufferSizeBytes, size_t xTriggerLevelBytes, uint8_t ucFlags, StreamBufferCallbackFunction_t pxSendCompletedCallback, StreamBufferCallbackFunction_t pxReceiveCompletedCallback) PRIVILEGED_FUNCTION;
 
 /*-----------------------------------------------------------*/
 #if ( configSUPPORT_DYNAMIC_ALLOCATION == 1 )
@@ -376,7 +376,7 @@ static void prvInitialiseNewStreamBuffer(const _Ptr<StreamBuffer_t> pxStreamBuff
 
 #if ( configSUPPORT_STATIC_ALLOCATION == 1 )
 
-    StreamBufferHandle_t xStreamBufferGenericCreateStatic(size_t xBufferSizeBytes, size_t xTriggerLevelBytes, BaseType_t xIsMessageBuffer, const _Array_ptr<uint8_t> pucStreamBufferStorageArea, const _Ptr<StaticStreamBuffer_t> pxStaticStreamBuffer, StreamBufferCallbackFunction_t pxSendCompletedCallback, StreamBufferCallbackFunction_t pxReceiveCompletedCallback)
+    StreamBufferHandle_t xStreamBufferGenericCreateStatic(size_t xBufferSizeBytes, size_t xTriggerLevelBytes, BaseType_t xIsMessageBuffer, const _Array_ptr<uint8_t> pucStreamBufferStorageArea: count(xBufferSizeBytes), const _Ptr<StaticStreamBuffer_t> pxStaticStreamBuffer, StreamBufferCallbackFunction_t pxSendCompletedCallback, StreamBufferCallbackFunction_t pxReceiveCompletedCallback)
     {
         _Ptr<StreamBuffer_t> const pxStreamBuffer = ( _Ptr<StreamBuffer_t> ) pxStaticStreamBuffer; /*lint !e740 !e9087 Safe cast as StaticStreamBuffer_t is opaque Streambuffer_t. */
         StreamBufferHandle_t xReturn = NULL;
@@ -614,7 +614,7 @@ size_t xStreamBufferBytesAvailable(StreamBufferHandle_t xStreamBuffer)
 }
 /*-----------------------------------------------------------*/
 
-size_t xStreamBufferSend(StreamBufferHandle_t xStreamBuffer, _Ptr<const uint8_t> pvTxData, size_t xDataLengthBytes, TickType_t xTicksToWait)
+size_t xStreamBufferSend(StreamBufferHandle_t xStreamBuffer, _Array_ptr<const uint8_t> pvTxData: count(xDataLengthBytes), size_t xDataLengthBytes, TickType_t xTicksToWait)
 {
     _Ptr<StreamBuffer_t> const pxStreamBuffer = xStreamBuffer;
     size_t xReturn, xSpace = 0;
@@ -742,7 +742,7 @@ size_t xStreamBufferSend(StreamBufferHandle_t xStreamBuffer, _Ptr<const uint8_t>
 }
 /*-----------------------------------------------------------*/
 
-size_t xStreamBufferSendFromISR(StreamBufferHandle_t xStreamBuffer, _Ptr<const uint8_t> pvTxData, size_t xDataLengthBytes, _Ptr<BaseType_t> const pxHigherPriorityTaskWoken)
+size_t xStreamBufferSendFromISR(StreamBufferHandle_t xStreamBuffer, _Array_ptr<const uint8_t> pvTxData: count(xDataLengthBytes), size_t xDataLengthBytes, _Ptr<BaseType_t> const pxHigherPriorityTaskWoken)
 {
     _Ptr<StreamBuffer_t> const pxStreamBuffer = xStreamBuffer;
     size_t xReturn, xSpace;
@@ -794,6 +794,7 @@ static size_t prvWriteMessageToBuffer(const _Ptr<StreamBuffer_t> pxStreamBuffer,
 {
     size_t xNextHead = pxStreamBuffer->xHead;
     configMESSAGE_BUFFER_LENGTH_TYPE xMessageLength;
+    size_t tmpxDataLengthBytes = 0;
 
     if( ( pxStreamBuffer->ucFlags & sbFLAGS_IS_MESSAGE_BUFFER ) != ( uint8_t ) 0 )
     {
@@ -810,12 +811,13 @@ static size_t prvWriteMessageToBuffer(const _Ptr<StreamBuffer_t> pxStreamBuffer,
             /* There is enough space to write both the message length and the message
              * itself into the buffer.  Start by writing the length of the data, the data
              * itself will be written later in this function. */
-            xNextHead = prvWriteBytesToBuffer( pxStreamBuffer, (_Ptr<const uint8_t>) &( xMessageLength ), sbBYTES_TO_STORE_MESSAGE_LENGTH, xNextHead );
+            _Array_ptr<uint8_t> tmpMessageLength: count(sbBYTES_TO_STORE_MESSAGE_LENGTH) = (_Array_ptr<uint8_t>)&( xMessageLength );
+            xNextHead = prvWriteBytesToBuffer( pxStreamBuffer, tmpMessageLength, sbBYTES_TO_STORE_MESSAGE_LENGTH, xNextHead );
         }
         else
         {
             /* Not enough space, so do not write data to the buffer. */
-            xDataLengthBytes = 0;
+            tmpxDataLengthBytes = 0;
         }
     }
     else
@@ -823,20 +825,22 @@ static size_t prvWriteMessageToBuffer(const _Ptr<StreamBuffer_t> pxStreamBuffer,
         /* This is a stream buffer, as opposed to a message buffer, so writing a
          * stream of bytes rather than discrete messages.  Plan to write as many
          * bytes as possible. */
-        xDataLengthBytes = configMIN( xDataLengthBytes, xSpace );
+        tmpxDataLengthBytes = configMIN( xDataLengthBytes, xSpace );
     }
 
-    if( xDataLengthBytes != ( size_t ) 0 )
+    if( tmpxDataLengthBytes != ( size_t ) 0 )
     {
+        /// Since tmpxDataLengthBytes can be either of the parameters passed to this function, we can't be certain if this will work since pvTxData bounds is xDataLengthBytes.
+        _Array_ptr<uint8_t> tmppvTxData: count(tmpxDataLengthBytes) = _Dynamic_bounds_cast<_Array_ptr<uint8_t>>(pvTxData, count(tmpxDataLengthBytes));
         /* Write the data to the buffer. */
-        pxStreamBuffer->xHead = prvWriteBytesToBuffer( pxStreamBuffer, pvTxData, xDataLengthBytes, xNextHead ); /*lint !e9079 Storage buffer is implemented as uint8_t for ease of sizing, alignment and access. */
+        pxStreamBuffer->xHead = prvWriteBytesToBuffer( pxStreamBuffer, tmppvTxData, tmpxDataLengthBytes, xNextHead ); /*lint !e9079 Storage buffer is implemented as uint8_t for ease of sizing, alignment and access. */
     }
 
-    return xDataLengthBytes;
+    return tmpxDataLengthBytes;
 }
 /*-----------------------------------------------------------*/
 
-size_t xStreamBufferReceive(StreamBufferHandle_t xStreamBuffer, _Array_ptr<uint8_t> pvRxData, size_t xBufferLengthBytes, TickType_t xTicksToWait)
+size_t xStreamBufferReceive(StreamBufferHandle_t xStreamBuffer, _Array_ptr<uint8_t> pvRxData: count(xBufferLengthBytes), size_t xBufferLengthBytes, TickType_t xTicksToWait)
 {
     _Ptr<StreamBuffer_t> const pxStreamBuffer = xStreamBuffer;
     size_t xReceivedLength = 0, xBytesAvailable, xBytesToStoreMessageLength;
@@ -955,7 +959,8 @@ size_t xStreamBufferNextMessageLengthBytes(StreamBufferHandle_t xStreamBuffer)
             /* The number of bytes available is greater than the number of bytes
              * required to hold the length of the next message, so another message
              * is available. */
-            ( void ) prvReadBytesFromBuffer( pxStreamBuffer, ( _Ptr<uint8_t> ) &xTempReturn, sbBYTES_TO_STORE_MESSAGE_LENGTH, pxStreamBuffer->xTail );
+            _Array_ptr<uint8_t> tmpReturn: count(sbBYTES_TO_STORE_MESSAGE_LENGTH) = (_Array_ptr<uint8_t>)&( xTempReturn );
+            ( void ) prvReadBytesFromBuffer( pxStreamBuffer, tmpReturn, sbBYTES_TO_STORE_MESSAGE_LENGTH, pxStreamBuffer->xTail );
             xReturn = ( size_t ) xTempReturn;
         }
         else
@@ -977,7 +982,7 @@ size_t xStreamBufferNextMessageLengthBytes(StreamBufferHandle_t xStreamBuffer)
 }
 /*-----------------------------------------------------------*/
 
-size_t xStreamBufferReceiveFromISR(StreamBufferHandle_t xStreamBuffer, _Array_ptr<uint8_t> pvRxData, size_t xBufferLengthBytes, _Ptr<BaseType_t> const pxHigherPriorityTaskWoken)
+size_t xStreamBufferReceiveFromISR(StreamBufferHandle_t xStreamBuffer, _Array_ptr<uint8_t> pvRxData: count(xBufferLengthBytes), size_t xBufferLengthBytes, _Ptr<BaseType_t> const pxHigherPriorityTaskWoken)
 {
     _Ptr<StreamBuffer_t> const pxStreamBuffer = xStreamBuffer;
     size_t xReceivedLength = 0, xBytesAvailable, xBytesToStoreMessageLength;
@@ -1031,7 +1036,7 @@ size_t xStreamBufferReceiveFromISR(StreamBufferHandle_t xStreamBuffer, _Array_pt
 }
 /*-----------------------------------------------------------*/
 
-static size_t prvReadMessageFromBuffer(_Ptr<StreamBuffer_t> pxStreamBuffer, _Array_ptr<uint8_t> pvRxData, size_t xBufferLengthBytes, size_t xBytesAvailable)
+static size_t prvReadMessageFromBuffer(_Ptr<StreamBuffer_t> pxStreamBuffer, _Ptr<uint8_t> pvRxData, size_t xBufferLengthBytes, size_t xBytesAvailable)
 {
     size_t xCount, xNextMessageLength;
     configMESSAGE_BUFFER_LENGTH_TYPE xTempNextMessageLength;
@@ -1041,7 +1046,8 @@ static size_t prvReadMessageFromBuffer(_Ptr<StreamBuffer_t> pxStreamBuffer, _Arr
     {
         /* A discrete message is being received.  First receive the length
          * of the message. */
-        xNextTail = prvReadBytesFromBuffer( pxStreamBuffer, ( _Ptr<uint8_t> ) &xTempNextMessageLength, sbBYTES_TO_STORE_MESSAGE_LENGTH, xNextTail );
+        _Array_ptr<uint8_t> tmpMessageLength: count(sbBYTES_TO_STORE_MESSAGE_LENGTH) = (_Array_ptr<uint8_t>)&xTempNextMessageLength;
+        xNextTail = prvReadBytesFromBuffer( pxStreamBuffer, tmpMessageLength, sbBYTES_TO_STORE_MESSAGE_LENGTH, xNextTail );
         xNextMessageLength = ( size_t ) xTempNextMessageLength;
 
         /* Reduce the number of bytes available by the number of bytes just
@@ -1072,8 +1078,9 @@ static size_t prvReadMessageFromBuffer(_Ptr<StreamBuffer_t> pxStreamBuffer, _Arr
 
     if( xCount != ( size_t ) 0 )
     {
+        _Array_ptr<uint8_t> tmppvRxData: count(xCount) = _Dynamic_bounds_cast<_Array_ptr<uint8_t>>(pvRxData, count(xCount));
         /* Read the actual data and update the tail to mark the data as officially consumed. */
-        pxStreamBuffer->xTail = prvReadBytesFromBuffer( pxStreamBuffer, pvRxData, xCount, xNextTail ); /*lint !e9079 Data storage area is implemented as uint8_t array for ease of sizing, indexing and alignment. */
+        pxStreamBuffer->xTail = prvReadBytesFromBuffer( pxStreamBuffer, tmppvRxData, xCount, xNextTail ); /*lint !e9079 Data storage area is implemented as uint8_t array for ease of sizing, indexing and alignment. */
     }
 
     return xCount;
@@ -1199,7 +1206,7 @@ BaseType_t xStreamBufferReceiveCompletedFromISR(StreamBufferHandle_t xStreamBuff
 }
 /*-----------------------------------------------------------*/
 
-static size_t prvWriteBytesToBuffer(const _Ptr<StreamBuffer_t> pxStreamBuffer, _Array_ptr<const uint8_t> pucData, size_t xCount, size_t xHead)
+static size_t prvWriteBytesToBuffer(const _Ptr<StreamBuffer_t> pxStreamBuffer, _Array_ptr<const uint8_t> pucData: count(xCount), size_t xCount, size_t xHead)
 {
     size_t xFirstLength;
 
@@ -1246,7 +1253,7 @@ static size_t prvWriteBytesToBuffer(const _Ptr<StreamBuffer_t> pxStreamBuffer, _
 }
 /*-----------------------------------------------------------*/
 
-static size_t prvReadBytesFromBuffer(_Ptr<StreamBuffer_t> pxStreamBuffer, _Array_ptr<uint8_t> pucData, size_t xCount, size_t xTail)
+static size_t prvReadBytesFromBuffer(_Ptr<StreamBuffer_t> pxStreamBuffer, _Array_ptr<uint8_t> pucData: count(xCount), size_t xCount, size_t xTail)
 {
     size_t xFirstLength;
 
@@ -1262,9 +1269,8 @@ static size_t prvReadBytesFromBuffer(_Ptr<StreamBuffer_t> pxStreamBuffer, _Array
     configASSERT( xFirstLength <= xCount );
     configASSERT( ( xTail + xFirstLength ) <= pxStreamBuffer->xLength );
     _Unchecked{
-        ( void ) memcpy( ( void * ) pucData, ( const void * ) &( pxStreamBuffer->pucBuffer[ xTail ] ), xFirstLength ); /*lint !e9087 memcpy() requires void *. */
+        ( void ) memcpy( ( void* ) pucData, ( const void * ) &( pxStreamBuffer->pucBuffer[ xTail ] ), xFirstLength ); /*lint !e9087 memcpy() requires void *. */
     }
-
     /* If the total number of wanted bytes is greater than the number
      * that could be read in the first read... */
     if( xCount > xFirstLength )
@@ -1312,7 +1318,7 @@ static size_t prvBytesInBuffer(const _Ptr<const StreamBuffer_t> pxStreamBuffer)
 }
 /*-----------------------------------------------------------*/
 
-static void prvInitialiseNewStreamBuffer(const _Ptr<StreamBuffer_t> pxStreamBuffer, const _Array_ptr<uint8_t> pucBuffer, size_t xBufferSizeBytes, size_t xTriggerLevelBytes, uint8_t ucFlags, StreamBufferCallbackFunction_t pxSendCompletedCallback, StreamBufferCallbackFunction_t pxReceiveCompletedCallback)
+static void prvInitialiseNewStreamBuffer(const _Ptr<StreamBuffer_t> pxStreamBuffer, const _Array_ptr<uint8_t> pucBuffer: count(xBufferSizeBytes), size_t xBufferSizeBytes, size_t xTriggerLevelBytes, uint8_t ucFlags, StreamBufferCallbackFunction_t pxSendCompletedCallback, StreamBufferCallbackFunction_t pxReceiveCompletedCallback)
 {
     /* Assert here is deliberately writing to the entire buffer to ensure it can
      * be written to without generating exceptions, and is setting the buffer to a
@@ -1328,8 +1334,10 @@ static void prvInitialiseNewStreamBuffer(const _Ptr<StreamBuffer_t> pxStreamBuff
     #endif
     ( void ) memset(  (_Array_ptr<uint8_t>) pxStreamBuffer, 0x00, sizeof( StreamBuffer_t ) ); /*lint !e9087 memset() requires void *. */
     
-    pxStreamBuffer->pucBuffer = pucBuffer;
-    pxStreamBuffer->xLength = xBufferSizeBytes;
+    _Bundled{
+        pxStreamBuffer->xLength = xBufferSizeBytes;
+        pxStreamBuffer->pucBuffer = pucBuffer;
+    }
     pxStreamBuffer->xTriggerLevelBytes = xTriggerLevelBytes;
     pxStreamBuffer->ucFlags = ucFlags;
     #if ( configUSE_SB_COMPLETED_CALLBACK == 1 )

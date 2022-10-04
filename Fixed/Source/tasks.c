@@ -818,9 +818,7 @@ static void prvInitialiseNewTask(TaskFunction_t pxTaskCode, const _Array_ptr<con
     #if ( tskSET_NEW_STACKS_TO_KNOWN_VALUE == 1 )
     {
         /* Fill the stack with a known value to assist debugging. */
-        _Unchecked{
-            ( void ) memset( pxNewTCB->pxStack, ( int ) tskSTACK_FILL_BYTE, ( size_t ) ulStackDepth * sizeof( StackType_t ) );
-        }
+        ( void ) memset( pxNewTCB->pxStack, ( int ) tskSTACK_FILL_BYTE, ( size_t ) ulStackDepth * sizeof( StackType_t ) );
     }
     #endif /* tskSET_NEW_STACKS_TO_KNOWN_VALUE */
 
@@ -2744,7 +2742,7 @@ BaseType_t xTaskIncrementTick( void )
                     /* The delayed list is not empty, get the value of the
                      * item at the head of the delayed list.  This is the time
                      * at which the task at the head of the delayed list must
-                     * be removed from the Blocked state. */
+                     * be removed from the Blocked state. */                  
                     pxTCB =  listGET_OWNER_OF_HEAD_ENTRY( pxDelayedTaskList ); /*lint !e9079 void * is used as this macro is used with timers and co-routines too.  Alignment is known to be fine as the type of the pointer stored and retrieved is the same. */
                     xItemValue = listGET_LIST_ITEM_VALUE( &( pxTCB->xStateListItem ) );
 
