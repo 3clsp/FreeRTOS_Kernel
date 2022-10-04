@@ -830,7 +830,6 @@ static size_t prvWriteMessageToBuffer(const _Ptr<StreamBuffer_t> pxStreamBuffer,
 
     if( tmpxDataLengthBytes != ( size_t ) 0 )
     {
-        /// Since tmpxDataLengthBytes can be either of the parameters passed to this function, we can't be certain if this will work since pvTxData bounds is xDataLengthBytes.
         _Array_ptr<uint8_t> tmppvTxData: count(tmpxDataLengthBytes) = _Dynamic_bounds_cast<_Array_ptr<uint8_t>>(pvTxData, count(tmpxDataLengthBytes));
         /* Write the data to the buffer. */
         pxStreamBuffer->xHead = prvWriteBytesToBuffer( pxStreamBuffer, tmppvTxData, tmpxDataLengthBytes, xNextHead ); /*lint !e9079 Storage buffer is implemented as uint8_t for ease of sizing, alignment and access. */
