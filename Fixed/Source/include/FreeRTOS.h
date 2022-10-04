@@ -1251,8 +1251,10 @@ typedef struct xSTATIC_TCB
     #endif
     StaticListItem_t xDummy3 _Checked[ 2 ];
     UBaseType_t uxDummy5;
+    // Needed as we added a new member to the TCB to track stack size.
+    uint32_t usDummy23;
     void * pxDummy6;
-    uint8_t ucDummy7 _Checked[ configMAX_TASK_NAME_LEN ];
+    uint8_t ucDummy7 _Nt_checked[ configMAX_TASK_NAME_LEN ];
     #if ( ( portSTACK_GROWTH > 0 ) || ( configRECORD_STACK_HIGH_ADDRESS == 1 ) )
         void * pxDummy8;
     #endif

@@ -128,7 +128,7 @@ typedef struct xTIME_OUT
  */
 typedef struct xMEMORY_REGION
 {
-    void * pvBaseAddress;
+    _Ptr<void> pvBaseAddress;
     uint32_t ulLengthInBytes;
     uint32_t ulParameters;
 } MemoryRegion_t;
@@ -139,14 +139,14 @@ typedef struct xMEMORY_REGION
 typedef struct xTASK_PARAMETERS
 {
     TaskFunction_t pvTaskCode;
-    _Ptr<const char> pcName; /*lint !e971 Unqualified char types are allowed for strings and single characters only. */
+    _Array_ptr<const char> pcName: count(configMAX_TASK_NAME_LEN); /*lint !e971 Unqualified char types are allowed for strings and single characters only. */
     configSTACK_DEPTH_TYPE usStackDepth;
-    void * pvParameters;
+    _Ptr<void> pvParameters;
     UBaseType_t uxPriority;
-    _Ptr<StackType_t> puxStackBuffer;
+    _Array_ptr<StackType_t> puxStackBuffer: count(usStackDepth);
     MemoryRegion_t xRegions _Checked[ portNUM_CONFIGURABLE_REGIONS ];
     #if ( ( portUSING_MPU_WRAPPERS == 1 ) && ( configSUPPORT_STATIC_ALLOCATION == 1 ) )
-        StaticTask_t * const pxTaskBuffer;
+        const _Ptr<StaticTask_t> pxTaskBuffer;
     #endif
 } TaskParameters_t;
 
@@ -542,8 +542,8 @@ typedef enum
  * \ingroup Tasks
  */
 #if ( portUSING_MPU_WRAPPERS == 1 )
-    BaseType_t xTaskCreateRestricted( const TaskParameters_t * const pxTaskDefinition,
-                                      TaskHandle_t * pxCreatedTask ) PRIVILEGED_FUNCTION;
+    BaseType_t xTaskCreateRestricted( _Ptr<const TaskParameters_t> const pxTaskDefinition,
+                                      _Ptr<TaskHandle_t> pxCreatedTask ) PRIVILEGED_FUNCTION;
 #endif
 
 /**
@@ -632,8 +632,8 @@ typedef enum
  * \ingroup Tasks
  */
 #if ( ( portUSING_MPU_WRAPPERS == 1 ) && ( configSUPPORT_STATIC_ALLOCATION == 1 ) )
-    BaseType_t xTaskCreateRestrictedStatic( const TaskParameters_t * const pxTaskDefinition,
-                                            TaskHandle_t * pxCreatedTask ) PRIVILEGED_FUNCTION;
+    BaseType_t xTaskCreateRestrictedStatic( _Ptr<const TaskParameters_t> const pxTaskDefinition,
+                                            _Ptr<TaskHandle_t> pxCreatedTask ) PRIVILEGED_FUNCTION;
 #endif
 
 /**
@@ -1836,7 +1836,7 @@ UBaseType_t uxTaskGetSystemState(const _Array_ptr<TaskStatus_t> pxTaskStatusArra
  * \defgroup vTaskList vTaskList
  * \ingroup TaskUtils
  */
-void vTaskList(_Ptr<char> pcWriteBuffer) PRIVILEGED_FUNCTION; /*lint !e971 Unqualified char types are allowed for strings and single characters only. */
+void vTaskList(_Nt_array_ptr<char> pcWriteBuffer) PRIVILEGED_FUNCTION; /*lint !e971 Unqualified char types are allowed for strings and single characters only. */
 
 /**
  * task. h

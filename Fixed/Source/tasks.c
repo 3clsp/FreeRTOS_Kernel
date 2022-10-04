@@ -265,8 +265,9 @@ typedef struct tskTaskControlBlock       /* The old naming convention is used to
     ListItem_t xStateListItem;                  /*< The list that the state list item of a task is reference from denotes the state of that task (Ready, Blocked, Suspended ). */
     ListItem_t xEventListItem;                  /*< Used to reference a task from an event list. */
     UBaseType_t uxPriority;                     /*< The priority of the task.  0 is the lowest priority. */
-    _Array_ptr<StackType_t> pxStack;                      /*< Points to the start of the stack. */
-    char pcTaskName _Checked[ configMAX_TASK_NAME_LEN ]; /*< Descriptive name given to the task when created.  Facilitates debugging only. */ /*lint !e971 Unqualified char types are allowed for strings and single characters only. */
+    uint32_t usStackDepth;                /*< The stack size defined as the number of StackType_t the stack can hold, not the number of bytes. */    
+    _Array_ptr<StackType_t> pxStack: count(usStackDepth);                      /*< Points to the start of the stack. */
+    char pcTaskName _Nt_checked[ configMAX_TASK_NAME_LEN ]; /*< Descriptive name given to the task when created.  Facilitates debugging only. */ /*lint !e971 Unqualified char types are allowed for strings and single characters only. */
 
     #if ( ( portSTACK_GROWTH > 0 ) || ( configRECORD_STACK_HIGH_ADDRESS == 1 ) )
         _Array_ptr<StackType_t> pxEndOfStack; /*< Points to the highest valid address for the stack. */
@@ -291,7 +292,7 @@ typedef struct tskTaskControlBlock       /* The old naming convention is used to
     #endif
 
     #if ( configNUM_THREAD_LOCAL_STORAGE_POINTERS > 0 )
-        _Ptr<void> pvThreadLocalStoragePointers[ configNUM_THREAD_LOCAL_STORAGE_POINTERS ];
+        _Ptr<void> pvThreadLocalStoragePointers _Checked[ configNUM_THREAD_LOCAL_STORAGE_POINTERS ];
     #endif
 
     #if ( configGENERATE_RUN_TIME_STATS == 1 )
@@ -479,7 +480,7 @@ static void prvAddCurrentTaskToDelayedList( TickType_t xTicksToWait,
  */
 #if ( INCLUDE_xTaskGetHandle == 1 )
 
-    static _Ptr<TCB_t> prvSearchForNameWithinSingleList(_Ptr<List_t> pxList, _Array_ptr<const char> pcNameToQuery : count(12)) PRIVILEGED_FUNCTION;
+    static _Ptr<TCB_t> prvSearchForNameWithinSingleList(_Ptr<List_t> pxList, _Array_ptr<const char> pcNameToQuery : count(configMAX_TASK_NAME_LEN)) PRIVILEGED_FUNCTION;
 
 #endif
 
@@ -606,10 +607,10 @@ static void prvAddNewTaskToReadyList(_Ptr<TCB_t> pxNewTCB) PRIVILEGED_FUNCTION;
 
 #if ( ( portUSING_MPU_WRAPPERS == 1 ) && ( configSUPPORT_STATIC_ALLOCATION == 1 ) )
 
-    BaseType_t xTaskCreateRestrictedStatic( const TaskParameters_t * const pxTaskDefinition,
-                                            TaskHandle_t * pxCreatedTask )
+    BaseType_t xTaskCreateRestrictedStatic( _Ptr<const TaskParameters_t> const pxTaskDefinition,
+                                            _Ptr<TaskHandle_t> pxCreatedTask )
     {
-        TCB_t * pxNewTCB;
+        _Ptr<TCB_t> pxNewTCB = NULL;
         BaseType_t xReturn = errCOULD_NOT_ALLOCATE_REQUIRED_MEMORY;
 
         configASSERT( pxTaskDefinition->puxStackBuffer != NULL );
@@ -620,8 +621,8 @@ static void prvAddNewTaskToReadyList(_Ptr<TCB_t> pxNewTCB) PRIVILEGED_FUNCTION;
             /* Allocate space for the TCB.  Where the memory comes from depends
              * on the implementation of the port malloc function and whether or
              * not static allocation is being used. */
-            pxNewTCB = ( TCB_t * ) pxTaskDefinition->pxTaskBuffer;
-            memset( ( void * ) pxNewTCB, 0x00, sizeof( TCB_t ) );
+            pxNewTCB = ( _Ptr<TCB_t> ) pxTaskDefinition->pxTaskBuffer;
+            memset( pxNewTCB, 0x00, sizeof( TCB_t ) );
 
             /* Store the stack location in the TCB. */
             pxNewTCB->pxStack = pxTaskDefinition->puxStackBuffer;
@@ -654,10 +655,10 @@ static void prvAddNewTaskToReadyList(_Ptr<TCB_t> pxNewTCB) PRIVILEGED_FUNCTION;
 
 #if ( ( portUSING_MPU_WRAPPERS == 1 ) && ( configSUPPORT_DYNAMIC_ALLOCATION == 1 ) )
 
-    BaseType_t xTaskCreateRestricted( const TaskParameters_t * const pxTaskDefinition,
-                                      TaskHandle_t * pxCreatedTask )
+    BaseType_t xTaskCreateRestricted( _Ptr<const TaskParameters_t> const pxTaskDefinition,
+                                      _Ptr<TaskHandle_t> pxCreatedTask )
     {
-        TCB_t * pxNewTCB;
+        _Ptr<TCB_t> pxNewTCB = NULL;
         BaseType_t xReturn = errCOULD_NOT_ALLOCATE_REQUIRED_MEMORY;
 
         configASSERT( pxTaskDefinition->puxStackBuffer );
@@ -667,11 +668,11 @@ static void prvAddNewTaskToReadyList(_Ptr<TCB_t> pxNewTCB) PRIVILEGED_FUNCTION;
             /* Allocate space for the TCB.  Where the memory comes from depends
              * on the implementation of the port malloc function and whether or
              * not static allocation is being used. */
-            pxNewTCB = ( TCB_t * ) pvPortMalloc( sizeof( TCB_t ) );
+            pxNewTCB = pvPortMalloc<TCB_t>( sizeof( TCB_t ) );
 
             if( pxNewTCB != NULL )
             {
-                memset( ( void * ) pxNewTCB, 0x00, sizeof( TCB_t ) );
+                memset( pxNewTCB, 0x00, sizeof( TCB_t ) );
 
                 /* Store the stack location in the TCB. */
                 pxNewTCB->pxStack = pxTaskDefinition->puxStackBuffer;
@@ -727,8 +728,10 @@ static void prvAddNewTaskToReadyList(_Ptr<TCB_t> pxNewTCB) PRIVILEGED_FUNCTION;
                 /* Allocate space for the stack used by the task being created.
                  * The base of the stack memory stored in the TCB so the task can
                  * be deleted later if required. */
-                pxNewTCB->pxStack = pvPortMallocStack<StackType_t>( ( ( ( size_t ) usStackDepth ) * sizeof( StackType_t ) ) ); /*lint !e961 MISRA exception as the casts are only redundant for some ports. */
-
+                _Bundled{
+                    pxNewTCB->pxStack = pvPortMallocStack<StackType_t>( ( ( ( size_t ) usStackDepth ) * sizeof( StackType_t ) ) ); /*lint !e961 MISRA exception as the casts are only redundant for some ports. */
+                    pxNewTCB->usStackDepth = usStackDepth;
+                }
                 if( pxNewTCB->pxStack == NULL )
                 {
                     /* Could not allocate the stack.  Delete the allocated TCB. */
@@ -739,10 +742,10 @@ static void prvAddNewTaskToReadyList(_Ptr<TCB_t> pxNewTCB) PRIVILEGED_FUNCTION;
         }
         #else /* portSTACK_GROWTH */
         {
-            _Ptr<StackType_t> pxStack = NULL;
+            _Array_ptr<StackType_t> pxStack: count(usStackDepth) = NULL;
 
             /* Allocate space for the stack used by the task being created. */
-            pxStack = pvPortMallocStack<StackType_t>( ( ( ( size_t ) usStackDepth ) * sizeof( StackType_t ) ) ); /*lint !e9079 All values returned by pvPortMalloc() have at least the alignment required by the MCU's stack and this allocation is the stack. */
+            pxStack = _Dynamic_bounds_cast<_Array_ptr<StackType_t>>(pvPortMallocStack<StackType_t>( ( ( ( size_t ) usStackDepth ) * sizeof( StackType_t ) ) ), count(usStackDepth)); /*lint !e9079 All values returned by pvPortMalloc() have at least the alignment required by the MCU's stack and this allocation is the stack. */
 
             if( pxStack != NULL )
             {
@@ -753,7 +756,10 @@ static void prvAddNewTaskToReadyList(_Ptr<TCB_t> pxNewTCB) PRIVILEGED_FUNCTION;
                 {
                     memset( pxNewTCB, 0x00, sizeof( TCB_t ) );
                     /* Store the stack location in the TCB. */
-                    pxNewTCB->pxStack = pxStack;
+                    _Bundled{
+                        pxNewTCB->pxStack = pxStack;
+                        pxNewTCB->usStackDepth = usStackDepth;
+                    }
                 }
                 else
                 {
@@ -2327,7 +2333,7 @@ _Ptr<char> pcTaskGetName(TaskHandle_t xTaskToQuery) /*lint !e971 Unqualified cha
 
 #if ( INCLUDE_xTaskGetHandle == 1 )
 
-    static _Ptr<TCB_t> prvSearchForNameWithinSingleList(_Ptr<List_t> pxList, _Array_ptr<const char> pcNameToQuery : count(12))
+    static _Ptr<TCB_t> prvSearchForNameWithinSingleList(_Ptr<List_t> pxList, _Array_ptr<const char> pcNameToQuery : count(configMAX_TASK_NAME_LEN))
     {
         _Ptr<TCB_t> pxNextTCB = NULL;
         _Ptr<TCB_t> pxFirstTCB = NULL;
@@ -3819,8 +3825,8 @@ static void prvCheckTasksWaitingTermination( void )
     {
         uint32_t ulCount = 0U;
 
-        while( *pucStackByte == ( uint8_t ) tskSTACK_FILL_BYTE )
-    {
+        while( *(pucStackByte) == ( uint8_t ) tskSTACK_FILL_BYTE )
+        {
             pucStackByte -= portSTACK_GROWTH;
             ulCount++;
         }
