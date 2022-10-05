@@ -258,7 +258,7 @@
             #else /* if ( configSUPPORT_STATIC_ALLOCATION == 1 ) */
             {
                 xReturn = xTaskCreate( prvTimerTask,
-                                       configTIMER_SERVICE_TASK_NAME,
+                                       _Dynamic_bounds_cast<_Array_ptr<const char>>(configTIMER_SERVICE_TASK_NAME, count(configMAX_TASK_NAME_LEN)),
                                        configTIMER_TASK_STACK_DEPTH,
                                        NULL,
                                        ( ( UBaseType_t ) configTIMER_TASK_PRIORITY ) | portPRIVILEGE_BIT,
