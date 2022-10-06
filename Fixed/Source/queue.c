@@ -101,7 +101,7 @@ typedef struct SemaphoreData
  */
 typedef struct QueueDefinition /* The old naming convention is used to prevent breaking kernel aware debuggers. */
 {
-    _Array_ptr<int8_t> pcHead;           /*< Points to the beginning of the queue storage area. */
+    _Array_ptr<int8_t> pcHead: count(uxItemSize * uxLength);           /*< Points to the beginning of the queue storage area. */
     _Array_ptr<int8_t> pcWriteTo;        /*< Points to the free next place in the storage area. */
 
     union
@@ -215,7 +215,7 @@ static void prvCopyDataFromQueue(const _Ptr<Queue_t> pxQueue, _Ptr<void> const p
  * Called after a Queue_t structure has been allocated either statically or
  * dynamically to fill in the structure's members.
  */
-static void prvInitialiseNewQueue(const UBaseType_t uxQueueLength, const UBaseType_t uxItemSize, _Ptr<uint8_t> pucQueueStorage, const uint8_t ucQueueType, _Ptr<Queue_t> pxNewQueue) PRIVILEGED_FUNCTION;
+static void prvInitialiseNewQueue(const UBaseType_t uxQueueLength, const UBaseType_t uxItemSize, _Array_ptr<uint8_t> pucQueueStorage:  count(uxQueueLength * uxItemSize), const uint8_t ucQueueType, _Ptr<Queue_t> pxNewQueue) PRIVILEGED_FUNCTION;
 
 /*
  * Mutexes are a special type of queue.  When a mutex is created, first the
@@ -356,7 +356,7 @@ BaseType_t xQueueGenericReset(QueueHandle_t xQueue, BaseType_t xNewQueue)
 
 #if ( configSUPPORT_STATIC_ALLOCATION == 1 )
 
-    QueueHandle_t xQueueGenericCreateStatic(const UBaseType_t uxQueueLength, const UBaseType_t uxItemSize, _Ptr<uint8_t> pucQueueStorage, _Ptr<StaticQueue_t> pxStaticQueue, const uint8_t ucQueueType)
+    QueueHandle_t xQueueGenericCreateStatic(const UBaseType_t uxQueueLength, const UBaseType_t uxItemSize, _Array_ptr<uint8_t> pucQueueStorage: count(uxQueueLength * uxItemSize), _Ptr<StaticQueue_t> pxStaticQueue, const uint8_t ucQueueType)
     {
         _Ptr<Queue_t> pxNewQueue = NULL;
 
@@ -479,7 +479,7 @@ BaseType_t xQueueGenericReset(QueueHandle_t xQueue, BaseType_t xNewQueue)
 #endif /* configSUPPORT_STATIC_ALLOCATION */
 /*-----------------------------------------------------------*/
 
-static void prvInitialiseNewQueue(const UBaseType_t uxQueueLength, const UBaseType_t uxItemSize, _Ptr<uint8_t> pucQueueStorage, const uint8_t ucQueueType, _Ptr<Queue_t> pxNewQueue)
+static void prvInitialiseNewQueue(const UBaseType_t uxQueueLength, const UBaseType_t uxItemSize, _Array_ptr<uint8_t> pucQueueStorage: count(uxQueueLength * uxItemSize), const uint8_t ucQueueType, _Ptr<Queue_t> pxNewQueue)
 {
     /* Remove compiler warnings about unused parameters should
      * configUSE_TRACE_FACILITY not be set to 1. */
@@ -491,18 +491,29 @@ static void prvInitialiseNewQueue(const UBaseType_t uxQueueLength, const UBaseTy
          * be set to NULL because NULL is used as a key to say the queue is used as
          * a mutex.  Therefore just set pcHead to point to the queue as a benign
          * value that is known to be within the memory map. */
-        pxNewQueue->pcHead = ( _Array_ptr<int8_t> ) pxNewQueue;
+        _Bundled{
+            // Since this is a benign value and not used, this should not cause issue.
+            pxNewQueue->pcHead = ( _Array_ptr<int8_t> ) pxNewQueue;
+
+            /* Initialise the queue members as described where the queue type is
+            * defined. */
+            pxNewQueue->uxLength = uxQueueLength;
+            pxNewQueue->uxItemSize = uxItemSize;
+        }
     }
     else
     {
         /* Set the head to the start of the queue storage area. */
-        pxNewQueue->pcHead = ( _Array_ptr<int8_t> ) pucQueueStorage;
+        _Bundled{
+            pxNewQueue->pcHead = ( _Array_ptr<int8_t> ) pucQueueStorage;
+
+            /* Initialise the queue members as described where the queue type is
+            * defined. */
+            pxNewQueue->uxLength = uxQueueLength;
+            pxNewQueue->uxItemSize = uxItemSize;
+        }
     }
 
-    /* Initialise the queue members as described where the queue type is
-     * defined. */
-    pxNewQueue->uxLength = uxQueueLength;
-    pxNewQueue->uxItemSize = uxItemSize;
     ( void ) xQueueGenericReset( pxNewQueue, pdTRUE );
 
     #if ( configUSE_TRACE_FACILITY == 1 )
@@ -2188,7 +2199,7 @@ static BaseType_t prvCopyDataToQueue(const _Ptr<Queue_t> pxQueue, _Ptr<const voi
     else
     {
         _Unchecked{
-        ( void ) memcpy( ( void* ) pxQueue->u.xQueue.pcReadFrom, pvItemToQueue, ( size_t ) pxQueue->uxItemSize ); /*lint !e961 !e9087 !e418 MISRA exception as the casts are only redundant for some ports.  Cast to void required by function signature and safe as no alignment requirement and copy length specified in bytes.  Assert checks null pointer only used when length is 0. */
+            ( void ) memcpy( ( void* ) pxQueue->u.xQueue.pcReadFrom, pvItemToQueue, ( size_t ) pxQueue->uxItemSize ); /*lint !e961 !e9087 !e418 MISRA exception as the casts are only redundant for some ports.  Cast to void required by function signature and safe as no alignment requirement and copy length specified in bytes.  Assert checks null pointer only used when length is 0. */
         }
         pxQueue->u.xQueue.pcReadFrom -= pxQueue->uxItemSize;
 

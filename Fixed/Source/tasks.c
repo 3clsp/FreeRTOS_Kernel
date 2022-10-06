@@ -525,7 +525,7 @@ static void prvResetNextTaskUnblockTime( void ) PRIVILEGED_FUNCTION;
  * Helper function used to pad task names with spaces when printing out
  * human readable tables of task information.
  */
-    static char * prvWriteNameToBuffer( char * pcBuffer,
+    _Unchecked static char * prvWriteNameToBuffer( char * pcBuffer,
                                         const char * pcTaskName ) PRIVILEGED_FUNCTION;
 
 #endif
@@ -3937,7 +3937,7 @@ static void prvCheckTasksWaitingTermination( void )
         {
             /* The task can only have been allocated dynamically - free both
              * the stack and TCB. */
-            vPortFreeStack<TCB_t>( pxTCB->pxStack );
+            vPortFreeStack<StackType_t>( pxTCB->pxStack );
             vPortFree<TCB_t>( pxTCB );
         }
         #elif ( tskSTATIC_AND_DYNAMIC_ALLOCATION_POSSIBLE != 0 ) /*lint !e731 !e9029 Macro has been consolidated for readability reasons. */
@@ -4381,7 +4381,7 @@ static void prvResetNextTaskUnblockTime( void )
     ( configUSE_STATS_FORMATTING_FUNCTIONS > 0 ) &&                                      \
     ( configSUPPORT_DYNAMIC_ALLOCATION == 1 ) )
 
-    static char * prvWriteNameToBuffer( char * pcBuffer,
+    _Unchecked static char * prvWriteNameToBuffer( char * pcBuffer,
                                         const char * pcTaskName )
     {
         size_t x;
@@ -4408,9 +4408,10 @@ static void prvResetNextTaskUnblockTime( void )
 
 #if ( ( configUSE_TRACE_FACILITY == 1 ) && ( configUSE_STATS_FORMATTING_FUNCTIONS > 0 ) && ( configSUPPORT_DYNAMIC_ALLOCATION == 1 ) )
 
-    void vTaskList( char * pcWriteBuffer )
+    void vTaskList( _Array_ptr<char> pcWriteBuffer )
     {
-        TaskStatus_t * pxTaskStatusArray;
+        UBaseType_t tmpuxCurrentNumberOfTasks = uxCurrentNumberOfTasks;
+        _Array_ptr<TaskStatus_t> pxTaskStatusArray: count(tmpuxCurrentNumberOfTasks) = NULL;
         UBaseType_t uxArraySize, x;
         char cStatus;
 
@@ -4442,8 +4443,10 @@ static void prvResetNextTaskUnblockTime( void )
 
 
         /* Make sure the write buffer does not contain a string. */
-        *pcWriteBuffer = ( char ) 0x00;
-
+        _Unchecked{
+            char * tmppcWriteBuffer = (char*)pcWriteBuffer;
+            *tmppcWriteBuffer = ( char ) 0x00;
+        }
         /* Take a snapshot of the number of tasks in case it changes while this
          * function is executing. */
         uxArraySize = uxCurrentNumberOfTasks;
@@ -4451,12 +4454,12 @@ static void prvResetNextTaskUnblockTime( void )
         /* Allocate an array index for each task.  NOTE!  if
          * configSUPPORT_DYNAMIC_ALLOCATION is set to 0 then pvPortMalloc() will
          * equate to NULL. */
-        pxTaskStatusArray = pvPortMalloc( uxCurrentNumberOfTasks * sizeof( TaskStatus_t ) ); /*lint !e9079 All values returned by pvPortMalloc() have at least the alignment required by the MCU's stack and this allocation allocates a struct that has the alignment requirements of a pointer. */
+        pxTaskStatusArray = _Dynamic_bounds_cast<_Array_ptr<TaskStatus_t>>(pvPortMalloc<TaskStatus_t>( tmpuxCurrentNumberOfTasks * sizeof( TaskStatus_t ) ), count(tmpuxCurrentNumberOfTasks)); /*lint !e9079 All values returned by pvPortMalloc() have at least the alignment required by the MCU's stack and this allocation allocates a struct that has the alignment requirements of a pointer. */
 
         if( pxTaskStatusArray != NULL )
         {
             /* Generate the (binary) data. */
-            uxArraySize = uxTaskGetSystemState( pxTaskStatusArray, uxArraySize, NULL );
+            uxArraySize = uxTaskGetSystemState( pxTaskStatusArray, tmpuxCurrentNumberOfTasks, NULL );
 
             /* Create a human readable table from the binary data. */
             for( x = 0; x < uxArraySize; x++ )
@@ -4489,19 +4492,21 @@ static void prvResetNextTaskUnblockTime( void )
                         cStatus = ( char ) 0x00;
                         break;
                 }
+                _Unchecked{
+                    /* Write the task name to the string, padding with spaces so it
+                    * can be printed in tabular form more easily. */
+                    pcWriteBuffer = prvWriteNameToBuffer( (char*)pcWriteBuffer, (char*)pxTaskStatusArray[ x ].pcTaskName );
 
-                /* Write the task name to the string, padding with spaces so it
-                 * can be printed in tabular form more easily. */
-                pcWriteBuffer = prvWriteNameToBuffer( pcWriteBuffer, pxTaskStatusArray[ x ].pcTaskName );
-
-                /* Write the rest of the string. */
-                sprintf( pcWriteBuffer, "\t%c\t%u\t%u\t%u\r\n", cStatus, ( unsigned int ) pxTaskStatusArray[ x ].uxCurrentPriority, ( unsigned int ) pxTaskStatusArray[ x ].usStackHighWaterMark, ( unsigned int ) pxTaskStatusArray[ x ].xTaskNumber ); /*lint !e586 sprintf() allowed as this is compiled with many compilers and this is a utility function only - not part of the core kernel implementation. */
-                pcWriteBuffer += strlen( pcWriteBuffer );                                                                                                                                                                                                /*lint !e9016 Pointer arithmetic ok on char pointers especially as in this case where it best denotes the intent of the code. */
+                    /* Write the rest of the string. */
+                
+                    sprintf( (char *)pcWriteBuffer, "\t%c\t%u\t%u\t%u\r\n", cStatus, ( unsigned int ) pxTaskStatusArray[ x ].uxCurrentPriority, ( unsigned int ) pxTaskStatusArray[ x ].usStackHighWaterMark, ( unsigned int ) pxTaskStatusArray[ x ].xTaskNumber ); /*lint !e586 sprintf() allowed as this is compiled with many compilers and this is a utility function only - not part of the core kernel implementation. */
+                    pcWriteBuffer += strlen((char*)pcWriteBuffer );/*lint !e9016 Pointer arithmetic ok on char pointers especially as in this case where it best denotes the intent of the code. */
+                }
             }
 
             /* Free the array again.  NOTE!  If configSUPPORT_DYNAMIC_ALLOCATION
              * is 0 then vPortFree() will be #defined to nothing. */
-            vPortFree( pxTaskStatusArray );
+            vPortFree<TaskStatus_t>( pxTaskStatusArray );
         }
         else
         {
@@ -4514,9 +4519,10 @@ static void prvResetNextTaskUnblockTime( void )
 
 #if ( ( configGENERATE_RUN_TIME_STATS == 1 ) && ( configUSE_STATS_FORMATTING_FUNCTIONS > 0 ) && ( configSUPPORT_DYNAMIC_ALLOCATION == 1 ) )
 
-    void vTaskGetRunTimeStats( char * pcWriteBuffer )
+    void vTaskGetRunTimeStats( _Array_ptr<char> pcWriteBuffer )
     {
-        TaskStatus_t * pxTaskStatusArray;
+        UBaseType_t tmpuxCurrentNumberOfTasks = uxCurrentNumberOfTasks;
+        _Array_ptr<TaskStatus_t> pxTaskStatusArray: count(tmpuxCurrentNumberOfTasks) = NULL;
         UBaseType_t uxArraySize, x;
         configRUN_TIME_COUNTER_TYPE ulTotalTime, ulStatsAsPercentage;
 
@@ -4552,8 +4558,10 @@ static void prvResetNextTaskUnblockTime( void )
          */
 
         /* Make sure the write buffer does not contain a string. */
-        *pcWriteBuffer = ( char ) 0x00;
-
+        _Unchecked{
+            char * tmppcWriteBuffer = (char*)pcWriteBuffer;
+            *tmppcWriteBuffer = ( char ) 0x00;
+        }
         /* Take a snapshot of the number of tasks in case it changes while this
          * function is executing. */
         uxArraySize = uxCurrentNumberOfTasks;
@@ -4561,12 +4569,12 @@ static void prvResetNextTaskUnblockTime( void )
         /* Allocate an array index for each task.  NOTE!  If
          * configSUPPORT_DYNAMIC_ALLOCATION is set to 0 then pvPortMalloc() will
          * equate to NULL. */
-        pxTaskStatusArray = pvPortMalloc( uxCurrentNumberOfTasks * sizeof( TaskStatus_t ) ); /*lint !e9079 All values returned by pvPortMalloc() have at least the alignment required by the MCU's stack and this allocation allocates a struct that has the alignment requirements of a pointer. */
+        pxTaskStatusArray = _Dynamic_bounds_cast<_Array_ptr<TaskStatus_t>>(pvPortMalloc<TaskStatus_t>( tmpuxCurrentNumberOfTasks * sizeof( TaskStatus_t ) ), count(tmpuxCurrentNumberOfTasks)); /*lint !e9079 All values returned by pvPortMalloc() have at least the alignment required by the MCU's stack and this allocation allocates a struct that has the alignment requirements of a pointer. */
 
         if( pxTaskStatusArray != NULL )
         {
             /* Generate the (binary) data. */
-            uxArraySize = uxTaskGetSystemState( pxTaskStatusArray, uxArraySize, &ulTotalTime );
+            uxArraySize = uxTaskGetSystemState( pxTaskStatusArray, tmpuxCurrentNumberOfTasks, &ulTotalTime );
 
             /* For percentage calculations. */
             ulTotalTime /= 100UL;
@@ -4585,19 +4593,25 @@ static void prvResetNextTaskUnblockTime( void )
                     /* Write the task name to the string, padding with
                      * spaces so it can be printed in tabular form more
                      * easily. */
-                    pcWriteBuffer = prvWriteNameToBuffer( pcWriteBuffer, pxTaskStatusArray[ x ].pcTaskName );
+                    _Unchecked{
+                        pcWriteBuffer = prvWriteNameToBuffer( (char *)pcWriteBuffer, (char *)pxTaskStatusArray[ x ].pcTaskName );
+                    }
 
                     if( ulStatsAsPercentage > 0UL )
                     {
                         #ifdef portLU_PRINTF_SPECIFIER_REQUIRED
                         {
-                            sprintf( pcWriteBuffer, "\t%lu\t\t%lu%%\r\n", pxTaskStatusArray[ x ].ulRunTimeCounter, ulStatsAsPercentage );
+                            _Unchecked{
+                                sprintf( (char *)pcWriteBuffer, "\t%lu\t\t%lu%%\r\n", pxTaskStatusArray[ x ].ulRunTimeCounter, ulStatsAsPercentage );
+                            }
                         }
                         #else
                         {
-                            /* sizeof( int ) == sizeof( long ) so a smaller
-                             * printf() library can be used. */
-                            sprintf( pcWriteBuffer, "\t%u\t\t%u%%\r\n", ( unsigned int ) pxTaskStatusArray[ x ].ulRunTimeCounter, ( unsigned int ) ulStatsAsPercentage ); /*lint !e586 sprintf() allowed as this is compiled with many compilers and this is a utility function only - not part of the core kernel implementation. */
+                            _Unchecked{
+                                /* sizeof( int ) == sizeof( long ) so a smaller
+                                * printf() library can be used. */
+                                sprintf( (char *)pcWriteBuffer, "\t%u\t\t%u%%\r\n", ( unsigned int ) pxTaskStatusArray[ x ].ulRunTimeCounter, ( unsigned int ) ulStatsAsPercentage ); /*lint !e586 sprintf() allowed as this is compiled with many compilers and this is a utility function only - not part of the core kernel implementation. */
+                            }
                         }
                         #endif
                     }
@@ -4607,18 +4621,23 @@ static void prvResetNextTaskUnblockTime( void )
                          * consumed less than 1% of the total run time. */
                         #ifdef portLU_PRINTF_SPECIFIER_REQUIRED
                         {
-                            sprintf( pcWriteBuffer, "\t%lu\t\t<1%%\r\n", pxTaskStatusArray[ x ].ulRunTimeCounter );
+                            _Unchecked{
+                                sprintf( (char *)pcWriteBuffer, "\t%lu\t\t<1%%\r\n", pxTaskStatusArray[ x ].ulRunTimeCounter );
+                            }
                         }
                         #else
                         {
-                            /* sizeof( int ) == sizeof( long ) so a smaller
-                             * printf() library can be used. */
-                            sprintf( pcWriteBuffer, "\t%u\t\t<1%%\r\n", ( unsigned int ) pxTaskStatusArray[ x ].ulRunTimeCounter ); /*lint !e586 sprintf() allowed as this is compiled with many compilers and this is a utility function only - not part of the core kernel implementation. */
+                            _Unchecked{
+                                /* sizeof( int ) == sizeof( long ) so a smaller
+                                * printf() library can be used. */
+                                sprintf( (char *)pcWriteBuffer, "\t%u\t\t<1%%\r\n", ( unsigned int ) pxTaskStatusArray[ x ].ulRunTimeCounter ); /*lint !e586 sprintf() allowed as this is compiled with many compilers and this is a utility function only - not part of the core kernel implementation. */
+                            }
                         }
                         #endif
                     }
-
-                    pcWriteBuffer += strlen( pcWriteBuffer ); /*lint !e9016 Pointer arithmetic ok on char pointers especially as in this case where it best denotes the intent of the code. */
+                    _Unchecked{
+                        pcWriteBuffer += strlen( (char *)pcWriteBuffer ); /*lint !e9016 Pointer arithmetic ok on char pointers especially as in this case where it best denotes the intent of the code. */
+                    }
                 }
             }
             else
@@ -4628,7 +4647,7 @@ static void prvResetNextTaskUnblockTime( void )
 
             /* Free the array again.  NOTE!  If configSUPPORT_DYNAMIC_ALLOCATION
              * is 0 then vPortFree() will be #defined to nothing. */
-            vPortFree( pxTaskStatusArray );
+            vPortFree<TaskStatus_t>( pxTaskStatusArray );
         }
         else
         {
@@ -4642,13 +4661,13 @@ static void prvResetNextTaskUnblockTime( void )
 TickType_t uxTaskResetEventItemValue( void )
 {
     TickType_t uxReturn;
-    _Ptr<TCB_t> tmp = pxCurrentTCB;
+    _Ptr<TCB_t> tmppxCurrentTCB = pxCurrentTCB;
 
-    uxReturn = listGET_LIST_ITEM_VALUE( &( tmp->xEventListItem ) );
+    uxReturn = listGET_LIST_ITEM_VALUE( &( tmppxCurrentTCB->xEventListItem ) );
 
     /* Reset the event list item to its normal value - so it can be used with
      * queues and semaphores. */
-    listSET_LIST_ITEM_VALUE( &( tmp->xEventListItem ), ( ( TickType_t ) configMAX_PRIORITIES - ( TickType_t ) tmp->uxPriority ) ); /*lint !e961 MISRA exception as the casts are only redundant for some ports. */
+    listSET_LIST_ITEM_VALUE( &( tmppxCurrentTCB->xEventListItem ), ( ( TickType_t ) configMAX_PRIORITIES - ( TickType_t ) tmppxCurrentTCB->uxPriority ) ); /*lint !e961 MISRA exception as the casts are only redundant for some ports. */
 
     return uxReturn;
 }
@@ -4678,17 +4697,17 @@ TickType_t uxTaskResetEventItemValue( void )
                                       TickType_t xTicksToWait )
     {
         uint32_t ulReturn;
-        _Ptr<TCB_t> tmp = pxCurrentTCB;
+        _Ptr<TCB_t> tmppxCurrentTCB = pxCurrentTCB;
         
         configASSERT( uxIndexToWait < configTASK_NOTIFICATION_ARRAY_ENTRIES );
 
         taskENTER_CRITICAL();
         {
             /* Only block if the notification count is not already non-zero. */
-            if( tmp->ulNotifiedValue[ uxIndexToWait ] == 0UL )
+            if( tmppxCurrentTCB->ulNotifiedValue[ uxIndexToWait ] == 0UL )
             {
                 /* Mark this task as waiting for a notification. */
-                tmp->ucNotifyState[ uxIndexToWait ] = taskWAITING_NOTIFICATION;
+                tmppxCurrentTCB->ucNotifyState[ uxIndexToWait ] = taskWAITING_NOTIFICATION;
 
                 if( xTicksToWait > ( TickType_t ) 0 )
                 {
@@ -4716,17 +4735,17 @@ TickType_t uxTaskResetEventItemValue( void )
         taskENTER_CRITICAL();
         {
             traceTASK_NOTIFY_TAKE( uxIndexToWait );
-            ulReturn = tmp->ulNotifiedValue[ uxIndexToWait ];
+            ulReturn = tmppxCurrentTCB->ulNotifiedValue[ uxIndexToWait ];
 
             if( ulReturn != 0UL )
             {
                 if( xClearCountOnExit != pdFALSE )
                 {
-                    tmp->ulNotifiedValue[ uxIndexToWait ] = 0UL;
+                    tmppxCurrentTCB->ulNotifiedValue[ uxIndexToWait ] = 0UL;
                 }
                 else
                 {
-                    tmp->ulNotifiedValue[ uxIndexToWait ] = ulReturn - ( uint32_t ) 1;
+                    tmppxCurrentTCB->ulNotifiedValue[ uxIndexToWait ] = ulReturn - ( uint32_t ) 1;
                 }
             }
             else
@@ -4734,7 +4753,7 @@ TickType_t uxTaskResetEventItemValue( void )
                 mtCOVERAGE_TEST_MARKER();
             }
 
-            tmp->ucNotifyState[ uxIndexToWait ] = taskNOT_WAITING_NOTIFICATION;
+            tmppxCurrentTCB->ucNotifyState[ uxIndexToWait ] = taskNOT_WAITING_NOTIFICATION;
         }
         taskEXIT_CRITICAL();
 
@@ -4749,22 +4768,22 @@ TickType_t uxTaskResetEventItemValue( void )
     BaseType_t xTaskGenericNotifyWait(UBaseType_t uxIndexToWait, uint32_t ulBitsToClearOnEntry, uint32_t ulBitsToClearOnExit, _Ptr<uint32_t> pulNotificationValue, TickType_t xTicksToWait)
     {
         BaseType_t xReturn;
-        _Ptr<TCB_t> tmp = pxCurrentTCB;
+        _Ptr<TCB_t> tmppxCurrentTCB = pxCurrentTCB;
 
         configASSERT( uxIndexToWait < configTASK_NOTIFICATION_ARRAY_ENTRIES );
 
         taskENTER_CRITICAL();
         {
             /* Only block if a notification is not already pending. */
-            if( tmp->ucNotifyState[ uxIndexToWait ] != taskNOTIFICATION_RECEIVED )
+            if( tmppxCurrentTCB->ucNotifyState[ uxIndexToWait ] != taskNOTIFICATION_RECEIVED )
             {
                 /* Clear bits in the task's notification value as bits may get
                  * set  by the notifying task or interrupt.  This can be used to
                  * clear the value to zero. */
-                tmp->ulNotifiedValue[ uxIndexToWait ] &= ~ulBitsToClearOnEntry;
+                tmppxCurrentTCB->ulNotifiedValue[ uxIndexToWait ] &= ~ulBitsToClearOnEntry;
 
                 /* Mark this task as waiting for a notification. */
-                tmp->ucNotifyState[ uxIndexToWait ] = taskWAITING_NOTIFICATION;
+                tmppxCurrentTCB->ucNotifyState[ uxIndexToWait ] = taskWAITING_NOTIFICATION;
 
                 if( xTicksToWait > ( TickType_t ) 0 )
                 {
@@ -4797,14 +4816,14 @@ TickType_t uxTaskResetEventItemValue( void )
             {
                 /* Output the current notification value, which may or may not
                  * have changed. */
-                *pulNotificationValue = tmp->ulNotifiedValue[ uxIndexToWait ];
+                *pulNotificationValue = tmppxCurrentTCB->ulNotifiedValue[ uxIndexToWait ];
             }
 
             /* If ucNotifyValue is set then either the task never entered the
              * blocked state (because a notification was already pending) or the
              * task unblocked because of a notification.  Otherwise the task
              * unblocked because of a timeout. */
-            if( tmp->ucNotifyState[ uxIndexToWait ] != taskNOTIFICATION_RECEIVED )
+            if( tmppxCurrentTCB->ucNotifyState[ uxIndexToWait ] != taskNOTIFICATION_RECEIVED )
             {
                 /* A notification was not received. */
                 xReturn = pdFALSE;
@@ -4813,11 +4832,11 @@ TickType_t uxTaskResetEventItemValue( void )
             {
                 /* A notification was already pending or a notification was
                  * received while the task was waiting. */
-                tmp->ulNotifiedValue[ uxIndexToWait ] &= ~ulBitsToClearOnExit;
+                tmppxCurrentTCB->ulNotifiedValue[ uxIndexToWait ] &= ~ulBitsToClearOnExit;
                 xReturn = pdTRUE;
             }
 
-            tmp->ucNotifyState[ uxIndexToWait ] = taskNOT_WAITING_NOTIFICATION;
+            tmppxCurrentTCB->ucNotifyState[ uxIndexToWait ] = taskNOT_WAITING_NOTIFICATION;
         }
         taskEXIT_CRITICAL();
 
@@ -5271,7 +5290,7 @@ static void prvAddCurrentTaskToDelayedList( TickType_t xTicksToWait,
 {
     TickType_t xTimeToWake;
     const TickType_t xConstTickCount = xTickCount;
-    _Ptr<TCB_t> tmp = pxCurrentTCB;
+    _Ptr<TCB_t> tmppxCurrentTCB = pxCurrentTCB;
 
     #if ( INCLUDE_xTaskAbortDelay == 1 )
     {
@@ -5284,11 +5303,11 @@ static void prvAddCurrentTaskToDelayedList( TickType_t xTicksToWait,
 
     /* Remove the task from the ready list before adding it to the blocked list
      * as the same list item is used for both lists. */
-    if( uxListRemove( &( tmp->xStateListItem ) ) == ( UBaseType_t ) 0 )
+    if( uxListRemove( &( tmppxCurrentTCB->xStateListItem ) ) == ( UBaseType_t ) 0 )
     {
         /* The current task must be in a ready list, so there is no need to
          * check, and the port reset macro can be called directly. */
-        portRESET_READY_PRIORITY( tmp->uxPriority, uxTopReadyPriority ); /*lint !e931 pxCurrentTCB cannot change as it is the calling task.  pxCurrentTCB->uxPriority and uxTopReadyPriority cannot change as called with scheduler suspended or in a critical section. */
+        portRESET_READY_PRIORITY( tmppxCurrentTCB->uxPriority, uxTopReadyPriority ); /*lint !e931 pxCurrentTCB cannot change as it is the calling task.  pxCurrentTCB->uxPriority and uxTopReadyPriority cannot change as called with scheduler suspended or in a critical section. */
     }
     else
     {
@@ -5302,7 +5321,7 @@ static void prvAddCurrentTaskToDelayedList( TickType_t xTicksToWait,
             /* Add the task to the suspended task list instead of a delayed task
              * list to ensure it is not woken by a timing event.  It will block
              * indefinitely. */
-            listINSERT_END( &xSuspendedTaskList, &( tmp->xStateListItem ) );
+            listINSERT_END( &xSuspendedTaskList, &( tmppxCurrentTCB->xStateListItem ) );
         }
         else
         {
@@ -5312,19 +5331,19 @@ static void prvAddCurrentTaskToDelayedList( TickType_t xTicksToWait,
             xTimeToWake = xConstTickCount + xTicksToWait;
 
             /* The list item will be inserted in wake time order. */
-            listSET_LIST_ITEM_VALUE( &( tmp->xStateListItem ), xTimeToWake );
+            listSET_LIST_ITEM_VALUE( &( tmppxCurrentTCB->xStateListItem ), xTimeToWake );
 
             if( xTimeToWake < xConstTickCount )
             {
                 /* Wake time has overflowed.  Place this item in the overflow
                  * list. */
-                vListInsert( pxOverflowDelayedTaskList, &( tmp->xStateListItem ) );
+                vListInsert( pxOverflowDelayedTaskList, &( tmppxCurrentTCB->xStateListItem ) );
             }
             else
             {
                 /* The wake time has not overflowed, so the current block list
                  * is used. */
-                vListInsert( pxDelayedTaskList, &( tmp->xStateListItem ) );
+                vListInsert( pxDelayedTaskList, &( tmppxCurrentTCB->xStateListItem ) );
 
                 /* If the task entering the blocked state was placed at the
                  * head of the list of blocked tasks then xNextTaskUnblockTime
@@ -5348,17 +5367,17 @@ static void prvAddCurrentTaskToDelayedList( TickType_t xTicksToWait,
         xTimeToWake = xConstTickCount + xTicksToWait;
 
         /* The list item will be inserted in wake time order. */
-        listSET_LIST_ITEM_VALUE( &( tmp->xStateListItem ), xTimeToWake );
+        listSET_LIST_ITEM_VALUE( &( tmppxCurrentTCB->xStateListItem ), xTimeToWake );
 
         if( xTimeToWake < xConstTickCount )
         {
             /* Wake time has overflowed.  Place this item in the overflow list. */
-            vListInsert( pxOverflowDelayedTaskList, &( tmp->xStateListItem ) );
+            vListInsert( pxOverflowDelayedTaskList, &( tmppxCurrentTCB->xStateListItem ) );
         }
         else
         {
             /* The wake time has not overflowed, so the current block list is used. */
-            vListInsert( pxDelayedTaskList, &( tmp->xStateListItem ) );
+            vListInsert( pxDelayedTaskList, &( tmppxCurrentTCB->xStateListItem ) );
 
             /* If the task entering the blocked state was placed at the head of the
              * list of blocked tasks then xNextTaskUnblockTime needs to be updated

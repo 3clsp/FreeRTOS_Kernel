@@ -1191,7 +1191,7 @@ TaskHandle_t xTimerGetTimerDaemonTaskHandle(void) PRIVILEGED_FUNCTION;
  *  }
  * @endverbatim
  */
-BaseType_t xTimerPendFunctionCallFromISR(PendedFunction_t xFunctionToPend, _Ptr<void> pvParameter1, uint32_t ulParameter2, _Ptr<BaseType_t> pxHigherPriorityTaskWoken) PRIVILEGED_FUNCTION;
+BaseType_t xTimerPendFunctionCallFromISR(PendedFunction_t xFunctionToPend: itype(_Ptr<void (_Ptr<void>, uint32_t)>), _Ptr<void> pvParameter1, uint32_t ulParameter2, _Ptr<BaseType_t> pxHigherPriorityTaskWoken) PRIVILEGED_FUNCTION;
 
 /**
  * BaseType_t xTimerPendFunctionCall( PendedFunction_t xFunctionToPend,
@@ -1225,7 +1225,7 @@ BaseType_t xTimerPendFunctionCallFromISR(PendedFunction_t xFunctionToPend, _Ptr<
  * timer daemon task, otherwise pdFALSE is returned.
  *
  */
-BaseType_t xTimerPendFunctionCall(PendedFunction_t xFunctionToPend, _Ptr<void> pvParameter1, uint32_t ulParameter2, TickType_t xTicksToWait) PRIVILEGED_FUNCTION;
+BaseType_t xTimerPendFunctionCall(PendedFunction_t xFunctionToPend: itype(_Ptr<void (_Ptr<void>, uint32_t)>), _Ptr<void> pvParameter1, uint32_t ulParameter2, TickType_t xTicksToWait) PRIVILEGED_FUNCTION;
 
 /**
  * const char * const pcTimerGetName( TimerHandle_t xTimer );

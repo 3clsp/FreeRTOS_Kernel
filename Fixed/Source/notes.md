@@ -1,12 +1,13 @@
 ## Issues
 
-- croutine.c: error compiling
-	- listGET_OWNER_OF_NEXT_ENTRY macro casts from void* to struct that depends on the caller. Not allowed to cast like that. 
-- event_groups.c: error compiling
+- croutine.c: compiles
+	- Nothing to fix
+
+- event_groups.c: compiles
 	- To Fix: Line 471, 686: passing void* to non _Ptr<void> typedef callback function
+
 - list.c: compiles
 	- struct xLIST_ITEM have a void* member
-	- listGET_OWNER_OF_NEXT_ENTRY: Argument 1 is not necessarily a TCB_t *
 
 - queue.c: compiles
 	- Bounds for struct members needed?
@@ -19,7 +20,6 @@
 - timers.c: compiles
 	- Make all voids into proper types
 
-## Pending
-
-- tasks.c
-	- Created temporary TCB_t to be passed into list_end_insert and some other funtions. This might not work properly everywhere.
+- tasks.c: compiles
+	- Some functions take arguments from outside and the size of these arguments can't be infered.
+	- Fix the pxEndOfStack usage in prvTaskCheckFreeStackSpace. We can pass both start and end of the memory. Need to find a way to handle this.

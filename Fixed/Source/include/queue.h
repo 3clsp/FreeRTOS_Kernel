@@ -1526,7 +1526,7 @@ BaseType_t xQueueGiveMutexRecursive(QueueHandle_t xMutex) PRIVILEGED_FUNCTION;
  * RTOS objects that use the queue structure as their base.
  */
 #if ( configSUPPORT_STATIC_ALLOCATION == 1 )
-    QueueHandle_t xQueueGenericCreateStatic(const UBaseType_t uxQueueLength, const UBaseType_t uxItemSize, _Ptr<uint8_t> pucQueueStorage, _Ptr<StaticQueue_t> pxStaticQueue, const uint8_t ucQueueType) PRIVILEGED_FUNCTION;
+    QueueHandle_t xQueueGenericCreateStatic(const UBaseType_t uxQueueLength, const UBaseType_t uxItemSize, _Array_ptr<uint8_t> pucQueueStorage: count(uxQueueLength * uxItemSize), _Ptr<StaticQueue_t> pxStaticQueue, const uint8_t ucQueueType) PRIVILEGED_FUNCTION;
 #endif
 
 /*
