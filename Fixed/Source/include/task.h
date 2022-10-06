@@ -155,7 +155,7 @@ typedef struct xTASK_PARAMETERS
 typedef struct xTASK_STATUS
 {
     TaskHandle_t xHandle;                         /* The handle of the task to which the rest of the information in the structure relates. */
-    _Ptr<const char> pcTaskName;                      /* A pointer to the task's name.  This value will be invalid if the task was deleted since the structure was populated! */ /*lint !e971 Unqualified char types are allowed for strings and single characters only. */
+    _Nt_array_ptr<const char> pcTaskName;                      /* A pointer to the task's name.  This value will be invalid if the task was deleted since the structure was populated! */ /*lint !e971 Unqualified char types are allowed for strings and single characters only. */
     UBaseType_t xTaskNumber;                      /* A number unique to the task. */
     eTaskState eCurrentState;                     /* The state in which the task existed when the structure was populated. */
     UBaseType_t uxCurrentPriority;                /* The priority at which the task was running (may be inherited) when the structure was populated. */
@@ -353,7 +353,7 @@ typedef enum
  * \ingroup Tasks
  */
 #if ( configSUPPORT_DYNAMIC_ALLOCATION == 1 )
-    BaseType_t xTaskCreate(TaskFunction_t pxTaskCode, const _Array_ptr<const char> pcName: count(configMAX_TASK_NAME_LEN), const configSTACK_DEPTH_TYPE usStackDepth, _Ptr<void> const pvParameters, UBaseType_t uxPriority, const _Ptr<TaskHandle_t> pxCreatedTask) PRIVILEGED_FUNCTION;
+    BaseType_t xTaskCreate(TaskFunction_t pxTaskCode, const _Nt_array_ptr<const char> pcName: count(configMAX_TASK_NAME_LEN), const configSTACK_DEPTH_TYPE usStackDepth, _Ptr<void> const pvParameters, UBaseType_t uxPriority, const _Ptr<TaskHandle_t> pxCreatedTask) PRIVILEGED_FUNCTION;
 #endif
 
 /**
@@ -465,7 +465,7 @@ typedef enum
  * \ingroup Tasks
  */
 #if ( configSUPPORT_STATIC_ALLOCATION == 1 )
-    TaskHandle_t xTaskCreateStatic(TaskFunction_t pxTaskCode, const _Array_ptr<const char> pcName: count(configMAX_TASK_NAME_LEN), const uint32_t ulStackDepth, _Ptr<void> const pvParameters, UBaseType_t uxPriority, const _Array_ptr<StackType_t> puxStackBuffer: count(ulStackDepth), const _Ptr<StaticTask_t> pxTaskBuffer) PRIVILEGED_FUNCTION;
+    TaskHandle_t xTaskCreateStatic(TaskFunction_t pxTaskCode, const _Nt_array_ptr<const char> pcName: count(configMAX_TASK_NAME_LEN), const uint32_t ulStackDepth, _Ptr<void> const pvParameters, UBaseType_t uxPriority, const _Array_ptr<StackType_t> puxStackBuffer: count(ulStackDepth), const _Ptr<StaticTask_t> pxTaskBuffer) PRIVILEGED_FUNCTION;
 #endif /* configSUPPORT_STATIC_ALLOCATION */
 
 /**
@@ -1491,7 +1491,7 @@ _Ptr<char> pcTaskGetName(TaskHandle_t xTaskToQuery) PRIVILEGED_FUNCTION; /*lint 
  * \defgroup pcTaskGetHandle pcTaskGetHandle
  * \ingroup TaskUtils
  */
-TaskHandle_t xTaskGetHandle(_Array_ptr<const char> pcNameToQuery : count(configMAX_TASK_NAME_LEN)) PRIVILEGED_FUNCTION; /*lint !e971 Unqualified char types are allowed for strings and single characters only. */
+TaskHandle_t xTaskGetHandle(_Nt_array_ptr<const char> pcNameToQuery : count(configMAX_TASK_NAME_LEN)) PRIVILEGED_FUNCTION; /*lint !e971 Unqualified char types are allowed for strings and single characters only. */
 
 /**
  * task.h

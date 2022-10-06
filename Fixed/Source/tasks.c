@@ -268,7 +268,7 @@ typedef struct tskTaskControlBlock       /* The old naming convention is used to
     uint32_t usStackDepth;                /*< The stack size defined as the number of StackType_t the stack can hold, not the number of bytes. */    
     _Array_ptr<StackType_t> pxStack: count(usStackDepth);                      /*< Points to the start of the stack. */
     // _Nt_Checked type not needed since size is specified and program ensures there will be a null byte at the end of the string
-    char pcTaskName _Checked[ configMAX_TASK_NAME_LEN ]; /*< Descriptive name given to the task when created.  Facilitates debugging only. */ /*lint !e971 Unqualified char types are allowed for strings and single characters only. */
+    char pcTaskName _Nt_checked[ configMAX_TASK_NAME_LEN ]; /*< Descriptive name given to the task when created.  Facilitates debugging only. */ /*lint !e971 Unqualified char types are allowed for strings and single characters only. */
 
     #if ( ( portSTACK_GROWTH > 0 ) || ( configRECORD_STACK_HIGH_ADDRESS == 1 ) )
         _Array_ptr<StackType_t> pxEndOfStack; /*< Points to the highest valid address for the stack. */
@@ -481,7 +481,7 @@ static void prvAddCurrentTaskToDelayedList( TickType_t xTicksToWait,
  */
 #if ( INCLUDE_xTaskGetHandle == 1 )
 
-    static _Ptr<TCB_t> prvSearchForNameWithinSingleList(_Ptr<List_t> pxList, _Array_ptr<const char> pcNameToQuery : count(configMAX_TASK_NAME_LEN)) PRIVILEGED_FUNCTION;
+    static _Ptr<TCB_t> prvSearchForNameWithinSingleList(_Ptr<List_t> pxList, _Nt_array_ptr<const char> pcNameToQuery : count(configMAX_TASK_NAME_LEN)) PRIVILEGED_FUNCTION;
 
 #endif
 
@@ -517,7 +517,7 @@ static void prvAddCurrentTaskToDelayedList( TickType_t xTicksToWait,
  */
 static void prvResetNextTaskUnblockTime( void ) PRIVILEGED_FUNCTION;
 
-#if ( ( ( configUSE_TRACE_FACILITY == 1 ) || ( configGENERATE_RUN_TIME_STATS == 1 ) ) && \
+//#if ( ( ( configUSE_TRACE_FACILITY == 1 ) || ( configGENERATE_RUN_TIME_STATS == 1 ) ) && \
     ( configUSE_STATS_FORMATTING_FUNCTIONS > 0 ) &&                                      \
     ( configSUPPORT_DYNAMIC_ALLOCATION == 1 ) )
 
@@ -525,16 +525,16 @@ static void prvResetNextTaskUnblockTime( void ) PRIVILEGED_FUNCTION;
  * Helper function used to pad task names with spaces when printing out
  * human readable tables of task information.
  */
-    _Unchecked static char * prvWriteNameToBuffer( char * pcBuffer,
-                                        const char * pcTaskName ) PRIVILEGED_FUNCTION;
+    static _Ptr<char> prvWriteNameToBuffer( _Array_ptr<char> pcBuffer: count(configMAX_TASK_NAME_LEN),
+                                        _Nt_array_ptr<const char> pcTaskName ) PRIVILEGED_FUNCTION;
 
-#endif
+//#endif
 
 /*
  * Called after a Task_t structure has been allocated either statically or
  * dynamically to fill in the structure's members.
  */
-static void prvInitialiseNewTask(TaskFunction_t pxTaskCode, const _Array_ptr<const char> pcName: count(configMAX_TASK_NAME_LEN), const uint32_t ulStackDepth, _Ptr<void> const pvParameters, UBaseType_t uxPriority, const _Ptr<TaskHandle_t> pxCreatedTask, _Ptr<TCB_t> pxNewTCB, const _Ptr<const MemoryRegion_t> xRegions) PRIVILEGED_FUNCTION;
+static void prvInitialiseNewTask(TaskFunction_t pxTaskCode, const _Nt_array_ptr<const char> pcName: count(configMAX_TASK_NAME_LEN), const uint32_t ulStackDepth, _Ptr<void> const pvParameters, UBaseType_t uxPriority, const _Ptr<TaskHandle_t> pxCreatedTask, _Ptr<TCB_t> pxNewTCB, const _Ptr<const MemoryRegion_t> xRegions) PRIVILEGED_FUNCTION;
 
 /*
  * Called after a new task has been created and initialised to place the task
@@ -557,7 +557,7 @@ static void prvAddNewTaskToReadyList(_Ptr<TCB_t> pxNewTCB) PRIVILEGED_FUNCTION;
 
 #if ( configSUPPORT_STATIC_ALLOCATION == 1 )
 
-    TaskHandle_t xTaskCreateStatic(TaskFunction_t pxTaskCode, const _Array_ptr<const char> pcName: count(configMAX_TASK_NAME_LEN), const uint32_t ulStackDepth, _Ptr<void> const pvParameters, UBaseType_t uxPriority, const _Array_ptr<StackType_t> puxStackBuffer: count(ulStackDepth), const _Ptr<StaticTask_t> pxTaskBuffer)
+    TaskHandle_t xTaskCreateStatic(TaskFunction_t pxTaskCode, const _Nt_array_ptr<const char> pcName: count(configMAX_TASK_NAME_LEN), const uint32_t ulStackDepth, _Ptr<void> const pvParameters, UBaseType_t uxPriority, const _Array_ptr<StackType_t> puxStackBuffer: count(ulStackDepth), const _Ptr<StaticTask_t> pxTaskBuffer)
     {
         _Ptr<TCB_t> pxNewTCB = NULL;
         TaskHandle_t xReturn = NULL;
@@ -708,7 +708,7 @@ static void prvAddNewTaskToReadyList(_Ptr<TCB_t> pxNewTCB) PRIVILEGED_FUNCTION;
 
 #if ( configSUPPORT_DYNAMIC_ALLOCATION == 1 )
 
-    BaseType_t xTaskCreate(TaskFunction_t pxTaskCode, const _Array_ptr<const char> pcName : count(configMAX_TASK_NAME_LEN), const configSTACK_DEPTH_TYPE usStackDepth, _Ptr<void> const pvParameters, UBaseType_t uxPriority, const _Ptr<TaskHandle_t> pxCreatedTask)
+    BaseType_t xTaskCreate(TaskFunction_t pxTaskCode, const _Nt_array_ptr<const char> pcName : count(configMAX_TASK_NAME_LEN), const configSTACK_DEPTH_TYPE usStackDepth, _Ptr<void> const pvParameters, UBaseType_t uxPriority, const _Ptr<TaskHandle_t> pxCreatedTask)
     {
         _Ptr<TCB_t> pxNewTCB = NULL;
         BaseType_t xReturn;
@@ -801,7 +801,7 @@ static void prvAddNewTaskToReadyList(_Ptr<TCB_t> pxNewTCB) PRIVILEGED_FUNCTION;
 #endif /* configSUPPORT_DYNAMIC_ALLOCATION */
 /*-----------------------------------------------------------*/
 
-static void prvInitialiseNewTask(TaskFunction_t pxTaskCode, const _Array_ptr<const char> pcName: count(configMAX_TASK_NAME_LEN), const uint32_t ulStackDepth, _Ptr<void> const pvParameters, UBaseType_t uxPriority, const _Ptr<TaskHandle_t> pxCreatedTask, _Ptr<TCB_t> pxNewTCB, const _Ptr<const MemoryRegion_t> xRegions)
+static void prvInitialiseNewTask(TaskFunction_t pxTaskCode, const _Nt_array_ptr<const char> pcName: count(configMAX_TASK_NAME_LEN), const uint32_t ulStackDepth, _Ptr<void> const pvParameters, UBaseType_t uxPriority, const _Ptr<TaskHandle_t> pxCreatedTask, _Ptr<TCB_t> pxNewTCB, const _Ptr<const MemoryRegion_t> xRegions)
 {
     _Array_ptr<StackType_t> pxTopOfStack = NULL;
     UBaseType_t x;
@@ -1950,7 +1950,7 @@ void vTaskStartScheduler( void )
         // Cannot do & on a pointer to an array with bounds
         tmpStack = _Dynamic_bounds_cast<_Array_ptr<StackType_t>>(pxIdleTaskStackBuffer, count(ulIdleTaskStackSize));
         xIdleTaskHandle = xTaskCreateStatic( prvIdleTask,
-                                             _Dynamic_bounds_cast<_Array_ptr<const char>>(configIDLE_TASK_NAME, count(configMAX_TASK_NAME_LEN)),
+                                             _Dynamic_bounds_cast<_Nt_array_ptr<const char>>(configIDLE_TASK_NAME, count(configMAX_TASK_NAME_LEN)),
                                              ulIdleTaskStackSize,
                                              ( _Ptr<void> ) NULL,       /*lint !e961.  The cast is not redundant for all compilers. */
                                              portPRIVILEGE_BIT,     /* In effect ( tskIDLE_PRIORITY | portPRIVILEGE_BIT ), but tskIDLE_PRIORITY is zero. */
@@ -2336,7 +2336,7 @@ _Ptr<char> pcTaskGetName(TaskHandle_t xTaskToQuery) /*lint !e971 Unqualified cha
 
 #if ( INCLUDE_xTaskGetHandle == 1 )
 
-    static _Ptr<TCB_t> prvSearchForNameWithinSingleList(_Ptr<List_t> pxList, _Array_ptr<const char> pcNameToQuery : count(configMAX_TASK_NAME_LEN))
+    static _Ptr<TCB_t> prvSearchForNameWithinSingleList(_Ptr<List_t> pxList, _Nt_array_ptr<const char> pcNameToQuery : count(configMAX_TASK_NAME_LEN))
     {
         _Ptr<TCB_t> pxNextTCB = NULL;
         _Ptr<TCB_t> pxFirstTCB = NULL;
@@ -2405,7 +2405,7 @@ _Ptr<char> pcTaskGetName(TaskHandle_t xTaskToQuery) /*lint !e971 Unqualified cha
 
 #if ( INCLUDE_xTaskGetHandle == 1 )
 
-    TaskHandle_t xTaskGetHandle(_Array_ptr<const char> pcNameToQuery : count(configMAX_TASK_NAME_LEN)) /*lint !e971 Unqualified char types are allowed for strings and single characters only. */
+    TaskHandle_t xTaskGetHandle(_Nt_array_ptr<const char> pcNameToQuery : count(configMAX_TASK_NAME_LEN)) /*lint !e971 Unqualified char types are allowed for strings and single characters only. */
     {
         UBaseType_t uxQueue = configMAX_PRIORITIES;
         _Ptr<TCB_t> pxTCB = NULL;
@@ -3700,7 +3700,7 @@ static void prvCheckTasksWaitingTermination( void )
         pxTCB = prvGetTCBFromHandle( xTask );
 
         pxTaskStatus->xHandle = ( TaskHandle_t ) pxTCB;
-        pxTaskStatus->pcTaskName = (_Ptr<const char> ) &( pxTCB->pcTaskName[ 0 ] );
+        pxTaskStatus->pcTaskName = (_Nt_array_ptr<const char>)( pxTCB->pcTaskName );
         pxTaskStatus->uxCurrentPriority = pxTCB->uxPriority;
         pxTaskStatus->pxStackBase = pxTCB->pxStack;
         #if ( ( portSTACK_GROWTH > 0 ) && ( configRECORD_STACK_HIGH_ADDRESS == 1 ) )
@@ -4377,21 +4377,24 @@ static void prvResetNextTaskUnblockTime( void )
 #endif /* portCRITICAL_NESTING_IN_TCB */
 /*-----------------------------------------------------------*/
 
-#if ( ( ( configUSE_TRACE_FACILITY == 1 ) || ( configGENERATE_RUN_TIME_STATS == 1 ) ) && \
+//#if ( ( ( configUSE_TRACE_FACILITY == 1 ) || ( configGENERATE_RUN_TIME_STATS == 1 ) ) && \
     ( configUSE_STATS_FORMATTING_FUNCTIONS > 0 ) &&                                      \
     ( configSUPPORT_DYNAMIC_ALLOCATION == 1 ) )
 
-    _Unchecked static char * prvWriteNameToBuffer( char * pcBuffer,
-                                        const char * pcTaskName )
+    static _Ptr<char> prvWriteNameToBuffer( _Array_ptr<char> pcBuffer: count(configMAX_TASK_NAME_LEN),
+                                        _Nt_array_ptr<const char> pcTaskName )
     {
         size_t x;
 
+        _Unchecked{
         /* Start by copying the entire string. */
-        strcpy( pcBuffer, pcTaskName );
+            strcpy( (char*)pcBuffer, (char*)pcTaskName );
+        }
 
         /* Pad the end of the string with spaces to ensure columns line up when
          * printed out. */
-        for( x = strlen( pcBuffer ); x < ( size_t ) ( configMAX_TASK_NAME_LEN - 1 ); x++ )
+        // Changed strlen argument from pcBuffer to pcTaskName
+        for( x = strlen( pcTaskName ); x < ( size_t ) ( configMAX_TASK_NAME_LEN - 1 ); x++ )
         {
             pcBuffer[ x ] = ' ';
         }
@@ -4403,10 +4406,10 @@ static void prvResetNextTaskUnblockTime( void )
         return &( pcBuffer[ x ] );
     }
 
-#endif /* ( configUSE_TRACE_FACILITY == 1 ) && ( configUSE_STATS_FORMATTING_FUNCTIONS > 0 ) */
+//#endif /* ( configUSE_TRACE_FACILITY == 1 ) && ( configUSE_STATS_FORMATTING_FUNCTIONS > 0 ) */
 /*-----------------------------------------------------------*/
 
-#if ( ( configUSE_TRACE_FACILITY == 1 ) && ( configUSE_STATS_FORMATTING_FUNCTIONS > 0 ) && ( configSUPPORT_DYNAMIC_ALLOCATION == 1 ) )
+//#if ( ( configUSE_TRACE_FACILITY == 1 ) && ( configUSE_STATS_FORMATTING_FUNCTIONS > 0 ) && ( configSUPPORT_DYNAMIC_ALLOCATION == 1 ) )
 
     void vTaskList( _Array_ptr<char> pcWriteBuffer )
     {
@@ -4495,7 +4498,7 @@ static void prvResetNextTaskUnblockTime( void )
                 _Unchecked{
                     /* Write the task name to the string, padding with spaces so it
                     * can be printed in tabular form more easily. */
-                    pcWriteBuffer = prvWriteNameToBuffer( (char*)pcWriteBuffer, (char*)pxTaskStatusArray[ x ].pcTaskName );
+                    pcWriteBuffer = prvWriteNameToBuffer( pcWriteBuffer, pxTaskStatusArray[ x ].pcTaskName );
 
                     /* Write the rest of the string. */
                 
@@ -4514,7 +4517,7 @@ static void prvResetNextTaskUnblockTime( void )
         }
     }
 
-#endif /* ( ( configUSE_TRACE_FACILITY == 1 ) && ( configUSE_STATS_FORMATTING_FUNCTIONS > 0 ) && ( configSUPPORT_DYNAMIC_ALLOCATION == 1 ) ) */
+//#endif /* ( ( configUSE_TRACE_FACILITY == 1 ) && ( configUSE_STATS_FORMATTING_FUNCTIONS > 0 ) && ( configSUPPORT_DYNAMIC_ALLOCATION == 1 ) ) */
 /*----------------------------------------------------------*/
 
 #if ( ( configGENERATE_RUN_TIME_STATS == 1 ) && ( configUSE_STATS_FORMATTING_FUNCTIONS > 0 ) && ( configSUPPORT_DYNAMIC_ALLOCATION == 1 ) )
