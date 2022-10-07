@@ -21,5 +21,4 @@
 	- Make all voids into proper types
 
 - tasks.c: compiles
-	- Some functions take arguments from outside and the size of these arguments can't be infered.
-	- Fix the pxEndOfStack usage in prvTaskCheckFreeStackSpace. We can pass both start and end of the memory. Need to find a way to handle this.
+	- Nothing to fix

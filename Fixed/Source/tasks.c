@@ -256,7 +256,7 @@
  */
 typedef struct tskTaskControlBlock       /* The old naming convention is used to prevent breaking kernel aware debuggers. */
 {
-    _Array_ptr<volatile StackType_t> pxTopOfStack; /*< Points to the location of the last item placed on the tasks stack.  THIS MUST BE THE FIRST MEMBER OF THE TCB STRUCT. */
+    _Array_ptr<volatile StackType_t> pxTopOfStack: bounds(pxStack, pxStack+usStackDepth); /*< Points to the location of the last item placed on the tasks stack.  THIS MUST BE THE FIRST MEMBER OF THE TCB STRUCT. */
 
     #if ( portUSING_MPU_WRAPPERS == 1 )
         xMPU_SETTINGS xMPUSettings; /*< The MPU settings are defined as part of the port layer.  THIS MUST BE THE SECOND MEMBER OF THE TCB STRUCT. */
@@ -266,12 +266,12 @@ typedef struct tskTaskControlBlock       /* The old naming convention is used to
     ListItem_t xEventListItem;                  /*< Used to reference a task from an event list. */
     UBaseType_t uxPriority;                     /*< The priority of the task.  0 is the lowest priority. */
     uint32_t usStackDepth;                /*< The stack size defined as the number of StackType_t the stack can hold, not the number of bytes. */    
-    _Array_ptr<StackType_t> pxStack: count(usStackDepth);                      /*< Points to the start of the stack. */
+    _Array_ptr<StackType_t> pxStack: bounds(pxStack, pxStack+usStackDepth); //: count(usStackDepth);                      /*< Points to the start of the stack. */
     // _Nt_Checked type not needed since size is specified and program ensures there will be a null byte at the end of the string
     char pcTaskName _Nt_checked[ configMAX_TASK_NAME_LEN ]; /*< Descriptive name given to the task when created.  Facilitates debugging only. */ /*lint !e971 Unqualified char types are allowed for strings and single characters only. */
 
     #if ( ( portSTACK_GROWTH > 0 ) || ( configRECORD_STACK_HIGH_ADDRESS == 1 ) )
-        _Array_ptr<StackType_t> pxEndOfStack; /*< Points to the highest valid address for the stack. */
+        _Array_ptr<StackType_t> pxEndOfStack: bounds(pxStack, pxStack+usStackDepth); /*< Points to the highest valid address for the stack. */
     #endif
 
     #if ( portCRITICAL_NESTING_IN_TCB == 1 )
@@ -492,7 +492,7 @@ static void prvAddCurrentTaskToDelayedList( TickType_t xTicksToWait,
  */
 #if ( ( configUSE_TRACE_FACILITY == 1 ) || ( INCLUDE_uxTaskGetStackHighWaterMark == 1 ) || ( INCLUDE_uxTaskGetStackHighWaterMark2 == 1 ) )
 
-    _Unchecked static configSTACK_DEPTH_TYPE prvTaskCheckFreeStackSpace(const uint8_t* pucStackByte) PRIVILEGED_FUNCTION;
+    static configSTACK_DEPTH_TYPE prvTaskCheckFreeStackSpace(_Array_ptr<const uint8_t> pucStackByte: bounds(start, end), _Ptr<uint8_t> start, _Ptr<uint8_t> end) PRIVILEGED_FUNCTION;
 
 #endif
 
@@ -517,7 +517,7 @@ static void prvAddCurrentTaskToDelayedList( TickType_t xTicksToWait,
  */
 static void prvResetNextTaskUnblockTime( void ) PRIVILEGED_FUNCTION;
 
-//#if ( ( ( configUSE_TRACE_FACILITY == 1 ) || ( configGENERATE_RUN_TIME_STATS == 1 ) ) && \
+#if ( ( ( configUSE_TRACE_FACILITY == 1 ) || ( configGENERATE_RUN_TIME_STATS == 1 ) ) && \
     ( configUSE_STATS_FORMATTING_FUNCTIONS > 0 ) &&                                      \
     ( configSUPPORT_DYNAMIC_ALLOCATION == 1 ) )
 
@@ -528,7 +528,7 @@ static void prvResetNextTaskUnblockTime( void ) PRIVILEGED_FUNCTION;
     static _Ptr<char> prvWriteNameToBuffer( _Array_ptr<char> pcBuffer: count(configMAX_TASK_NAME_LEN),
                                         _Nt_array_ptr<const char> pcTaskName ) PRIVILEGED_FUNCTION;
 
-//#endif
+#endif
 
 /*
  * Called after a Task_t structure has been allocated either statically or
@@ -557,7 +557,13 @@ static void prvAddNewTaskToReadyList(_Ptr<TCB_t> pxNewTCB) PRIVILEGED_FUNCTION;
 
 #if ( configSUPPORT_STATIC_ALLOCATION == 1 )
 
-    TaskHandle_t xTaskCreateStatic(TaskFunction_t pxTaskCode, const _Nt_array_ptr<const char> pcName: count(configMAX_TASK_NAME_LEN), const uint32_t ulStackDepth, _Ptr<void> const pvParameters, UBaseType_t uxPriority, const _Array_ptr<StackType_t> puxStackBuffer: count(ulStackDepth), const _Ptr<StaticTask_t> pxTaskBuffer)
+    TaskHandle_t xTaskCreateStatic(TaskFunction_t pxTaskCode,
+                                   const _Nt_array_ptr<const char> pcName: count(configMAX_TASK_NAME_LEN),
+                                   const uint32_t ulStackDepth,
+                                   _Ptr<void> const pvParameters,
+                                   UBaseType_t uxPriority,
+                                   const _Array_ptr<StackType_t> puxStackBuffer: count(ulStackDepth),
+                                   const _Ptr<StaticTask_t> pxTaskBuffer)
     {
         _Ptr<TCB_t> pxNewTCB = NULL;
         TaskHandle_t xReturn = NULL;
@@ -581,8 +587,14 @@ static void prvAddNewTaskToReadyList(_Ptr<TCB_t> pxNewTCB) PRIVILEGED_FUNCTION;
             /* The memory used for the task's TCB and stack are passed into this
              * function - use them. */
             pxNewTCB = ( _Ptr<TCB_t> ) pxTaskBuffer; /*lint !e740 !e9087 Unusual cast is ok as the structures are designed to have the same alignment, and the size is checked by an assert. */
-            memset( pxNewTCB, 0x00, sizeof( TCB_t ) );
-            pxNewTCB->pxStack = puxStackBuffer;
+            memset( (_Array_ptr<void>)pxNewTCB, 0x00, sizeof( TCB_t ) );
+            _Bundled{
+                pxNewTCB->pxStack = puxStackBuffer;
+                pxNewTCB->pxTopOfStack = NULL; 
+                #if portSTACK_GROWTH > 0
+                    pxNewTCB->pxEndOfStack = NULL;
+                #endif
+            }
 
             #if ( tskSTATIC_AND_DYNAMIC_ALLOCATION_POSSIBLE != 0 ) /*lint !e731 !e9029 Macro has been consolidated for readability reasons. */
             {
@@ -626,8 +638,10 @@ static void prvAddNewTaskToReadyList(_Ptr<TCB_t> pxNewTCB) PRIVILEGED_FUNCTION;
             memset( pxNewTCB, 0x00, sizeof( TCB_t ) );
 
             /* Store the stack location in the TCB. */
-            pxNewTCB->pxStack = pxTaskDefinition->puxStackBuffer;
-
+            _Bundled{
+                pxNewTCB->pxStack = pxTaskDefinition->puxStackBuffer;
+                pxNewTCB->pxTopOfStack = NULL;
+            }
             #if ( tskSTATIC_AND_DYNAMIC_ALLOCATION_POSSIBLE != 0 )
             {
                 /* Tasks can be created statically or dynamically, so note this
@@ -676,7 +690,10 @@ static void prvAddNewTaskToReadyList(_Ptr<TCB_t> pxNewTCB) PRIVILEGED_FUNCTION;
                 memset( pxNewTCB, 0x00, sizeof( TCB_t ) );
 
                 /* Store the stack location in the TCB. */
-                pxNewTCB->pxStack = pxTaskDefinition->puxStackBuffer;
+                _Bundled{
+                    pxNewTCB->pxStack = pxTaskDefinition->puxStackBuffer;
+                    pxNewTCB->pxTopOfStack = NULL;
+                }
 
                 #if ( tskSTATIC_AND_DYNAMIC_ALLOCATION_POSSIBLE != 0 )
                 {
@@ -725,13 +742,15 @@ static void prvAddNewTaskToReadyList(_Ptr<TCB_t> pxNewTCB) PRIVILEGED_FUNCTION;
 
             if( pxNewTCB != NULL )
             {
-                memset( pxNewTCB, 0x00, sizeof( TCB_t ) );
+                memset( (_Array_ptr<void>)pxNewTCB, 0x00, sizeof( TCB_t ) );
                 /* Allocate space for the stack used by the task being created.
                  * The base of the stack memory stored in the TCB so the task can
                  * be deleted later if required. */
                 _Bundled{
                     pxNewTCB->pxStack = pvPortMallocStack<StackType_t>( ( ( ( size_t ) usStackDepth ) * sizeof( StackType_t ) ) ); /*lint !e961 MISRA exception as the casts are only redundant for some ports. */
                     pxNewTCB->usStackDepth = usStackDepth;
+                    pxNewTCB->pxTopOfStack = NULL;
+                    pxNewTCB->pxEndOfStack = NULL;
                 }
                 if( pxNewTCB->pxStack == NULL )
                 {
@@ -755,11 +774,12 @@ static void prvAddNewTaskToReadyList(_Ptr<TCB_t> pxNewTCB) PRIVILEGED_FUNCTION;
 
                 if( pxNewTCB != NULL )
                 {
-                    memset( pxNewTCB, 0x00, sizeof( TCB_t ) );
+                    memset( (_Array_ptr<void>)pxNewTCB, 0x00, sizeof( TCB_t ) );
                     /* Store the stack location in the TCB. */
                     _Bundled{
                         pxNewTCB->pxStack = pxStack;
                         pxNewTCB->usStackDepth = usStackDepth;
+                        pxNewTCB->pxTopOfStack = NULL;
                     }
                 }
                 else
@@ -801,7 +821,14 @@ static void prvAddNewTaskToReadyList(_Ptr<TCB_t> pxNewTCB) PRIVILEGED_FUNCTION;
 #endif /* configSUPPORT_DYNAMIC_ALLOCATION */
 /*-----------------------------------------------------------*/
 
-static void prvInitialiseNewTask(TaskFunction_t pxTaskCode, const _Nt_array_ptr<const char> pcName: count(configMAX_TASK_NAME_LEN), const uint32_t ulStackDepth, _Ptr<void> const pvParameters, UBaseType_t uxPriority, const _Ptr<TaskHandle_t> pxCreatedTask, _Ptr<TCB_t> pxNewTCB, const _Ptr<const MemoryRegion_t> xRegions)
+static void prvInitialiseNewTask(TaskFunction_t pxTaskCode,
+                                const _Nt_array_ptr<const char> pcName: count(configMAX_TASK_NAME_LEN),
+                                const uint32_t ulStackDepth,
+                                _Ptr<void> const pvParameters,
+                                UBaseType_t uxPriority,
+                                const _Ptr<TaskHandle_t> pxCreatedTask,
+                                _Ptr<TCB_t> pxNewTCB,
+                                const _Ptr<const MemoryRegion_t> xRegions)
 {
     _Array_ptr<StackType_t> pxTopOfStack = NULL;
     UBaseType_t x;
@@ -1149,7 +1176,7 @@ static void prvAddNewTaskToReadyList(_Ptr<TCB_t> pxNewTCB)
                  * after which it is not possible to yield away from this task -
                  * hence xYieldPending is used to latch that a context switch is
                  * required. */
-                portPRE_TASK_DELETE_HOOK( pxTCB, &xYieldPending );
+                portPRE_TASK_DELETE_HOOK( (_Array_ptr<void>)pxTCB, &xYieldPending );
             }
             else
             {
@@ -3773,15 +3800,11 @@ static void prvCheckTasksWaitingTermination( void )
         {
             #if ( portSTACK_GROWTH > 0 )
             {   
-                _Unchecked{
-                    pxTaskStatus->usStackHighWaterMark = prvTaskCheckFreeStackSpace(  (const uint8_t*)pxTCB->pxEndOfStack );
-                }
+                pxTaskStatus->usStackHighWaterMark = prvTaskCheckFreeStackSpace( (_Array_ptr<const uint8_t>)pxTCB->pxEndOfStack, (_Ptr<uint8_t> )pxTCB->pxStack, (_Ptr<uint8_t>)((( _Array_ptr<uint8_t> )pxTCB->pxStack+pxTCB->usStackDepth) + (sizeof(StackType_t)-1)) );
             }
             #else
             {   
-                _Unchecked{
-                    pxTaskStatus->usStackHighWaterMark = prvTaskCheckFreeStackSpace(  (const uint8_t*)pxTCB->pxStack );
-                }
+                pxTaskStatus->usStackHighWaterMark = prvTaskCheckFreeStackSpace( (_Array_ptr<const uint8_t>)pxTCB->pxStack, (_Ptr<uint8_t> )pxTCB->pxStack, (_Ptr<uint8_t>)((( _Array_ptr<uint8_t> )pxTCB->pxStack+pxTCB->usStackDepth) + (sizeof(StackType_t)-1)) );
             }
             #endif
         }
@@ -3830,7 +3853,7 @@ static void prvCheckTasksWaitingTermination( void )
 
 #if ( ( configUSE_TRACE_FACILITY == 1 ) || ( INCLUDE_uxTaskGetStackHighWaterMark == 1 ) || ( INCLUDE_uxTaskGetStackHighWaterMark2 == 1 ) )
 
-    _Unchecked static configSTACK_DEPTH_TYPE prvTaskCheckFreeStackSpace(const uint8_t* pucStackByte)
+    static configSTACK_DEPTH_TYPE prvTaskCheckFreeStackSpace(_Array_ptr<const uint8_t> pucStackByte: bounds(start, end), _Ptr<uint8_t> start, _Ptr<uint8_t> end)
     {
         uint32_t ulCount = 0U;
 
@@ -3858,7 +3881,6 @@ static void prvCheckTasksWaitingTermination( void )
     configSTACK_DEPTH_TYPE uxTaskGetStackHighWaterMark2( TaskHandle_t xTask )
     {
         _Ptr<TCB_t> pxTCB = NULL;
-        _Array_ptr<uint8_t> pucEndOfStack = NULL;
         configSTACK_DEPTH_TYPE uxReturn;
 
         /* uxTaskGetStackHighWaterMark() and uxTaskGetStackHighWaterMark2() are
@@ -3869,6 +3891,7 @@ static void prvCheckTasksWaitingTermination( void )
          * type. */
 
         pxTCB = prvGetTCBFromHandle( xTask );
+        _Array_ptr<uint8_t> pucEndOfStack: bounds(pxTCB->pxStack, pxTCB->pxStack+pxTCB->usStackDepth) = NULL;
 
         #if portSTACK_GROWTH < 0
         {
@@ -3879,9 +3902,9 @@ static void prvCheckTasksWaitingTermination( void )
             pucEndOfStack = ( _Array_ptr<uint8_t> ) pxTCB->pxEndOfStack;
         }
         #endif
-        _Unchecked{
-            uxReturn = prvTaskCheckFreeStackSpace( (const uint8_t*)pucEndOfStack);
-        }
+        
+        uxReturn = prvTaskCheckFreeStackSpace( (_Array_ptr<const uint8_t>)pucEndOfStack, (_Ptr<uint8_t> )pxTCB->pxStack, (_Ptr<uint8_t>)((( _Array_ptr<uint8_t> )pxTCB->pxStack+pxTCB->usStackDepth) + (sizeof(StackType_t)-1)) );
+        
         return uxReturn;
     }
 
@@ -3893,10 +3916,10 @@ static void prvCheckTasksWaitingTermination( void )
     UBaseType_t uxTaskGetStackHighWaterMark( TaskHandle_t xTask )
     {
         _Ptr<TCB_t> pxTCB = NULL;
-        _Array_ptr<uint8_t> pucEndOfStack  = NULL;
         UBaseType_t uxReturn;
 
         pxTCB = prvGetTCBFromHandle( xTask );
+        _Array_ptr<uint8_t> pucEndOfStack: bounds(pxTCB->pxStack, pxTCB->pxStack+pxTCB->usStackDepth)  = NULL;
 
         #if portSTACK_GROWTH < 0
         {
@@ -3907,10 +3930,9 @@ static void prvCheckTasksWaitingTermination( void )
             pucEndOfStack = ( _Array_ptr<uint8_t> ) pxTCB->pxEndOfStack;
         }
         #endif
-
-        _Unchecked{
-            uxReturn = ( UBaseType_t ) prvTaskCheckFreeStackSpace( (const uint8_t*)pucEndOfStack );
-        }
+        
+        uxReturn = ( UBaseType_t ) prvTaskCheckFreeStackSpace( ( _Array_ptr<uint8_t> )pucEndOfStack, (_Ptr<uint8_t> )pxTCB->pxStack, (_Ptr<uint8_t>)((( _Array_ptr<uint8_t> )pxTCB->pxStack+pxTCB->usStackDepth) + (sizeof(StackType_t)-1)) );
+        
         return uxReturn;
     }
 
@@ -4377,7 +4399,7 @@ static void prvResetNextTaskUnblockTime( void )
 #endif /* portCRITICAL_NESTING_IN_TCB */
 /*-----------------------------------------------------------*/
 
-//#if ( ( ( configUSE_TRACE_FACILITY == 1 ) || ( configGENERATE_RUN_TIME_STATS == 1 ) ) && \
+#if ( ( ( configUSE_TRACE_FACILITY == 1 ) || ( configGENERATE_RUN_TIME_STATS == 1 ) ) && \
     ( configUSE_STATS_FORMATTING_FUNCTIONS > 0 ) &&                                      \
     ( configSUPPORT_DYNAMIC_ALLOCATION == 1 ) )
 
@@ -4406,10 +4428,10 @@ static void prvResetNextTaskUnblockTime( void )
         return &( pcBuffer[ x ] );
     }
 
-//#endif /* ( configUSE_TRACE_FACILITY == 1 ) && ( configUSE_STATS_FORMATTING_FUNCTIONS > 0 ) */
+#endif /* ( configUSE_TRACE_FACILITY == 1 ) && ( configUSE_STATS_FORMATTING_FUNCTIONS > 0 ) */
 /*-----------------------------------------------------------*/
 
-//#if ( ( configUSE_TRACE_FACILITY == 1 ) && ( configUSE_STATS_FORMATTING_FUNCTIONS > 0 ) && ( configSUPPORT_DYNAMIC_ALLOCATION == 1 ) )
+#if ( ( configUSE_TRACE_FACILITY == 1 ) && ( configUSE_STATS_FORMATTING_FUNCTIONS > 0 ) && ( configSUPPORT_DYNAMIC_ALLOCATION == 1 ) )
 
     void vTaskList( _Array_ptr<char> pcWriteBuffer )
     {
@@ -4447,8 +4469,7 @@ static void prvResetNextTaskUnblockTime( void )
 
         /* Make sure the write buffer does not contain a string. */
         _Unchecked{
-            char * tmppcWriteBuffer = (char*)pcWriteBuffer;
-            *tmppcWriteBuffer = ( char ) 0x00;
+            *_Assume_bounds_cast<_Array_ptr<char>>(pcWriteBuffer, count(1)) = ( char ) 0x00;
         }
         /* Take a snapshot of the number of tasks in case it changes while this
          * function is executing. */
@@ -4498,7 +4519,8 @@ static void prvResetNextTaskUnblockTime( void )
                 _Unchecked{
                     /* Write the task name to the string, padding with spaces so it
                     * can be printed in tabular form more easily. */
-                    pcWriteBuffer = prvWriteNameToBuffer( pcWriteBuffer, pxTaskStatusArray[ x ].pcTaskName );
+
+                    pcWriteBuffer = prvWriteNameToBuffer( _Assume_bounds_cast<_Array_ptr<char>>(pcWriteBuffer, count(configMAX_TASK_NAME_LEN)), pxTaskStatusArray[ x ].pcTaskName );
 
                     /* Write the rest of the string. */
                 
@@ -4517,7 +4539,7 @@ static void prvResetNextTaskUnblockTime( void )
         }
     }
 
-//#endif /* ( ( configUSE_TRACE_FACILITY == 1 ) && ( configUSE_STATS_FORMATTING_FUNCTIONS > 0 ) && ( configSUPPORT_DYNAMIC_ALLOCATION == 1 ) ) */
+#endif /* ( ( configUSE_TRACE_FACILITY == 1 ) && ( configUSE_STATS_FORMATTING_FUNCTIONS > 0 ) && ( configSUPPORT_DYNAMIC_ALLOCATION == 1 ) ) */
 /*----------------------------------------------------------*/
 
 #if ( ( configGENERATE_RUN_TIME_STATS == 1 ) && ( configUSE_STATS_FORMATTING_FUNCTIONS > 0 ) && ( configSUPPORT_DYNAMIC_ALLOCATION == 1 ) )
@@ -4562,8 +4584,7 @@ static void prvResetNextTaskUnblockTime( void )
 
         /* Make sure the write buffer does not contain a string. */
         _Unchecked{
-            char * tmppcWriteBuffer = (char*)pcWriteBuffer;
-            *tmppcWriteBuffer = ( char ) 0x00;
+            *_Assume_bounds_cast<_Array_ptr<char>>(pcWriteBuffer, count(1)) = ( char ) 0x00;
         }
         /* Take a snapshot of the number of tasks in case it changes while this
          * function is executing. */
@@ -4597,48 +4618,38 @@ static void prvResetNextTaskUnblockTime( void )
                      * spaces so it can be printed in tabular form more
                      * easily. */
                     _Unchecked{
-                        pcWriteBuffer = prvWriteNameToBuffer( (char *)pcWriteBuffer, (char *)pxTaskStatusArray[ x ].pcTaskName );
-                    }
+                        pcWriteBuffer = prvWriteNameToBuffer( _Assume_bounds_cast<_Array_ptr<char>>(pcWriteBuffer, count(configMAX_TASK_NAME_LEN)), pxTaskStatusArray[ x ].pcTaskName );
 
-                    if( ulStatsAsPercentage > 0UL )
-                    {
-                        #ifdef portLU_PRINTF_SPECIFIER_REQUIRED
+                        if( ulStatsAsPercentage > 0UL )
                         {
-                            _Unchecked{
+                            #ifdef portLU_PRINTF_SPECIFIER_REQUIRED
+                            {
                                 sprintf( (char *)pcWriteBuffer, "\t%lu\t\t%lu%%\r\n", pxTaskStatusArray[ x ].ulRunTimeCounter, ulStatsAsPercentage );
                             }
-                        }
-                        #else
-                        {
-                            _Unchecked{
+                            #else
+                            {
                                 /* sizeof( int ) == sizeof( long ) so a smaller
                                 * printf() library can be used. */
                                 sprintf( (char *)pcWriteBuffer, "\t%u\t\t%u%%\r\n", ( unsigned int ) pxTaskStatusArray[ x ].ulRunTimeCounter, ( unsigned int ) ulStatsAsPercentage ); /*lint !e586 sprintf() allowed as this is compiled with many compilers and this is a utility function only - not part of the core kernel implementation. */
                             }
+                            #endif
                         }
-                        #endif
-                    }
-                    else
-                    {
-                        /* If the percentage is zero here then the task has
-                         * consumed less than 1% of the total run time. */
-                        #ifdef portLU_PRINTF_SPECIFIER_REQUIRED
+                        else
                         {
-                            _Unchecked{
+                            /* If the percentage is zero here then the task has
+                             * consumed less than 1% of the total run time. */
+                            #ifdef portLU_PRINTF_SPECIFIER_REQUIRED
+                            {
                                 sprintf( (char *)pcWriteBuffer, "\t%lu\t\t<1%%\r\n", pxTaskStatusArray[ x ].ulRunTimeCounter );
                             }
-                        }
-                        #else
-                        {
-                            _Unchecked{
+                            #else
+                            {
                                 /* sizeof( int ) == sizeof( long ) so a smaller
                                 * printf() library can be used. */
                                 sprintf( (char *)pcWriteBuffer, "\t%u\t\t<1%%\r\n", ( unsigned int ) pxTaskStatusArray[ x ].ulRunTimeCounter ); /*lint !e586 sprintf() allowed as this is compiled with many compilers and this is a utility function only - not part of the core kernel implementation. */
                             }
+                            #endif
                         }
-                        #endif
-                    }
-                    _Unchecked{
                         pcWriteBuffer += strlen( (char *)pcWriteBuffer ); /*lint !e9016 Pointer arithmetic ok on char pointers especially as in this case where it best denotes the intent of the code. */
                     }
                 }
