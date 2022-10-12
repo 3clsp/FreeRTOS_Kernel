@@ -353,7 +353,7 @@ typedef enum
  * \ingroup Tasks
  */
 #if ( configSUPPORT_DYNAMIC_ALLOCATION == 1 )
-    BaseType_t xTaskCreate(TaskFunction_t pxTaskCode, const _Nt_array_ptr<const char> pcName: count(configMAX_TASK_NAME_LEN), const configSTACK_DEPTH_TYPE usStackDepth, _Ptr<void> const pvParameters, UBaseType_t uxPriority, const _Ptr<TaskHandle_t> pxCreatedTask) PRIVILEGED_FUNCTION;
+    BaseType_t xTaskCreate(TaskFunction_t pxTaskCode, const _Nt_array_ptr<const char> pcName, const configSTACK_DEPTH_TYPE usStackDepth, _Ptr<void> const pvParameters, UBaseType_t uxPriority, const _Ptr<TaskHandle_t> pxCreatedTask) PRIVILEGED_FUNCTION;
 #endif
 
 /**
@@ -1491,7 +1491,7 @@ _Ptr<char> pcTaskGetName(TaskHandle_t xTaskToQuery) PRIVILEGED_FUNCTION; /*lint 
  * \defgroup pcTaskGetHandle pcTaskGetHandle
  * \ingroup TaskUtils
  */
-TaskHandle_t xTaskGetHandle(_Nt_array_ptr<const char> pcNameToQuery : count(configMAX_TASK_NAME_LEN)) PRIVILEGED_FUNCTION; /*lint !e971 Unqualified char types are allowed for strings and single characters only. */
+TaskHandle_t xTaskGetHandle(_Nt_array_ptr<const char> pcNameToQuery) PRIVILEGED_FUNCTION; /*lint !e971 Unqualified char types are allowed for strings and single characters only. */
 
 /**
  * task.h

@@ -101,8 +101,8 @@ typedef struct SemaphoreData
  */
 typedef struct QueueDefinition /* The old naming convention is used to prevent breaking kernel aware debuggers. */
 {
-    _Array_ptr<int8_t> pcHead: count(uxItemSize * uxLength);           /*< Points to the beginning of the queue storage area. */
-    _Array_ptr<int8_t> pcWriteTo;        /*< Points to the free next place in the storage area. */
+    _Array_ptr<int8_t> pcHead: bounds(pcHead, pcHead + (uxItemSize * uxLength));           /*< Points to the beginning of the queue storage area. */
+    _Array_ptr<int8_t> pcWriteTo: bounds(pcHead, pcHead + (uxItemSize * uxLength));        /*< Points to the free next place in the storage area. */
 
     union
     {
@@ -195,12 +195,12 @@ static BaseType_t prvIsQueueFull(_Ptr<const Queue_t> pxQueue) PRIVILEGED_FUNCTIO
  * Copies an item into the queue, either at the front of the queue or the
  * back of the queue.
  */
-static BaseType_t prvCopyDataToQueue(const _Ptr<Queue_t> pxQueue, _Ptr<const void> pvItemToQueue, const BaseType_t xPosition) PRIVILEGED_FUNCTION;
+static BaseType_t prvCopyDataToQueue(const _Ptr<Queue_t> pxQueue, _Ptr<const uint8_t> pvItemToQueue, const BaseType_t xPosition) PRIVILEGED_FUNCTION;
 
 /*
  * Copies an item out of a queue.
  */
-static void prvCopyDataFromQueue(const _Ptr<Queue_t> pxQueue, _Ptr<void> const pvBuffer) PRIVILEGED_FUNCTION;
+static void prvCopyDataFromQueue(const _Ptr<Queue_t> pxQueue, _Ptr<uint8_t> const pvBuffer) PRIVILEGED_FUNCTION;
 
 #if ( configUSE_QUEUE_SETS == 1 )
 
@@ -496,7 +496,7 @@ static void prvInitialiseNewQueue(const UBaseType_t uxQueueLength, const UBaseTy
         _Bundled{
             // Since this is a benign value and not used, this should not cause issue.
             pxNewQueue->pcHead = ( _Array_ptr<int8_t> ) pxNewQueue;
-
+            pxNewQueue->pcWriteTo = NULL;
             /* Initialise the queue members as described where the queue type is
             * defined. */
             pxNewQueue->uxLength = uxQueueLength;
@@ -508,7 +508,8 @@ static void prvInitialiseNewQueue(const UBaseType_t uxQueueLength, const UBaseTy
         /* Set the head to the start of the queue storage area. */
         _Bundled{
             pxNewQueue->pcHead = ( _Array_ptr<int8_t> ) pucQueueStorage;
-
+            // This will get filled with proper value later.
+            pxNewQueue->pcWriteTo = NULL;
             /* Initialise the queue members as described where the queue type is
             * defined. */
             pxNewQueue->uxLength = uxQueueLength;
@@ -545,7 +546,11 @@ static void prvInitialiseNewQueue(const UBaseType_t uxQueueLength, const UBaseTy
             * mutex.  Overwrite those members that need to be set differently -
             * in particular the information required for priority inheritance. */
             pxNewQueue->u.xSemaphore.xMutexHolder = NULL;
-            pxNewQueue->uxQueueType = queueQUEUE_IS_MUTEX;
+            _Bundled{
+                // For some reason this assignment is giving error saying bounds of pcWriteTo is unknown.
+                pxNewQueue->uxQueueType = queueQUEUE_IS_MUTEX;
+                pxNewQueue->pcWriteTo = NULL;
+            }
 
             /* In case this is a recursive mutex. */
             pxNewQueue->u.xSemaphore.uxRecursiveCallCount = 0;
@@ -824,7 +829,7 @@ static void prvInitialiseNewQueue(const UBaseType_t uxQueueLength, const UBaseTy
 #endif /* ( ( configUSE_COUNTING_SEMAPHORES == 1 ) && ( configSUPPORT_DYNAMIC_ALLOCATION == 1 ) ) */
 /*-----------------------------------------------------------*/
 
-BaseType_t xQueueGenericSend(QueueHandle_t xQueue, _Ptr<const void> const pvItemToQueue, TickType_t xTicksToWait, const BaseType_t xCopyPosition)
+BaseType_t xQueueGenericSend(QueueHandle_t xQueue, _Ptr<const uint8_t> const pvItemToQueue, TickType_t xTicksToWait, const BaseType_t xCopyPosition)
 {
     BaseType_t xEntryTimeSet = pdFALSE, xYieldRequired;
     TimeOut_t xTimeOut;
@@ -1033,7 +1038,7 @@ BaseType_t xQueueGenericSend(QueueHandle_t xQueue, _Ptr<const void> const pvItem
 }
 /*-----------------------------------------------------------*/
 
-BaseType_t xQueueGenericSendFromISR(QueueHandle_t xQueue, _Ptr<const void> const pvItemToQueue, _Ptr<BaseType_t> const pxHigherPriorityTaskWoken, const BaseType_t xCopyPosition)
+BaseType_t xQueueGenericSendFromISR(QueueHandle_t xQueue, _Ptr<const uint8_t> const pvItemToQueue, _Ptr<BaseType_t> const pxHigherPriorityTaskWoken, const BaseType_t xCopyPosition)
 {
     BaseType_t xReturn;
     UBaseType_t uxSavedInterruptStatus;
@@ -1360,7 +1365,7 @@ BaseType_t xQueueGiveFromISR(QueueHandle_t xQueue, _Ptr<BaseType_t> const pxHigh
 }
 /*-----------------------------------------------------------*/
 
-BaseType_t xQueueReceive(QueueHandle_t xQueue, _Ptr<void> const pvBuffer, TickType_t xTicksToWait)
+BaseType_t xQueueReceive(QueueHandle_t xQueue, _Ptr<uint8_t> const pvBuffer, TickType_t xTicksToWait)
 {
     BaseType_t xEntryTimeSet = pdFALSE;
     TimeOut_t xTimeOut;
@@ -1719,7 +1724,7 @@ BaseType_t xQueueSemaphoreTake(QueueHandle_t xQueue, TickType_t xTicksToWait)
 }
 /*-----------------------------------------------------------*/
 
-BaseType_t xQueuePeek(QueueHandle_t xQueue, _Ptr<void> const pvBuffer, TickType_t xTicksToWait)
+BaseType_t xQueuePeek(QueueHandle_t xQueue, _Ptr<uint8_t> const pvBuffer, TickType_t xTicksToWait)
 {
     BaseType_t xEntryTimeSet = pdFALSE;
     TimeOut_t xTimeOut;
@@ -1867,7 +1872,7 @@ BaseType_t xQueuePeek(QueueHandle_t xQueue, _Ptr<void> const pvBuffer, TickType_
 }
 /*-----------------------------------------------------------*/
 
-BaseType_t xQueueReceiveFromISR(QueueHandle_t xQueue, _Ptr<void> const pvBuffer, _Ptr<BaseType_t> const pxHigherPriorityTaskWoken)
+BaseType_t xQueueReceiveFromISR(QueueHandle_t xQueue, _Ptr<uint8_t> const pvBuffer, _Ptr<BaseType_t> const pxHigherPriorityTaskWoken)
 {
     BaseType_t xReturn;
     UBaseType_t uxSavedInterruptStatus;
@@ -1958,7 +1963,7 @@ BaseType_t xQueueReceiveFromISR(QueueHandle_t xQueue, _Ptr<void> const pvBuffer,
 }
 /*-----------------------------------------------------------*/
 
-BaseType_t xQueuePeekFromISR(QueueHandle_t xQueue, _Ptr<void> const pvBuffer)
+BaseType_t xQueuePeekFromISR(QueueHandle_t xQueue, _Ptr<uint8_t> const pvBuffer)
 {
     BaseType_t xReturn;
     UBaseType_t uxSavedInterruptStatus;
@@ -2156,7 +2161,7 @@ void vQueueDelete(QueueHandle_t xQueue)
 #endif /* configUSE_MUTEXES */
 /*-----------------------------------------------------------*/
 
-static BaseType_t prvCopyDataToQueue(const _Ptr<Queue_t> pxQueue, _Ptr<const void> pvItemToQueue, const BaseType_t xPosition)
+static BaseType_t prvCopyDataToQueue(const _Ptr<Queue_t> pxQueue, _Ptr<const uint8_t> pvItemToQueue, const BaseType_t xPosition)
 {
     BaseType_t xReturn = pdFALSE;
     UBaseType_t uxMessagesWaiting;
@@ -2184,9 +2189,8 @@ static BaseType_t prvCopyDataToQueue(const _Ptr<Queue_t> pxQueue, _Ptr<const voi
     }
     else if( xPosition == queueSEND_TO_BACK )
     {
-        _Unchecked{
-            ( void ) memcpy( ( void* ) pxQueue->pcWriteTo, pvItemToQueue, ( size_t ) pxQueue->uxItemSize ); /*lint !e961 !e418 !e9087 MISRA exception as the casts are only redundant for some ports, plus previous logic ensures a null pointer can only be passed to memcpy() if the copy size is 0.  Cast to void required by function signature and safe as no alignment requirement and copy length specified in bytes. */
-        }
+        ( void ) memcpy<void>( pxQueue->pcWriteTo, pvItemToQueue, ( size_t ) pxQueue->uxItemSize ); /*lint !e961 !e418 !e9087 MISRA exception as the casts are only redundant for some ports, plus previous logic ensures a null pointer can only be passed to memcpy() if the copy size is 0.  Cast to void required by function signature and safe as no alignment requirement and copy length specified in bytes. */
+
         pxQueue->pcWriteTo += pxQueue->uxItemSize;                                                       /*lint !e9016 Pointer arithmetic on char types ok, especially in this use case where it is the clearest way of conveying intent. */
 
         if( pxQueue->pcWriteTo >= pxQueue->u.xQueue.pcTail )                                             /*lint !e946 MISRA exception justified as comparison of pointers is the cleanest solution. */
@@ -2241,7 +2245,7 @@ static BaseType_t prvCopyDataToQueue(const _Ptr<Queue_t> pxQueue, _Ptr<const voi
 }
 /*-----------------------------------------------------------*/
 
-static void prvCopyDataFromQueue(const _Ptr<Queue_t> pxQueue, _Ptr<void> const pvBuffer)
+static void prvCopyDataFromQueue(const _Ptr<Queue_t> pxQueue, _Ptr<uint8_t> const pvBuffer)
 {
     if( pxQueue->uxItemSize != ( UBaseType_t ) 0 )
     {
@@ -2256,7 +2260,7 @@ static void prvCopyDataFromQueue(const _Ptr<Queue_t> pxQueue, _Ptr<void> const p
             mtCOVERAGE_TEST_MARKER();
         }
         _Unchecked{
-        ( void ) memcpy( ( void* ) pvBuffer, ( void* ) pxQueue->u.xQueue.pcReadFrom, ( size_t ) pxQueue->uxItemSize ); /*lint !e961 !e418 !e9087 
+            ( void ) memcpy( ( void* ) pvBuffer, ( void* ) pxQueue->u.xQueue.pcReadFrom, ( size_t ) pxQueue->uxItemSize ); /*lint !e961 !e418 !e9087 
         MISRA exception as the casts are only redundant for some ports.  Also previous logic ensures a null pointer can only be passed to memcpy() when the 
         count is 0.  Cast to void required by function signature and safe as no alignment requirement and copy length specified in bytes. */
         }
@@ -2469,7 +2473,7 @@ BaseType_t xQueueIsQueueFullFromISR(const QueueHandle_t xQueue)
 #if ( configUSE_CO_ROUTINES == 1 )
 
     BaseType_t xQueueCRSend( QueueHandle_t xQueue,
-                             _Ptr<const void> pvItemToQueue,
+                             _Ptr<const uint8_t> pvItemToQueue,
                              TickType_t xTicksToWait )
     {
         BaseType_t xReturn;
@@ -2548,7 +2552,7 @@ BaseType_t xQueueIsQueueFullFromISR(const QueueHandle_t xQueue)
 #if ( configUSE_CO_ROUTINES == 1 )
 
     BaseType_t xQueueCRReceive( QueueHandle_t xQueue,
-                                _Ptr<void> pvBuffer,
+                                _Ptr<uint8_t> pvBuffer,
                                 TickType_t xTicksToWait )
     {
         BaseType_t xReturn;
@@ -2643,7 +2647,7 @@ BaseType_t xQueueIsQueueFullFromISR(const QueueHandle_t xQueue)
 #if ( configUSE_CO_ROUTINES == 1 )
 
     BaseType_t xQueueCRSendFromISR( QueueHandle_t xQueue,
-                                    _Ptr<const void> pvItemToQueue,
+                                    _Ptr<const uint8_t> pvItemToQueue,
                                     BaseType_t xCoRoutinePreviouslyWoken )
     {
         _Ptr<Queue_t> const pxQueue = xQueue;
@@ -2693,7 +2697,7 @@ BaseType_t xQueueIsQueueFullFromISR(const QueueHandle_t xQueue)
 #if ( configUSE_CO_ROUTINES == 1 )
 
     BaseType_t xQueueCRReceiveFromISR( QueueHandle_t xQueue,
-                                       _Ptr<void> pvBuffer,
+                                       _Ptr<uint8_t> pvBuffer,
                                        _Ptr<BaseType_t> pxCoRoutineWoken )
     {
         BaseType_t xReturn;
@@ -2773,13 +2777,13 @@ BaseType_t xQueueIsQueueFullFromISR(const QueueHandle_t xQueue)
                 /* Replace an existing entry if the queue is already in the registry. */
                 if( xQueue == xQueueRegistry[ ux ].xHandle )
                 {
-                    pxEntryToWrite = _Dynamic_bounds_cast<_Ptr<QueueRegistryItem_t>>(&( xQueueRegistry[ ux ] ));
+                    pxEntryToWrite = &( xQueueRegistry[ ux ] );
                     break;
                 }
                 /* Otherwise, store in the next empty location */
                 else if( ( pxEntryToWrite == NULL ) && ( xQueueRegistry[ ux ].pcQueueName == NULL ) )
                 {
-                    pxEntryToWrite = _Dynamic_bounds_cast<_Ptr<QueueRegistryItem_t>>(&( xQueueRegistry[ ux ] ));
+                    pxEntryToWrite = &( xQueueRegistry[ ux ] );
                 }
                 else
                 {
@@ -2992,7 +2996,7 @@ BaseType_t xQueueIsQueueFullFromISR(const QueueHandle_t xQueue)
     {
         QueueSetMemberHandle_t xReturn = NULL;
 
-        ( void ) xQueueReceive( (_Ptr<struct QueueDefinition> ) xQueueSet, (_Ptr<void>)&xReturn, xTicksToWait ); /*lint !e961 Casting from one typedef to another is not redundant. */
+        ( void ) xQueueReceive( (_Ptr<struct QueueDefinition> ) xQueueSet, (_Ptr<uint8_t>)&xReturn, xTicksToWait ); /*lint !e961 Casting from one typedef to another is not redundant. */
         return xReturn;
     }
 
@@ -3005,7 +3009,7 @@ BaseType_t xQueueIsQueueFullFromISR(const QueueHandle_t xQueue)
     {
         QueueSetMemberHandle_t xReturn = NULL;
 
-        ( void ) xQueueReceiveFromISR( (_Ptr<struct QueueDefinition> ) xQueueSet, (_Ptr<void>)&xReturn, NULL ); /*lint !e961 Casting from one typedef to another is not redundant. */
+        ( void ) xQueueReceiveFromISR( (_Ptr<struct QueueDefinition> ) xQueueSet, (_Ptr<uint8_t>)&xReturn, NULL ); /*lint !e961 Casting from one typedef to another is not redundant. */
         return xReturn;
     }
 
@@ -3034,7 +3038,7 @@ BaseType_t xQueueIsQueueFullFromISR(const QueueHandle_t xQueue)
             traceQUEUE_SET_SEND( (_Ptr<void>)pxQueueSetContainer, pxQueueSetContainer->uxMessagesWaiting );
 
             /* The data copied is the handle of the queue that contains data. */
-            xReturn = prvCopyDataToQueue( pxQueueSetContainer, (_Ptr<void>)&pxQueue, queueSEND_TO_BACK );
+            xReturn = prvCopyDataToQueue( pxQueueSetContainer, (_Ptr<uint8_t>)&pxQueue, queueSEND_TO_BACK );
 
             if( cTxLock == queueUNLOCKED )
             {

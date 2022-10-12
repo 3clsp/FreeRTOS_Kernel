@@ -76,6 +76,7 @@
 /* The definition of the timers themselves. */
     typedef struct tmrTimerControl                  /* The old naming convention is used to prevent breaking kernel aware debuggers. */
     {
+        // Not used for arthmetic operations. So _Ptr is enough.
         _Ptr<const char> pcTimerName;                   /*<< Text name.  This is not used by the kernel, it is included simply to make debugging easier. */ /*lint !e971 Unqualified char types are allowed for strings and single characters only. */
         ListItem_t xTimerListItem;                  /*<< Standard linked list item as used by all kernel features for event management. */
         TickType_t xTimerPeriodInTicks;             /*<< How quickly and often the timer expires. */
@@ -384,16 +385,16 @@
             {
                 if( xTaskGetSchedulerState() == taskSCHEDULER_RUNNING )
                 {
-                    xReturn = xQueueSendToBack( xTimerQueue, (_Ptr<const void>)&xMessage, xTicksToWait );
+                    xReturn = xQueueSendToBack( xTimerQueue, (_Ptr<const uint8_t>)&xMessage, xTicksToWait );
                 }
                 else
                 {
-                    xReturn = xQueueSendToBack( xTimerQueue, (_Ptr<const void>)&xMessage, tmrNO_DELAY );
+                    xReturn = xQueueSendToBack( xTimerQueue, (_Ptr<const uint8_t>)&xMessage, tmrNO_DELAY );
                 }
             }
             else
             {
-                xReturn = xQueueSendToBackFromISR( xTimerQueue, (_Ptr<const void>)&xMessage, pxHigherPriorityTaskWoken );
+                xReturn = xQueueSendToBackFromISR( xTimerQueue, (_Ptr<const uint8_t>)&xMessage, pxHigherPriorityTaskWoken );
             }
 
             traceTIMER_COMMAND_SEND( (_Ptr<void>)xTimer, xCommandID, xOptionalValue, xReturn );
@@ -516,8 +517,9 @@
                                         const TickType_t xTimeNow )
     {   
         _Ptr<Timer_t> pxTimer = NULL;
-        pxTimer = _Dynamic_bounds_cast<_Ptr<Timer_t>>(listGET_OWNER_OF_HEAD_ENTRY( pxCurrentTimerList )); /*lint !e9087 !e9079 void * is used as this macro is used with tasks and co-routines too.  Alignment is known to be fine as the type of the pointer stored and retrieved is the same. */
-
+        _Unchecked{
+            pxTimer = _Assume_bounds_cast<_Ptr<Timer_t>>(listGET_OWNER_OF_HEAD_ENTRY( pxCurrentTimerList )); /*lint !e9087 !e9079 void * is used as this macro is used with tasks and co-routines too.  Alignment is known to be fine as the type of the pointer stored and retrieved is the same. */
+        }
         /* Remove the timer from the list of active timers.  A check has already
          * been performed to ensure the list is not empty. */
 
@@ -736,7 +738,7 @@
         BaseType_t xTimerListsWereSwitched;
         TickType_t xTimeNow;
 
-        while( xQueueReceive( xTimerQueue, (const _Ptr<void>)&xMessage, tmrNO_DELAY ) != pdFAIL ) /*lint !e603 xMessage does not have to be initialised as it is passed out, not in, and it is not used unless xQueueReceive() returns pdTRUE. */
+        while( xQueueReceive( xTimerQueue, (const _Ptr<uint8_t>)&xMessage, tmrNO_DELAY ) != pdFAIL ) /*lint !e603 xMessage does not have to be initialised as it is passed out, not in, and it is not used unless xQueueReceive() returns pdTRUE. */
         {
             #if ( INCLUDE_xTimerPendFunctionCall == 1 )
             {
@@ -1023,7 +1025,7 @@
             xMessage.u.xCallbackParameters.pvParameter1 = pvParameter1;
             xMessage.u.xCallbackParameters.ulParameter2 = ulParameter2;
 
-            xReturn = xQueueSendFromISR( xTimerQueue, (_Ptr<const void>)&xMessage, pxHigherPriorityTaskWoken );
+            xReturn = xQueueSendFromISR( xTimerQueue, (_Ptr<const uint8_t>)&xMessage, pxHigherPriorityTaskWoken );
 
             tracePEND_FUNC_CALL_FROM_ISR( xFunctionToPend, pvParameter1, ulParameter2, xReturn );
 
@@ -1052,7 +1054,7 @@
             xMessage.u.xCallbackParameters.pvParameter1 = pvParameter1;
             xMessage.u.xCallbackParameters.ulParameter2 = ulParameter2;
 
-            xReturn = xQueueSendToBack( xTimerQueue, (_Ptr<const void>)&xMessage, xTicksToWait );
+            xReturn = xQueueSendToBack( xTimerQueue, (_Ptr<const uint8_t>)&xMessage, xTicksToWait );
 
             tracePEND_FUNC_CALL( xFunctionToPend, pvParameter1, ulParameter2, xReturn );
 

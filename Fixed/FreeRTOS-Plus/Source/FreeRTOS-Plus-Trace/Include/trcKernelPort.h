@@ -356,8 +356,8 @@ extern uint16_t CurrentFilterGroup;
 uint8_t prvTraceGetQueueType(void* handle: itype(_Ptr<void>));
 uint16_t prvTraceGetTaskNumberLow16(void* handle: itype(_Ptr<void>));
 uint16_t prvTraceGetTaskNumberHigh16(void* handle: itype(_Ptr<void>));
-void prvTraceSetTaskNumberLow16(void* handle, uint16_t value);
-void prvTraceSetTaskNumberHigh16(void* handle, uint16_t value);
+void prvTraceSetTaskNumberLow16(void* handle: itype(_Ptr<void>), uint16_t value);
+void prvTraceSetTaskNumberHigh16(void* handle: itype(_Ptr<void>), uint16_t value);
 
 uint16_t prvTraceGetQueueNumberLow16(void* handle: itype(_Ptr<void>));
 uint16_t prvTraceGetQueueNumberHigh16(void* handle: itype(_Ptr<void>));
@@ -386,7 +386,7 @@ void prvTraceSetStreamBufferNumberHigh16(void* handle: itype(_Ptr<void>), uint16
 #endif /* (TRC_CFG_INCLUDE_STREAM_BUFFER_EVENTS == 1 && TRC_CFG_FREERTOS_VERSION >= TRC_FREERTOS_VERSION_10_0_0) */
 
 #define TRACE_GET_TASK_FILTER(pxTask) prvTraceGetTaskNumberHigh16((_Ptr<void>)pxTask)
-#define TRACE_SET_TASK_FILTER(pxTask, group) prvTraceSetTaskNumberHigh16((void*)pxTask, group)
+#define TRACE_SET_TASK_FILTER(pxTask, group) prvTraceSetTaskNumberHigh16((_Ptr<void>)pxTask, group)
 
 #define TRACE_GET_QUEUE_FILTER(pxObject) prvTraceGetQueueNumberHigh16((_Ptr<void>)pxObject)
 #define TRACE_SET_QUEUE_FILTER(pxObject, group) prvTraceSetQueueNumberHigh16((_Ptr<void>)pxObject, group)
@@ -859,8 +859,8 @@ extern traceObjectClass TraceQueueClassTable[5]: itype(traceObjectClass _Checked
 /******************************
 * MACROS TO GET OBJECT NUMBER *
 ******************************/
-#define TRACE_GET_TASK_NUMBER(pxTCB) (traceHandle)(prvTraceGetTaskNumberLow16(pxTCB))
-#define TRACE_SET_TASK_NUMBER(pxTCB) prvTraceSetTaskNumberLow16(pxTCB, prvTraceGetObjectHandle(TRACE_GET_OBJECT_TRACE_CLASS(TASK, pxTCB)));
+#define TRACE_GET_TASK_NUMBER(pxTCB) (traceHandle)(prvTraceGetTaskNumberLow16((_Ptr<void>)pxTCB))
+#define TRACE_SET_TASK_NUMBER(pxTCB) prvTraceSetTaskNumberLow16((_Ptr<void>)pxTCB, prvTraceGetObjectHandle(TRACE_GET_OBJECT_TRACE_CLASS(TASK, pxTCB)));
 
 #define TRACE_GET_QUEUE_NUMBER(queue) ( ( traceHandle ) prvTraceGetQueueNumberLow16(queue) )
 #define TRACE_SET_QUEUE_NUMBER(queue) prvTraceSetQueueNumberLow16(queue, (uint16_t)prvTraceGetObjectHandle(TRACE_GET_OBJECT_TRACE_CLASS(QUEUE, queue)));
@@ -882,8 +882,8 @@ extern traceObjectClass TraceQueueClassTable[5]: itype(traceObjectClass _Checked
 #endif /* (TRC_CFG_FREERTOS_VERSION >= TRC_FREERTOS_VERSION_10_0_0) */
 
 
-#define TRACE_GET_STREAMBUFFER_NUMBER(sb) ( ( traceHandle ) prvTraceGetStreamBufferNumberLow16(sb) )
-#define TRACE_SET_STREAMBUFFER_NUMBER(sb) prvTraceSetStreamBufferNumberLow16(sb, (uint16_t)prvTraceGetObjectHandle(TRACE_GET_OBJECT_TRACE_CLASS(STREAMBUFFER, sb)));
+#define TRACE_GET_STREAMBUFFER_NUMBER(sb) ( ( traceHandle ) prvTraceGetStreamBufferNumberLow16((_Ptr<void>)sb) )
+#define TRACE_SET_STREAMBUFFER_NUMBER(sb) prvTraceSetStreamBufferNumberLow16((_Ptr<void>)sb, (uint16_t)prvTraceGetObjectHandle(TRACE_GET_OBJECT_TRACE_CLASS(STREAMBUFFER, sb)));
 
 /* Generic versions */
 #define TRACE_GET_OBJECT_NUMBER(CLASS, pxObject) TRACE_GET_##CLASS##_NUMBER(pxObject)
@@ -912,7 +912,7 @@ extern traceObjectClass TraceQueueClassTable[5]: itype(traceObjectClass _Checked
 * SPECIAL MACROS FOR TASKS    *
 ******************************/
 #define TRACE_GET_TASK_PRIORITY(pxTCB) ((uint8_t)pxTCB->uxPriority)
-#define TRACE_GET_TASK_NAME(pxTCB) ((char*)pxTCB->pcTaskName)
+#define TRACE_GET_TASK_NAME(pxTCB) (pxTCB->pcTaskName)
 
 /*** The trace macros for snapshot mode **************************************/	
 
@@ -1018,14 +1018,16 @@ extern volatile uint32_t uiTraceSystemState;
 /* Called on vTaskDelay - note the use of FreeRTOS variable xTicksToDelay */
 #undef traceTASK_DELAY
 #define traceTASK_DELAY() \
-	trcKERNEL_HOOKS_TASK_DELAY(TASK_DELAY, pxCurrentTCB, xTicksToDelay); \
+	_Ptr<TCB_t> temppxCurrentTCB = pxCurrentTCB; \
+	trcKERNEL_HOOKS_TASK_DELAY(TASK_DELAY, temppxCurrentTCB, xTicksToDelay); \
 	trcKERNEL_HOOKS_SET_TASK_INSTANCE_FINISHED();
 
 /* Called on vTaskDelayUntil - note the use of FreeRTOS variable xTimeToWake */
 #undef traceTASK_DELAY_UNTIL
 #if TRC_CFG_FREERTOS_VERSION >= TRC_FREERTOS_VERSION_9_0_0
 #define traceTASK_DELAY_UNTIL(xTimeToWake) \
-	trcKERNEL_HOOKS_TASK_DELAY(TASK_DELAY_UNTIL, pxCurrentTCB, xTimeToWake); \
+	_Ptr<TCB_t> temppxCurrentTCB = pxCurrentTCB; \
+	trcKERNEL_HOOKS_TASK_DELAY(TASK_DELAY_UNTIL, temppxCurrentTCB, xTimeToWake); \
 	trcKERNEL_HOOKS_SET_TASK_INSTANCE_FINISHED();
 #else /* TRC_CFG_FREERTOS_VERSION >= TRC_FREERTOS_VERSION_9_0_0 */
 #define traceTASK_DELAY_UNTIL() \
@@ -1374,10 +1376,11 @@ extern void vTraceStoreMemMangEvent(uint32_t ecode, uint32_t address, int32_t si
 		trcKERNEL_HOOKS_KERNEL_SERVICE_WITH_PARAM(TRACE_TASK_NOTIFY_TAKE_TRCFAILED, TASK, pxCurrentTCB, xTicksToWait);}
 #else /* TRC_CFG_FREERTOS_VERSION < TRC_FREERTOS_VERSION_9_0_0 */
 #define traceTASK_NOTIFY_TAKE(index) \
-	if (pxCurrentTCB->ucNotifyState[index] == taskNOTIFICATION_RECEIVED){ \
-		trcKERNEL_HOOKS_KERNEL_SERVICE_WITH_PARAM(TRACE_TASK_NOTIFY_TAKE, TASK, pxCurrentTCB, xTicksToWait); \
+	_Ptr<TCB_t> temppxCurrentTCB = pxCurrentTCB; \
+	if (temppxCurrentTCB->ucNotifyState[index] == taskNOTIFICATION_RECEIVED){ \
+		trcKERNEL_HOOKS_KERNEL_SERVICE_WITH_PARAM(TRACE_TASK_NOTIFY_TAKE, TASK, temppxCurrentTCB, xTicksToWait); \
 	}else{ \
-		trcKERNEL_HOOKS_KERNEL_SERVICE_WITH_PARAM(TRACE_TASK_NOTIFY_TAKE_TRCFAILED, TASK, pxCurrentTCB, xTicksToWait);}
+		trcKERNEL_HOOKS_KERNEL_SERVICE_WITH_PARAM(TRACE_TASK_NOTIFY_TAKE_TRCFAILED, TASK, temppxCurrentTCB, xTicksToWait);}
 #endif /* TRC_CFG_FREERTOS_VERSION < TRC_FREERTOS_VERSION_9_0_0 */
 
 #undef traceTASK_NOTIFY_TAKE_BLOCK
@@ -1387,7 +1390,8 @@ extern void vTraceStoreMemMangEvent(uint32_t ecode, uint32_t address, int32_t si
 	trcKERNEL_HOOKS_SET_TASK_INSTANCE_FINISHED();
 #else /* TRC_CFG_FREERTOS_VERSION < TRC_FREERTOS_VERSION_10_4_0 */
 #define traceTASK_NOTIFY_TAKE_BLOCK(index) \
-	trcKERNEL_HOOKS_KERNEL_SERVICE_WITH_PARAM(TRACE_TASK_NOTIFY_TAKE_TRCBLOCK, TASK, pxCurrentTCB, xTicksToWait); \
+	_Ptr<TCB_t> temppxCurrentTCB = pxCurrentTCB; \
+	trcKERNEL_HOOKS_KERNEL_SERVICE_WITH_PARAM(TRACE_TASK_NOTIFY_TAKE_TRCBLOCK, TASK, temppxCurrentTCB, xTicksToWait); \
 	trcKERNEL_HOOKS_SET_TASK_INSTANCE_FINISHED();
 #endif /* TRC_CFG_FREERTOS_VERSION < TRC_FREERTOS_VERSION_10_4_0 */
 
@@ -1412,12 +1416,13 @@ extern void vTraceStoreMemMangEvent(uint32_t ecode, uint32_t address, int32_t si
 	}
 #else /* TRC_CFG_FREERTOS_VERSION < TRC_FREERTOS_VERSION_9_0_0 */
 #define traceTASK_NOTIFY_WAIT(index) \
-	if (TRACE_GET_OBJECT_FILTER(TASK, pxCurrentTCB) & CurrentFilterMask) \
+	_Ptr<TCB_t> temppxCurrentTCB = pxCurrentTCB; \
+	if (TRACE_GET_OBJECT_FILTER(TASK, temppxCurrentTCB) & CurrentFilterMask) \
 	{ \
-		if (pxCurrentTCB->ucNotifyState[index] == taskNOTIFICATION_RECEIVED) \
-			prvTraceStoreKernelCallWithParam(TRACE_TASK_NOTIFY_WAIT, TRACE_CLASS_TASK, TRACE_GET_TASK_NUMBER(pxCurrentTCB), xTicksToWait); \
+		if (temppxCurrentTCB->ucNotifyState[index] == taskNOTIFICATION_RECEIVED) \
+			prvTraceStoreKernelCallWithParam(TRACE_TASK_NOTIFY_WAIT, TRACE_CLASS_TASK, TRACE_GET_TASK_NUMBER(temppxCurrentTCB), xTicksToWait); \
 		else \
-			prvTraceStoreKernelCallWithParam(TRACE_TASK_NOTIFY_WAIT_TRCFAILED, TRACE_CLASS_TASK, TRACE_GET_TASK_NUMBER(pxCurrentTCB), xTicksToWait); \
+			prvTraceStoreKernelCallWithParam(TRACE_TASK_NOTIFY_WAIT_TRCFAILED, TRACE_CLASS_TASK, TRACE_GET_TASK_NUMBER(temppxCurrentTCB), xTicksToWait); \
 	}
 #endif /* TRC_CFG_FREERTOS_VERSION < TRC_FREERTOS_VERSION_9_0_0 */
 
@@ -1429,8 +1434,9 @@ extern void vTraceStoreMemMangEvent(uint32_t ecode, uint32_t address, int32_t si
 	trcKERNEL_HOOKS_SET_TASK_INSTANCE_FINISHED();
 #else /* TRC_CFG_FREERTOS_VERSION < TRC_FREERTOS_VERSION_10_4_0 */
 #define traceTASK_NOTIFY_WAIT_BLOCK(index) \
-	if (TRACE_GET_OBJECT_FILTER(TASK, pxCurrentTCB) & CurrentFilterMask) \
-		prvTraceStoreKernelCallWithParam(TRACE_TASK_NOTIFY_WAIT_TRCBLOCK, TRACE_CLASS_TASK, TRACE_GET_TASK_NUMBER(pxCurrentTCB), xTicksToWait); \
+	_Ptr<TCB_t> temppxCurrentTCB = pxCurrentTCB; \
+	if (TRACE_GET_OBJECT_FILTER(TASK, temppxCurrentTCB) & CurrentFilterMask) \
+		prvTraceStoreKernelCallWithParam(TRACE_TASK_NOTIFY_WAIT_TRCBLOCK, TRACE_CLASS_TASK, TRACE_GET_TASK_NUMBER(temppxCurrentTCB), xTicksToWait); \
 	trcKERNEL_HOOKS_SET_TASK_INSTANCE_FINISHED();
 #endif /* TRC_CFG_FREERTOS_VERSION < TRC_FREERTOS_VERSION_10_4_0 */
 

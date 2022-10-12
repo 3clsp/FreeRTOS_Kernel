@@ -654,7 +654,7 @@ typedef _Ptr<struct QueueDefinition> QueueSetMemberHandle_t;
  * \defgroup xQueueSend xQueueSend
  * \ingroup QueueManagement
  */
-BaseType_t xQueueGenericSend(QueueHandle_t xQueue, _Ptr<const void> const pvItemToQueue, TickType_t xTicksToWait, const BaseType_t xCopyPosition) PRIVILEGED_FUNCTION;
+BaseType_t xQueueGenericSend(QueueHandle_t xQueue, _Ptr<const uint8_t> const pvItemToQueue, TickType_t xTicksToWait, const BaseType_t xCopyPosition) PRIVILEGED_FUNCTION;
 
 /**
  * queue. h
@@ -749,7 +749,7 @@ BaseType_t xQueueGenericSend(QueueHandle_t xQueue, _Ptr<const void> const pvItem
  * \defgroup xQueuePeek xQueuePeek
  * \ingroup QueueManagement
  */
-BaseType_t xQueuePeek(QueueHandle_t xQueue, _Ptr<void> const pvBuffer, TickType_t xTicksToWait) PRIVILEGED_FUNCTION;
+BaseType_t xQueuePeek(QueueHandle_t xQueue, _Ptr<uint8_t> const pvBuffer, TickType_t xTicksToWait) PRIVILEGED_FUNCTION;
 
 /**
  * queue. h
@@ -783,7 +783,7 @@ BaseType_t xQueuePeek(QueueHandle_t xQueue, _Ptr<void> const pvBuffer, TickType_
  * \defgroup xQueuePeekFromISR xQueuePeekFromISR
  * \ingroup QueueManagement
  */
-BaseType_t xQueuePeekFromISR(QueueHandle_t xQueue, _Ptr<void> const pvBuffer) PRIVILEGED_FUNCTION;
+BaseType_t xQueuePeekFromISR(QueueHandle_t xQueue, _Ptr<uint8_t> const pvBuffer) PRIVILEGED_FUNCTION;
 
 /**
  * queue. h
@@ -875,7 +875,7 @@ BaseType_t xQueuePeekFromISR(QueueHandle_t xQueue, _Ptr<void> const pvBuffer) PR
  * \defgroup xQueueReceive xQueueReceive
  * \ingroup QueueManagement
  */
-BaseType_t xQueueReceive(QueueHandle_t xQueue, _Ptr<void> const pvBuffer, TickType_t xTicksToWait) PRIVILEGED_FUNCTION;
+BaseType_t xQueueReceive(QueueHandle_t xQueue, _Ptr<uint8_t> const pvBuffer, TickType_t xTicksToWait) PRIVILEGED_FUNCTION;
 
 /**
  * queue. h
@@ -1312,7 +1312,7 @@ void vQueueDelete(QueueHandle_t xQueue) PRIVILEGED_FUNCTION;
  * \defgroup xQueueSendFromISR xQueueSendFromISR
  * \ingroup QueueManagement
  */
-BaseType_t xQueueGenericSendFromISR(QueueHandle_t xQueue, _Ptr<const void> const pvItemToQueue, _Ptr<BaseType_t> const pxHigherPriorityTaskWoken, const BaseType_t xCopyPosition) PRIVILEGED_FUNCTION;
+BaseType_t xQueueGenericSendFromISR(QueueHandle_t xQueue, _Ptr<const uint8_t> const pvItemToQueue, _Ptr<BaseType_t> const pxHigherPriorityTaskWoken, const BaseType_t xCopyPosition) PRIVILEGED_FUNCTION;
 BaseType_t xQueueGiveFromISR(QueueHandle_t xQueue, _Ptr<BaseType_t> const pxHigherPriorityTaskWoken) PRIVILEGED_FUNCTION;
 
 /**
@@ -1402,7 +1402,7 @@ BaseType_t xQueueGiveFromISR(QueueHandle_t xQueue, _Ptr<BaseType_t> const pxHigh
  * \defgroup xQueueReceiveFromISR xQueueReceiveFromISR
  * \ingroup QueueManagement
  */
-BaseType_t xQueueReceiveFromISR(QueueHandle_t xQueue, _Ptr<void> const pvBuffer, _Ptr<BaseType_t> const pxHigherPriorityTaskWoken) PRIVILEGED_FUNCTION;
+BaseType_t xQueueReceiveFromISR(QueueHandle_t xQueue, _Ptr<uint8_t> const pvBuffer, _Ptr<BaseType_t> const pxHigherPriorityTaskWoken) PRIVILEGED_FUNCTION;
 
 /*
  * Utilities to query queues that are safe to use from an ISR.  These utilities
@@ -1421,10 +1421,10 @@ UBaseType_t uxQueueMessagesWaitingFromISR(const QueueHandle_t xQueue) PRIVILEGED
  * should not be called directly from application code.  Instead use the macro
  * wrappers defined within croutine.h.
  */
-BaseType_t xQueueCRSendFromISR(QueueHandle_t xQueue, _Ptr<const void> pvItemToQueue, BaseType_t xCoRoutinePreviouslyWoken);
-BaseType_t xQueueCRReceiveFromISR(QueueHandle_t xQueue, _Ptr<void> pvBuffer, _Ptr<BaseType_t> pxTaskWoken);
-BaseType_t xQueueCRSend(QueueHandle_t xQueue, _Ptr<const void> pvItemToQueue, TickType_t xTicksToWait);
-BaseType_t xQueueCRReceive(QueueHandle_t xQueue, _Ptr<void> pvBuffer, TickType_t xTicksToWait);
+BaseType_t xQueueCRSendFromISR(QueueHandle_t xQueue, _Ptr<const uint8_t> pvItemToQueue, BaseType_t xCoRoutinePreviouslyWoken);
+BaseType_t xQueueCRReceiveFromISR(QueueHandle_t xQueue, _Ptr<uint8_t> pvBuffer, _Ptr<BaseType_t> pxTaskWoken);
+BaseType_t xQueueCRSend(QueueHandle_t xQueue, _Ptr<const uint8_t> pvItemToQueue, TickType_t xTicksToWait);
+BaseType_t xQueueCRReceive(QueueHandle_t xQueue, _Ptr<uint8_t> pvBuffer, TickType_t xTicksToWait);
 
 /*
  * For internal use only.  Use xSemaphoreCreateMutex(),

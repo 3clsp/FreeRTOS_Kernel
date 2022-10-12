@@ -463,7 +463,7 @@ void vStreamBufferDelete(StreamBufferHandle_t xStreamBuffer)
         {
             /* Both the structure and the buffer were allocated using a single call
             * to pvPortMalloc(), hence only one call to vPortFree() is required. */
-            vPortFree<StreamBuffer_t>( pxStreamBuffer ); /*lint !e9087 Standard free() semantics require void *, plus pxStreamBuffer was allocated by pvPortMalloc(). */
+            vPortFree( (_Ptr<char>)pxStreamBuffer ); /*lint !e9087 Standard free() semantics require void *, plus pxStreamBuffer was allocated by pvPortMalloc(). */
         }
         #else
         {
@@ -1218,9 +1218,7 @@ static size_t prvWriteBytesToBuffer(const _Ptr<StreamBuffer_t> pxStreamBuffer, _
 
     /* Write as many bytes as can be written in the first write. */
     configASSERT( ( xHead + xFirstLength ) <= pxStreamBuffer->xLength );
-    _Unchecked{
-        ( void ) memcpy( ( void* ) ( &( pxStreamBuffer->pucBuffer[ xHead ] ) ), ( const void* ) pucData, xFirstLength ); /*lint !e9087 memcpy() requires void *. */
-    }
+    ( void ) memcpy<void>( ( &( pxStreamBuffer->pucBuffer[ xHead ] ) ), pucData, xFirstLength ); /*lint !e9087 memcpy() requires void *. */
 
     /* If the number of bytes written was less than the number that could be
      * written in the first write... */
@@ -1267,9 +1265,8 @@ static size_t prvReadBytesFromBuffer(_Ptr<StreamBuffer_t> pxStreamBuffer, _Array
      * read.  Asserts check bounds of read and write. */
     configASSERT( xFirstLength <= xCount );
     configASSERT( ( xTail + xFirstLength ) <= pxStreamBuffer->xLength );
-    _Unchecked{
-        ( void ) memcpy( ( void* ) pucData, ( const void * ) &( pxStreamBuffer->pucBuffer[ xTail ] ), xFirstLength ); /*lint !e9087 memcpy() requires void *. */
-    }
+    ( void ) memcpy<void>( pucData, &( pxStreamBuffer->pucBuffer[ xTail ] ), xFirstLength ); /*lint !e9087 memcpy() requires void *. */
+    
     /* If the total number of wanted bytes is greater than the number
      * that could be read in the first read... */
     if( xCount > xFirstLength )

@@ -210,7 +210,9 @@
             /* The pending ready list can be accessed by an ISR. */
             portDISABLE_INTERRUPTS();
             {
-                pxUnblockedCRCB = _Dynamic_bounds_cast<_Ptr<CRCB_t>>(listGET_OWNER_OF_HEAD_ENTRY( ( &xPendingReadyCoRoutineList ) ));
+                _Unchecked{
+                    pxUnblockedCRCB = _Assume_bounds_cast<_Ptr<CRCB_t>>(listGET_OWNER_OF_HEAD_ENTRY( ( &xPendingReadyCoRoutineList ) ));
+                }
                 ( void ) uxListRemove( &( pxUnblockedCRCB->xEventListItem ) );
             }
             portENABLE_INTERRUPTS();
@@ -247,7 +249,9 @@
             /* See if this tick has made a timeout expire. */
             while( listLIST_IS_EMPTY( pxDelayedCoRoutineList ) == pdFALSE )
             {
-                pxCRCB = _Dynamic_bounds_cast<_Ptr<CRCB_t>>(listGET_OWNER_OF_HEAD_ENTRY( pxDelayedCoRoutineList ));
+                _Unchecked{
+                    pxCRCB = _Assume_bounds_cast<_Ptr<CRCB_t>>(listGET_OWNER_OF_HEAD_ENTRY( pxDelayedCoRoutineList ));
+                }
 
                 if( xCoRoutineTickCount < listGET_LIST_ITEM_VALUE( &( pxCRCB->xGenericListItem ) ) )
                 {
@@ -315,8 +319,9 @@
             if( ( _Ptr<void> ) ( pxConstList )->pxIndex == ( _Ptr<void> ) &( ( pxConstList )->xListEnd ) ) {
                 ( pxConstList )->pxIndex = ( pxConstList )->pxIndex->pxNext;
             }   
-             (pxCurrentCoRoutine ) = _Dynamic_bounds_cast<_Ptr<CRCB_t>>(( pxConstList )->pxIndex->pvOwner);
-
+            _Unchecked{
+                (pxCurrentCoRoutine ) = _Assume_bounds_cast<_Ptr<CRCB_t>>(( pxConstList )->pxIndex->pvOwner);
+            }
             /* Call the co-routine. */
             ( pxCurrentCoRoutine->pxCoRoutineFunction )( (_Ptr<void>)pxCurrentCoRoutine, pxCurrentCoRoutine->uxIndex );
         }
@@ -351,7 +356,9 @@
         /* This function is called from within an interrupt.  It can only access
          * event lists and the pending ready list.  This function assumes that a
          * check has already been made to ensure pxEventList is not empty. */
-        pxUnblockedCRCB = _Dynamic_bounds_cast<_Ptr<CRCB_t>>(listGET_OWNER_OF_HEAD_ENTRY( pxEventList ));
+        _Unchecked{
+            pxUnblockedCRCB = _Assume_bounds_cast<_Ptr<CRCB_t>>(listGET_OWNER_OF_HEAD_ENTRY( pxEventList ));
+        }
         ( void ) uxListRemove( &( pxUnblockedCRCB->xEventListItem ) );
         vListInsertEnd( (_Ptr<List_t> ) &( xPendingReadyCoRoutineList ), &( pxUnblockedCRCB->xEventListItem ) );
 

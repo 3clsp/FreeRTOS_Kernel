@@ -481,7 +481,7 @@ static void prvAddCurrentTaskToDelayedList( TickType_t xTicksToWait,
  */
 #if ( INCLUDE_xTaskGetHandle == 1 )
 
-    static _Ptr<TCB_t> prvSearchForNameWithinSingleList(_Ptr<List_t> pxList, _Nt_array_ptr<const char> pcNameToQuery : count(configMAX_TASK_NAME_LEN)) PRIVILEGED_FUNCTION;
+    static _Ptr<TCB_t> prvSearchForNameWithinSingleList(_Ptr<List_t> pxList, _Nt_array_ptr<const char> pcNameToQuery) PRIVILEGED_FUNCTION;
 
 #endif
 
@@ -587,7 +587,7 @@ static void prvAddNewTaskToReadyList(_Ptr<TCB_t> pxNewTCB) PRIVILEGED_FUNCTION;
             /* The memory used for the task's TCB and stack are passed into this
              * function - use them. */
             pxNewTCB = ( _Ptr<TCB_t> ) pxTaskBuffer; /*lint !e740 !e9087 Unusual cast is ok as the structures are designed to have the same alignment, and the size is checked by an assert. */
-            memset( (_Array_ptr<void>)pxNewTCB, 0x00, sizeof( TCB_t ) );
+            memset( (_Array_ptr<uint8_t>)pxNewTCB, 0x00, sizeof( TCB_t ) );
             _Bundled{
                 pxNewTCB->pxStack = puxStackBuffer;
                 pxNewTCB->pxTopOfStack = NULL; 
@@ -725,7 +725,7 @@ static void prvAddNewTaskToReadyList(_Ptr<TCB_t> pxNewTCB) PRIVILEGED_FUNCTION;
 
 #if ( configSUPPORT_DYNAMIC_ALLOCATION == 1 )
 
-    BaseType_t xTaskCreate(TaskFunction_t pxTaskCode, const _Nt_array_ptr<const char> pcName : count(configMAX_TASK_NAME_LEN), const configSTACK_DEPTH_TYPE usStackDepth, _Ptr<void> const pvParameters, UBaseType_t uxPriority, const _Ptr<TaskHandle_t> pxCreatedTask)
+    BaseType_t xTaskCreate(TaskFunction_t pxTaskCode, const _Nt_array_ptr<const char> pcName, const configSTACK_DEPTH_TYPE usStackDepth, _Ptr<void> const pvParameters, UBaseType_t uxPriority, const _Ptr<TaskHandle_t> pxCreatedTask)
     {
         _Ptr<TCB_t> pxNewTCB = NULL;
         BaseType_t xReturn;
@@ -742,7 +742,7 @@ static void prvAddNewTaskToReadyList(_Ptr<TCB_t> pxNewTCB) PRIVILEGED_FUNCTION;
 
             if( pxNewTCB != NULL )
             {
-                memset( (_Array_ptr<void>)pxNewTCB, 0x00, sizeof( TCB_t ) );
+                memset( (_Array_ptr<uint8_t>)pxNewTCB, 0x00, sizeof( TCB_t ) );
                 /* Allocate space for the stack used by the task being created.
                  * The base of the stack memory stored in the TCB so the task can
                  * be deleted later if required. */
@@ -765,7 +765,7 @@ static void prvAddNewTaskToReadyList(_Ptr<TCB_t> pxNewTCB) PRIVILEGED_FUNCTION;
             _Array_ptr<StackType_t> pxStack: count(usStackDepth) = NULL;
 
             /* Allocate space for the stack used by the task being created. */
-            pxStack = _Dynamic_bounds_cast<_Array_ptr<StackType_t>>(pvPortMallocStack( ( ( ( size_t ) usStackDepth ) * sizeof( StackType_t ) ) ), count(usStackDepth)); /*lint !e9079 All values returned by pvPortMalloc() have at least the alignment required by the MCU's stack and this allocation is the stack. */
+            pxStack = (_Array_ptr<StackType_t>)pvPortMallocStack( ( ( ( size_t ) usStackDepth ) * sizeof( StackType_t ) ) ); /*lint !e9079 All values returned by pvPortMalloc() have at least the alignment required by the MCU's stack and this allocation is the stack. */
 
             if( pxStack != NULL )
             {
@@ -774,7 +774,7 @@ static void prvAddNewTaskToReadyList(_Ptr<TCB_t> pxNewTCB) PRIVILEGED_FUNCTION;
 
                 if( pxNewTCB != NULL )
                 {
-                    memset( (_Array_ptr<void>)pxNewTCB, 0x00, sizeof( TCB_t ) );
+                    memset( (_Array_ptr<uint8_t>)pxNewTCB, 0x00, sizeof( TCB_t ) );
                     /* Store the stack location in the TCB. */
                     _Bundled{
                         pxNewTCB->pxStack = pxStack;
@@ -2215,7 +2215,9 @@ BaseType_t xTaskResumeAll( void )
                  * appropriate ready list. */
                 while( listLIST_IS_EMPTY( &xPendingReadyList ) == pdFALSE )
                 {
-                    pxTCB =  _Dynamic_bounds_cast<_Ptr<TCB_t>>(listGET_OWNER_OF_HEAD_ENTRY( ( &xPendingReadyList ) )); /*lint !e9079 void * is used as this macro is used with timers and co-routines too.  Alignment is known to be fine as the type of the pointer stored and retrieved is the same. */
+                    _Unchecked{
+                        pxTCB =  _Assume_bounds_cast<_Ptr<TCB_t>>(listGET_OWNER_OF_HEAD_ENTRY( ( &xPendingReadyList ) )); /*lint !e9079 void * is used as this macro is used with timers and co-routines too.  Alignment is known to be fine as the type of the pointer stored and retrieved is the same. */
+                    }
                     listREMOVE_ITEM( &( pxTCB->xEventListItem ) );
                     portMEMORY_BARRIER();
                     listREMOVE_ITEM( &( pxTCB->xStateListItem ) );
@@ -2370,7 +2372,7 @@ _Ptr<char> pcTaskGetName(TaskHandle_t xTaskToQuery) /*lint !e971 Unqualified cha
 
 #if ( INCLUDE_xTaskGetHandle == 1 )
 
-    static _Ptr<TCB_t> prvSearchForNameWithinSingleList(_Ptr<List_t> pxList, _Nt_array_ptr<const char> pcNameToQuery : count(configMAX_TASK_NAME_LEN))
+    static _Ptr<TCB_t> prvSearchForNameWithinSingleList(_Ptr<List_t> pxList, _Nt_array_ptr<const char> pcNameToQuery)
     {
         _Ptr<TCB_t> pxNextTCB = NULL;
         _Ptr<TCB_t> pxFirstTCB = NULL;
@@ -2378,6 +2380,7 @@ _Ptr<char> pcTaskGetName(TaskHandle_t xTaskToQuery) /*lint !e971 Unqualified cha
         UBaseType_t x;
         char cNextChar;
         BaseType_t xBreakLoop;
+        _Nt_array_ptr<char> tmppcNameToQuery: count(configMAX_TASK_NAME_LEN) = NULL;
 
         /* This function is called with the scheduler suspended. */
 
@@ -2391,34 +2394,35 @@ _Ptr<char> pcTaskGetName(TaskHandle_t xTaskToQuery) /*lint !e971 Unqualified cha
                 /* Check each character in the name looking for a match or
                  * mismatch. */
                 xBreakLoop = pdFALSE;
+                _Unchecked{
+                    tmppcNameToQuery = _Assume_bounds_cast<_Nt_array_ptr<char>>(pcNameToQuery, count(configMAX_TASK_NAME_LEN));
+                    for( x = ( UBaseType_t ) 0; x < ( UBaseType_t ) configMAX_TASK_NAME_LEN; x++ )
+                    {
+                        cNextChar = pxNextTCB->pcTaskName[ x ];
 
-                for( x = ( UBaseType_t ) 0; x < ( UBaseType_t ) configMAX_TASK_NAME_LEN; x++ )
-                {
-                    cNextChar = pxNextTCB->pcTaskName[ x ];
+                        if( cNextChar != tmppcNameToQuery[ x ] )
+                        {
+                            /* Characters didn't match. */
+                            xBreakLoop = pdTRUE;
+                        }
+                        else if( cNextChar == ( char ) 0x00 )
+                        {
+                            /* Both strings terminated, a match must have been
+                             * found. */
+                            pxReturn = pxNextTCB;
+                            xBreakLoop = pdTRUE;
+                        }
+                        else
+                        {
+                            mtCOVERAGE_TEST_MARKER();
+                        }
 
-                    if( cNextChar != pcNameToQuery[ x ] )
-                    {
-                        /* Characters didn't match. */
-                        xBreakLoop = pdTRUE;
-                    }
-                    else if( cNextChar == ( char ) 0x00 )
-                    {
-                        /* Both strings terminated, a match must have been
-                         * found. */
-                        pxReturn = pxNextTCB;
-                        xBreakLoop = pdTRUE;
-                    }
-                    else
-                    {
-                        mtCOVERAGE_TEST_MARKER();
-                    }
-
-                    if( xBreakLoop != pdFALSE )
-                    {
-                        break;
+                        if( xBreakLoop != pdFALSE )
+                        {
+                            break;
+                        }
                     }
                 }
-
                 if( pxReturn != NULL )
                 {
                     /* The handle has been found. */
@@ -2439,7 +2443,7 @@ _Ptr<char> pcTaskGetName(TaskHandle_t xTaskToQuery) /*lint !e971 Unqualified cha
 
 #if ( INCLUDE_xTaskGetHandle == 1 )
 
-    TaskHandle_t xTaskGetHandle(_Nt_array_ptr<const char> pcNameToQuery : count(configMAX_TASK_NAME_LEN)) /*lint !e971 Unqualified char types are allowed for strings and single characters only. */
+    TaskHandle_t xTaskGetHandle(_Nt_array_ptr<const char> pcNameToQuery) /*lint !e971 Unqualified char types are allowed for strings and single characters only. */
     {
         UBaseType_t uxQueue = configMAX_PRIORITIES;
         _Ptr<TCB_t> pxTCB = NULL;
@@ -2782,13 +2786,14 @@ BaseType_t xTaskIncrementTick( void )
                 }
                 else
                 {
-                    _Ptr<static List_t> tmppxDelayedTaskList = pxDelayedTaskList;
+                    _Ptr<List_t> tmppxDelayedTaskList = pxDelayedTaskList;
                     /* The delayed list is not empty, get the value of the
                      * item at the head of the delayed list.  This is the time
                      * at which the task at the head of the delayed list must
                      * be removed from the Blocked state. */                  
-                    pxTCB =  _Dynamic_bounds_cast<_Ptr<TCB_t>>(listGET_OWNER_OF_HEAD_ENTRY( tmppxDelayedTaskList )); /*lint !e9079 void * is used as this macro is used with timers and co-routines too.  Alignment is known to be fine as the type of the pointer stored and retrieved is the same. */
-
+                    _Unchecked{
+                        pxTCB =  _Assume_bounds_cast<_Ptr<TCB_t>>(listGET_OWNER_OF_HEAD_ENTRY( tmppxDelayedTaskList )); /*lint !e9079 void * is used as this macro is used with timers and co-routines too.  Alignment is known to be fine as the type of the pointer stored and retrieved is the same. */
+                    }
                     xItemValue = listGET_LIST_ITEM_VALUE( &( pxTCB->xStateListItem ) );
 
                     if( xConstTickCount < xItemValue )
@@ -3199,7 +3204,9 @@ BaseType_t xTaskRemoveFromEventList(const _Ptr<const List_t> pxEventList)
      *
      * This function assumes that a check has already been made to ensure that
      * pxEventList is not empty. */
-    pxUnblockedTCB = _Dynamic_bounds_cast<_Ptr<TCB_t>>(listGET_OWNER_OF_HEAD_ENTRY( pxEventList )); /*lint !e9079 void * is used as this macro is used with timers and co-routines too.  Alignment is known to be fine as the type of the pointer stored and retrieved is the same. */
+    _Unchecked{
+        pxUnblockedTCB = _Assume_bounds_cast<_Ptr<TCB_t>>(listGET_OWNER_OF_HEAD_ENTRY( pxEventList )); /*lint !e9079 void * is used as this macro is used with timers and co-routines too.  Alignment is known to be fine as the type of the pointer stored and retrieved is the same. */
+    }
     configASSERT( pxUnblockedTCB );
     listREMOVE_ITEM( &( pxUnblockedTCB->xEventListItem ) );
 
@@ -3262,7 +3269,9 @@ void vTaskRemoveFromUnorderedEventList(_Ptr<ListItem_t> pxEventListItem, const T
 
     /* Remove the event list form the event flag.  Interrupts do not access
      * event flags. */
-    pxUnblockedTCB = _Dynamic_bounds_cast<_Ptr<TCB_t>>(listGET_LIST_ITEM_OWNER( pxEventListItem )); /*lint !e9079 void * is used as this macro is used with timers and co-routines too.  Alignment is known to be fine as the type of the pointer stored and retrieved is the same. */
+    _Unchecked{
+        pxUnblockedTCB = _Assume_bounds_cast<_Ptr<TCB_t>>(listGET_LIST_ITEM_OWNER( pxEventListItem )); /*lint !e9079 void * is used as this macro is used with timers and co-routines too.  Alignment is known to be fine as the type of the pointer stored and retrieved is the same. */
+    }
     configASSERT( pxUnblockedTCB );
     listREMOVE_ITEM( pxEventListItem );
 
@@ -3711,7 +3720,9 @@ static void prvCheckTasksWaitingTermination( void )
         {
             taskENTER_CRITICAL();
             {
-                pxTCB = _Dynamic_bounds_cast<_Ptr<TCB_t>>(listGET_OWNER_OF_HEAD_ENTRY( ( &xTasksWaitingTermination ) )); /*lint !e9079 void * is used as this macro is used with timers and co-routines too.  Alignment is known to be fine as the type of the pointer stored and retrieved is the same. */
+                _Unchecked{
+                    pxTCB = _Assume_bounds_cast<_Ptr<TCB_t>>(listGET_OWNER_OF_HEAD_ENTRY( ( &xTasksWaitingTermination ) )); /*lint !e9079 void * is used as this macro is used with timers and co-routines too.  Alignment is known to be fine as the type of the pointer stored and retrieved is the same. */
+                }
                 ( void ) uxListRemove( &( pxTCB->xStateListItem ) );
                 --uxCurrentNumberOfTasks;
                 --uxDeletedTasksWaitingCleanUp;
@@ -4486,7 +4497,7 @@ static void prvResetNextTaskUnblockTime( void )
         /* Allocate an array index for each task.  NOTE!  if
          * configSUPPORT_DYNAMIC_ALLOCATION is set to 0 then pvPortMalloc() will
          * equate to NULL. */
-        pxTaskStatusArray = _Dynamic_bounds_cast<_Array_ptr<TaskStatus_t>>(pvPortMalloc( tmpuxCurrentNumberOfTasks * sizeof( TaskStatus_t ) ), count(tmpuxCurrentNumberOfTasks)); /*lint !e9079 All values returned by pvPortMalloc() have at least the alignment required by the MCU's stack and this allocation allocates a struct that has the alignment requirements of a pointer. */
+        pxTaskStatusArray = (_Array_ptr<TaskStatus_t>)pvPortMalloc( tmpuxCurrentNumberOfTasks * sizeof( TaskStatus_t ) ); /*lint !e9079 All values returned by pvPortMalloc() have at least the alignment required by the MCU's stack and this allocation allocates a struct that has the alignment requirements of a pointer. */
 
         if( pxTaskStatusArray != NULL )
         {
@@ -4601,7 +4612,7 @@ static void prvResetNextTaskUnblockTime( void )
         /* Allocate an array index for each task.  NOTE!  If
          * configSUPPORT_DYNAMIC_ALLOCATION is set to 0 then pvPortMalloc() will
          * equate to NULL. */
-        pxTaskStatusArray = _Dynamic_bounds_cast<_Array_ptr<TaskStatus_t>>(pvPortMalloc( tmpuxCurrentNumberOfTasks * sizeof( TaskStatus_t ) ), count(tmpuxCurrentNumberOfTasks)); /*lint !e9079 All values returned by pvPortMalloc() have at least the alignment required by the MCU's stack and this allocation allocates a struct that has the alignment requirements of a pointer. */
+        pxTaskStatusArray = (_Array_ptr<TaskStatus_t>)pvPortMalloc( tmpuxCurrentNumberOfTasks * sizeof( TaskStatus_t ) ); /*lint !e9079 All values returned by pvPortMalloc() have at least the alignment required by the MCU's stack and this allocation allocates a struct that has the alignment requirements of a pointer. */
 
         if( pxTaskStatusArray != NULL )
         {

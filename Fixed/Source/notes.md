@@ -1,26 +1,32 @@
 ## Issues
 
+- All:
+	- Casting to _Ptr<void> since external macros expect it to be void.
+
 - croutine.c: compiles
-	- Nothing to fix
+	- Unchecked scope with assume bounds since cast from void to a struct type is done.
 
 - event_groups.c: compiles
-	- To Fix: Line 471, 686: passing void* to non _Ptr<void> typedef callback function
-	- Casting to _Ptr<void> since external macros expect it to be void.
+	- To Fix: Line 471, 686: Unchecked passing of callback function as argument.
 
 - list.c: compiles
 	- struct xLIST_ITEM have a void* member
 	- Added unchecked scope and assume bounds caste since there is cast from struct to struct of different size.
 
 - queue.c: compiles
-	- Bounds for struct members needed?
-	- Bounds given to array_ptr vaiable in `xQueueGenericCreate`.
-	- void* in parameter of copy functions: Most likey of size QueueDefinition
+	- Need bounds for members of `QueuePointers_t`?
+	- void* in parameter of copy function changed to uint8_t since it is used in memcpy and this change won't cause issues.
+	- Memcpy with arguments of unknown bounds in unchecked scope.
 
 - stream_buffer.c: compiles
-	- void in function parameters: changed all void* to uint8_t array_ptr
+	- Memcpy in unchecked scope.
 
 - timers.c: compiles
-	- Make all voids into proper types
+	- void * for argument of callback function. 
+	- timerId of struct `tmrTimerControl` is passed from outside and is void *.
+	- Unchecked scope with assume bounds since cast from void to a struct type is done.
 
 - tasks.c: compiles
-	- Nothing to fix
+	- Unchecked scope with assume bounds since cast from void to a struct type is done.
+	- Assume bounds for strings where size is unknown.
+	- void* for argument passed onto callback functions.
