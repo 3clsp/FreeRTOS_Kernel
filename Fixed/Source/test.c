@@ -20,6 +20,8 @@ int main(){
   _Unchecked{
     test = _Assume_bounds_cast<_Array_ptr<struct test_t>>(malloc(sizeof(test)), count(1));
     pxStack = _Assume_bounds_cast<_Array_ptr<StackType_t>>(malloc(sizeof(StackType_t) * 10), count(10));
+    printf("%p\n", pxStack);
+    printf("%p\n", test);
   }
   _Bundled{
     test->pxStack = pxStack;

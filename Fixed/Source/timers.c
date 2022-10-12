@@ -241,9 +241,11 @@
                 _Array_ptr<StackType_t> tmpStack: count(ulTimerTaskStackSize) = NULL;
 
                 vApplicationGetTimerTaskMemory( &pxTimerTaskTCBBuffer, &pxTimerTaskStackBuffer, &ulTimerTaskStackSize );
-                tmpStack = _Dynamic_bounds_cast<_Array_ptr<StackType_t>>(pxTimerTaskStackBuffer, count(ulTimerTaskStackSize));
+                _Unchecked{
+                    tmpStack = _Assume_bounds_cast<_Array_ptr<StackType_t>>(pxTimerTaskStackBuffer, count(ulTimerTaskStackSize));
+                }
                 xTimerTaskHandle = xTaskCreateStatic( prvTimerTask,
-                                                      _Dynamic_bounds_cast<_Array_ptr<const char>>(configTIMER_SERVICE_TASK_NAME, count(configMAX_TASK_NAME_LEN)),
+                                                      configTIMER_SERVICE_TASK_NAME,
                                                       ulTimerTaskStackSize,
                                                       NULL,
                                                       ( ( UBaseType_t ) configTIMER_TASK_PRIORITY ) | portPRIVILEGE_BIT,
@@ -258,7 +260,7 @@
             #else /* if ( configSUPPORT_STATIC_ALLOCATION == 1 ) */
             {
                 xReturn = xTaskCreate( prvTimerTask,
-                                       _Dynamic_bounds_cast<_Array_ptr<const char>>(configTIMER_SERVICE_TASK_NAME, count(configMAX_TASK_NAME_LEN)),
+                                       configTIMER_SERVICE_TASK_NAME,
                                        configTIMER_TASK_STACK_DEPTH,
                                        NULL,
                                        ( ( UBaseType_t ) configTIMER_TASK_PRIORITY ) | portPRIVILEGE_BIT,
@@ -282,7 +284,7 @@
         {
             _Ptr<Timer_t> pxNewTimer = NULL;
 
-            pxNewTimer = pvPortMalloc<Timer_t>( sizeof( Timer_t ) ); /*lint !e9087 !e9079 All values returned by pvPortMalloc() have at least the alignment required by the MCU's stack, and the first member of Timer_t is always a pointer to the timer's mame. */
+            pxNewTimer = (_Ptr<Timer_t>)pvPortMalloc( sizeof( Timer_t ) ); /*lint !e9087 !e9079 All values returned by pvPortMalloc() have at least the alignment required by the MCU's stack, and the first member of Timer_t is always a pointer to the timer's mame. */
 
             if( pxNewTimer != NULL )
             {
@@ -358,7 +360,7 @@
             pxNewTimer->ucStatus |= tmrSTATUS_IS_AUTORELOAD;
         }
 
-        traceTIMER_CREATE( pxNewTimer );
+        traceTIMER_CREATE( (_Ptr<void>)pxNewTimer );
     }
 /*-----------------------------------------------------------*/
 
@@ -394,7 +396,7 @@
                 xReturn = xQueueSendToBackFromISR( xTimerQueue, (_Ptr<const void>)&xMessage, pxHigherPriorityTaskWoken );
             }
 
-            traceTIMER_COMMAND_SEND( xTimer, xCommandID, xOptionalValue, xReturn );
+            traceTIMER_COMMAND_SEND( (_Ptr<void>)xTimer, xCommandID, xOptionalValue, xReturn );
         }
         else
         {
@@ -504,7 +506,7 @@
             xExpiredTime += pxTimer->xTimerPeriodInTicks;
 
             /* Call the timer callback. */
-            traceTIMER_EXPIRED( pxTimer );
+            traceTIMER_EXPIRED( (_Ptr<void>)pxTimer );
             pxTimer->pxCallbackFunction( (TimerHandle_t ) pxTimer );
         }
     }
@@ -512,8 +514,9 @@
 
     static void prvProcessExpiredTimer( const TickType_t xNextExpireTime,
                                         const TickType_t xTimeNow )
-    {
-        _Ptr<Timer_t> pxTimer = _Dynamic_bounds_cast<_Ptr<Timer_t>>(listGET_OWNER_OF_HEAD_ENTRY( pxCurrentTimerList )); /*lint !e9087 !e9079 void * is used as this macro is used with tasks and co-routines too.  Alignment is known to be fine as the type of the pointer stored and retrieved is the same. */
+    {   
+        _Ptr<Timer_t> pxTimer = NULL;
+        pxTimer = _Dynamic_bounds_cast<_Ptr<Timer_t>>(listGET_OWNER_OF_HEAD_ENTRY( pxCurrentTimerList )); /*lint !e9087 !e9079 void * is used as this macro is used with tasks and co-routines too.  Alignment is known to be fine as the type of the pointer stored and retrieved is the same. */
 
         /* Remove the timer from the list of active timers.  A check has already
          * been performed to ensure the list is not empty. */
@@ -532,7 +535,7 @@
         }
 
         /* Call the timer callback. */
-        traceTIMER_EXPIRED( pxTimer );
+        traceTIMER_EXPIRED( (_Ptr<void>)pxTimer );
         pxTimer->pxCallbackFunction( ( TimerHandle_t ) pxTimer) ;
     }
 /*-----------------------------------------------------------*/
@@ -808,7 +811,7 @@
                             }
 
                             /* Call the timer callback. */
-                            traceTIMER_EXPIRED( pxTimer );
+                            traceTIMER_EXPIRED( (_Ptr<void>)pxTimer );
                             pxTimer->pxCallbackFunction( ( TimerHandle_t ) pxTimer);
                         }
                         else
@@ -847,7 +850,7 @@
                              * allocated. */
                             if( ( pxTimer->ucStatus & tmrSTATUS_IS_STATICALLY_ALLOCATED ) == ( uint8_t ) 0 )
                             {
-                                vPortFree<Timer_t>( pxTimer );
+                                vPortFree( (_Ptr<char>)pxTimer );
                             }
                             else
                             {

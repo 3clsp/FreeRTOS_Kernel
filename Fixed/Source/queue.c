@@ -417,9 +417,9 @@ BaseType_t xQueueGenericReset(QueueHandle_t xQueue, BaseType_t xNewQueue)
 
     QueueHandle_t xQueueGenericCreate(const UBaseType_t uxQueueLength, const UBaseType_t uxItemSize, const uint8_t ucQueueType)
     {
-        _Ptr<Queue_t> pxNewQueue = NULL;
         size_t xQueueSizeInBytes;
-        _Array_ptr<uint8_t> pucQueueStorage: count(sizeof( Queue_t ) + (uxQueueLength * uxItemSize)) = NULL;
+        _Array_ptr<Queue_t> pxNewQueue: count(sizeof( Queue_t ) + xQueueSizeInBytes) = NULL;
+        _Array_ptr<uint8_t> pucQueueStorage: count(sizeof( Queue_t ) + xQueueSizeInBytes) = NULL;
         
         if( ( uxQueueLength > ( UBaseType_t ) 0 ) &&
             /* Check for multiplication overflow. */
@@ -427,27 +427,29 @@ BaseType_t xQueueGenericReset(QueueHandle_t xQueue, BaseType_t xNewQueue)
             /* Check for addition overflow. */
             ( ( SIZE_MAX - sizeof( Queue_t ) ) >= ( uxQueueLength * uxItemSize ) ) )
         {
-            /* Allocate enough space to hold the maximum number of items that
-             * can be in the queue at any time.  It is valid for uxItemSize to be
-             * zero in the case the queue is used as a semaphore. */
-            xQueueSizeInBytes = ( size_t ) ( uxQueueLength * uxItemSize ); /*lint !e961 MISRA exception as the casts are only redundant for some ports. */
-
-            /* Allocate the queue and storage area.  Justification for MISRA
-             * deviation as follows:  pvPortMalloc() always ensures returned memory
-             * blocks are aligned per the requirements of the MCU stack.  In this case
-             * pvPortMalloc() must return a pointer that is guaranteed to meet the
-             * alignment requirements of the Queue_t structure - which in this case
-             * is an int8_t *.  Therefore, whenever the stack alignment requirements
-             * are greater than or equal to the pointer to char requirements the cast
-             * is safe.  In other cases alignment requirements are not strict (one or
-             * two bytes). */
-            pxNewQueue = pvPortMalloc<Queue_t>( sizeof( Queue_t ) + xQueueSizeInBytes ); /*lint !e9087 !e9079 see comment above. */
-
+            _Bundled{
+                /* Allocate enough space to hold the maximum number of items that
+                 * can be in the queue at any time.  It is valid for uxItemSize to be
+                 * zero in the case the queue is used as a semaphore. */
+                xQueueSizeInBytes = ( size_t ) ( uxQueueLength * uxItemSize ); /*lint !e961 MISRA exception as the casts are only redundant for some ports. */
+    
+                /* Allocate the queue and storage area.  Justification for MISRA
+                 * deviation as follows:  pvPortMalloc() always ensures returned memory
+                 * blocks are aligned per the requirements of the MCU stack.  In this case
+                 * pvPortMalloc() must return a pointer that is guaranteed to meet the
+                 * alignment requirements of the Queue_t structure - which in this case
+                 * is an int8_t *.  Therefore, whenever the stack alignment requirements
+                 * are greater than or equal to the pointer to char requirements the cast
+                 * is safe.  In other cases alignment requirements are not strict (one or
+                 * two bytes). */
+                pxNewQueue = (_Array_ptr<Queue_t>)pvPortMalloc( sizeof( Queue_t ) + xQueueSizeInBytes ); /*lint !e9087 !e9079 see comment above. */
+                pucQueueStorage = NULL;
+            }
             if( pxNewQueue != NULL )
             {
                 /* Jump past the queue structure to find the location of the queue
                  * storage area. */
-                pucQueueStorage = _Dynamic_bounds_cast<_Array_ptr<uint8_t>>(pxNewQueue, count(sizeof( Queue_t ) + xQueueSizeInBytes));
+                pucQueueStorage = (_Array_ptr<uint8_t>)pxNewQueue;
                 pucQueueStorage += sizeof( Queue_t ); /*lint !e9016 Pointer arithmetic allowed on char types, especially when it assists conveying intent. */
 
                 #if ( configSUPPORT_STATIC_ALLOCATION == 1 )
@@ -528,7 +530,7 @@ static void prvInitialiseNewQueue(const UBaseType_t uxQueueLength, const UBaseTy
     }
     #endif /* configUSE_QUEUE_SETS */
 
-    traceQUEUE_CREATE( pxNewQueue );
+    traceQUEUE_CREATE( (_Ptr<void>)pxNewQueue );
 }
 /*-----------------------------------------------------------*/
 
@@ -703,7 +705,7 @@ static void prvInitialiseNewQueue(const UBaseType_t uxQueueLength, const UBaseTy
              * holder. */
             xReturn = pdFAIL;
 
-            traceGIVE_MUTEX_RECURSIVE_FAILED( pxMutex );
+            traceGIVE_MUTEX_RECURSIVE_FAILED( (_Ptr<void>)pxMutex );
         }
 
         return xReturn;
@@ -850,7 +852,7 @@ BaseType_t xQueueGenericSend(QueueHandle_t xQueue, _Ptr<const void> const pvItem
              * queue is full. */
             if( ( pxQueue->uxMessagesWaiting < pxQueue->uxLength ) || ( xCopyPosition == queueOVERWRITE ) )
             {
-                traceQUEUE_SEND( pxQueue );
+                traceQUEUE_SEND( (_Ptr<void>)pxQueue, pxQueue->uxMessagesWaiting );
 
                 #if ( configUSE_QUEUE_SETS == 1 )
                 {
@@ -961,7 +963,7 @@ BaseType_t xQueueGenericSend(QueueHandle_t xQueue, _Ptr<const void> const pvItem
 
                     /* Return to the original privilege level before exiting
                      * the function. */
-                    traceQUEUE_SEND_FAILED( pxQueue );
+                    traceQUEUE_SEND_FAILED( (_Ptr<void>)pxQueue );
                     return errQUEUE_FULL;
                 }
                 else if( xEntryTimeSet == pdFALSE )
@@ -991,7 +993,7 @@ BaseType_t xQueueGenericSend(QueueHandle_t xQueue, _Ptr<const void> const pvItem
         {
             if( prvIsQueueFull( pxQueue ) != pdFALSE )
             {
-                traceBLOCKING_ON_QUEUE_SEND( pxQueue );
+                traceBLOCKING_ON_QUEUE_SEND( (_Ptr<void>)pxQueue );
                 vTaskPlaceOnEventList( &( pxQueue->xTasksWaitingToSend ), xTicksToWait );
 
                 /* Unlocking the queue means queue events can effect the
@@ -1024,7 +1026,7 @@ BaseType_t xQueueGenericSend(QueueHandle_t xQueue, _Ptr<const void> const pvItem
             prvUnlockQueue( pxQueue );
             ( void ) xTaskResumeAll();
 
-            traceQUEUE_SEND_FAILED( pxQueue );
+            traceQUEUE_SEND_FAILED( (_Ptr<void>)pxQueue );
             return errQUEUE_FULL;
         }
     } /*lint -restore */
@@ -1069,7 +1071,7 @@ BaseType_t xQueueGenericSendFromISR(QueueHandle_t xQueue, _Ptr<const void> const
             const int8_t cTxLock = pxQueue->cTxLock;
             const UBaseType_t uxPreviousMessagesWaiting = pxQueue->uxMessagesWaiting;
 
-            traceQUEUE_SEND_FROM_ISR( pxQueue );
+            traceQUEUE_SEND_FROM_ISR( (_Ptr<void>)pxQueue, pxQueue->uxMessagesWaiting );
 
             /* Semaphores use xQueueGiveFromISR(), so pxQueue will not be a
              *  semaphore or mutex.  That means prvCopyDataToQueue() cannot result
@@ -1183,7 +1185,7 @@ BaseType_t xQueueGenericSendFromISR(QueueHandle_t xQueue, _Ptr<const void> const
         }
         else
         {
-            traceQUEUE_SEND_FROM_ISR_FAILED( pxQueue );
+            traceQUEUE_SEND_FROM_ISR_FAILED( (_Ptr<void>)pxQueue );
             xReturn = errQUEUE_FULL;
         }
     }
@@ -1243,7 +1245,7 @@ BaseType_t xQueueGiveFromISR(QueueHandle_t xQueue, _Ptr<BaseType_t> const pxHigh
         {
             const int8_t cTxLock = pxQueue->cTxLock;
 
-            traceQUEUE_SEND_FROM_ISR( pxQueue );
+            traceQUEUE_SEND_FROM_ISR( (_Ptr<void>)pxQueue, pxQueue->uxMessagesWaiting );
 
             /* A task can only have an inherited priority if it is a mutex
              * holder - and if there is a mutex holder then the mutex cannot be
@@ -1348,7 +1350,7 @@ BaseType_t xQueueGiveFromISR(QueueHandle_t xQueue, _Ptr<BaseType_t> const pxHigh
         }
         else
         {
-            traceQUEUE_SEND_FROM_ISR_FAILED( pxQueue );
+            traceQUEUE_SEND_FROM_ISR_FAILED( (_Ptr<void>)pxQueue );
             xReturn = errQUEUE_FULL;
         }
     }
@@ -1393,7 +1395,7 @@ BaseType_t xQueueReceive(QueueHandle_t xQueue, _Ptr<void> const pvBuffer, TickTy
             {
                 /* Data available, remove one item. */
                 prvCopyDataFromQueue( pxQueue, pvBuffer );
-                traceQUEUE_RECEIVE( pxQueue );
+                traceQUEUE_RECEIVE( (_Ptr<void>)pxQueue, pxQueue->uxMessagesWaiting );
                 pxQueue->uxMessagesWaiting = uxMessagesWaiting - ( UBaseType_t ) 1;
 
                 /* There is now space in the queue, were any tasks waiting to
@@ -1425,7 +1427,7 @@ BaseType_t xQueueReceive(QueueHandle_t xQueue, _Ptr<void> const pvBuffer, TickTy
                     /* The queue was empty and no block time is specified (or
                      * the block time has expired) so leave now. */
                     taskEXIT_CRITICAL();
-                    traceQUEUE_RECEIVE_FAILED( pxQueue );
+                    traceQUEUE_RECEIVE_FAILED( (_Ptr<void>)pxQueue );
                     return errQUEUE_EMPTY;
                 }
                 else if( xEntryTimeSet == pdFALSE )
@@ -1457,7 +1459,7 @@ BaseType_t xQueueReceive(QueueHandle_t xQueue, _Ptr<void> const pvBuffer, TickTy
              * the task on the list of tasks waiting to receive from the queue. */
             if( prvIsQueueEmpty( pxQueue ) != pdFALSE )
             {
-                traceBLOCKING_ON_QUEUE_RECEIVE( pxQueue );
+                traceBLOCKING_ON_QUEUE_RECEIVE( (_Ptr<void>)pxQueue );
                 vTaskPlaceOnEventList( &( pxQueue->xTasksWaitingToReceive ), xTicksToWait );
                 prvUnlockQueue( pxQueue );
 
@@ -1487,7 +1489,7 @@ BaseType_t xQueueReceive(QueueHandle_t xQueue, _Ptr<void> const pvBuffer, TickTy
 
             if( prvIsQueueEmpty( pxQueue ) != pdFALSE )
             {
-                traceQUEUE_RECEIVE_FAILED( pxQueue );
+                traceQUEUE_RECEIVE_FAILED( (_Ptr<void>)pxQueue );
                 return errQUEUE_EMPTY;
             }
             else
@@ -1538,7 +1540,7 @@ BaseType_t xQueueSemaphoreTake(QueueHandle_t xQueue, TickType_t xTicksToWait)
              * must be the highest priority task wanting to access the queue. */
             if( uxSemaphoreCount > ( UBaseType_t ) 0 )
             {
-                traceQUEUE_RECEIVE( pxQueue );
+                traceQUEUE_RECEIVE( (_Ptr<void>)pxQueue, pxQueue->uxMessagesWaiting );
 
                 /* Semaphores are queues with a data size of zero and where the
                  * messages waiting is the semaphore's count.  Reduce the count. */
@@ -1596,7 +1598,7 @@ BaseType_t xQueueSemaphoreTake(QueueHandle_t xQueue, TickType_t xTicksToWait)
                     /* The semaphore count was 0 and no block time is specified
                      * (or the block time has expired) so exit now. */
                     taskEXIT_CRITICAL();
-                    traceQUEUE_RECEIVE_FAILED( pxQueue );
+                    traceQUEUE_RECEIVE_FAILED( (_Ptr<void>)pxQueue );
                     return errQUEUE_EMPTY;
                 }
                 else if( xEntryTimeSet == pdFALSE )
@@ -1630,7 +1632,7 @@ BaseType_t xQueueSemaphoreTake(QueueHandle_t xQueue, TickType_t xTicksToWait)
              * queue being empty is equivalent to the semaphore count being 0. */
             if( prvIsQueueEmpty( pxQueue ) != pdFALSE )
             {
-                traceBLOCKING_ON_QUEUE_RECEIVE( pxQueue );
+                traceBLOCKING_ON_QUEUE_RECEIVE( (_Ptr<void>)pxQueue );
 
                 #if ( configUSE_MUTEXES == 1 )
                 {
@@ -1705,7 +1707,7 @@ BaseType_t xQueueSemaphoreTake(QueueHandle_t xQueue, TickType_t xTicksToWait)
                 }
                 #endif /* configUSE_MUTEXES */
 
-                traceQUEUE_RECEIVE_FAILED( pxQueue );
+                traceQUEUE_RECEIVE_FAILED( (_Ptr<void>)pxQueue );
                 return errQUEUE_EMPTY;
             }
             else
@@ -1756,7 +1758,7 @@ BaseType_t xQueuePeek(QueueHandle_t xQueue, _Ptr<void> const pvBuffer, TickType_
                  * data, not removing it. */
                 pcOriginalReadPosition = pxQueue->u.xQueue.pcReadFrom;
                 prvCopyDataFromQueue( pxQueue, pvBuffer );
-                traceQUEUE_PEEK( pxQueue );
+                traceQUEUE_PEEK( (_Ptr<void>)pxQueue );
 
                 /* The data is not being removed, so reset the read pointer. */
                 pxQueue->u.xQueue.pcReadFrom = pcOriginalReadPosition;
@@ -1790,7 +1792,7 @@ BaseType_t xQueuePeek(QueueHandle_t xQueue, _Ptr<void> const pvBuffer, TickType_
                     /* The queue was empty and no block time is specified (or
                      * the block time has expired) so leave now. */
                     taskEXIT_CRITICAL();
-                    traceQUEUE_PEEK_FAILED( pxQueue );
+                    traceQUEUE_PEEK_FAILED( (_Ptr<void>)pxQueue );
                     return errQUEUE_EMPTY;
                 }
                 else if( xEntryTimeSet == pdFALSE )
@@ -1823,7 +1825,7 @@ BaseType_t xQueuePeek(QueueHandle_t xQueue, _Ptr<void> const pvBuffer, TickType_
             * queue now, and if not enter the Blocked state to wait for data. */
             if( prvIsQueueEmpty( pxQueue ) != pdFALSE )
             {
-                traceBLOCKING_ON_QUEUE_PEEK( pxQueue );
+                traceBLOCKING_ON_QUEUE_PEEK( (_Ptr<void>)pxQueue );
                 vTaskPlaceOnEventList( &( pxQueue->xTasksWaitingToReceive ), xTicksToWait );
                 prvUnlockQueue( pxQueue );
 
@@ -1853,7 +1855,7 @@ BaseType_t xQueuePeek(QueueHandle_t xQueue, _Ptr<void> const pvBuffer, TickType_
 
             if( prvIsQueueEmpty( pxQueue ) != pdFALSE )
             {
-                traceQUEUE_PEEK_FAILED( pxQueue );
+                traceQUEUE_PEEK_FAILED( (_Ptr<void>)pxQueue );
                 return errQUEUE_EMPTY;
             }
             else
@@ -1899,7 +1901,7 @@ BaseType_t xQueueReceiveFromISR(QueueHandle_t xQueue, _Ptr<void> const pvBuffer,
         {
             const int8_t cRxLock = pxQueue->cRxLock;
 
-            traceQUEUE_RECEIVE_FROM_ISR( pxQueue );
+            traceQUEUE_RECEIVE_FROM_ISR( (_Ptr<void>)pxQueue, pxQueue->uxMessagesWaiting );
 
             prvCopyDataFromQueue( pxQueue, pvBuffer );
             pxQueue->uxMessagesWaiting = uxMessagesWaiting - ( UBaseType_t ) 1;
@@ -1947,7 +1949,7 @@ BaseType_t xQueueReceiveFromISR(QueueHandle_t xQueue, _Ptr<void> const pvBuffer,
         else
         {
             xReturn = pdFAIL;
-            traceQUEUE_RECEIVE_FROM_ISR_FAILED( pxQueue );
+            traceQUEUE_RECEIVE_FROM_ISR_FAILED( (_Ptr<void>)pxQueue );
         }
     }
     portCLEAR_INTERRUPT_MASK_FROM_ISR( uxSavedInterruptStatus );
@@ -2060,7 +2062,7 @@ void vQueueDelete(QueueHandle_t xQueue)
     _Ptr<Queue_t> const pxQueue = xQueue;
 
     configASSERT( pxQueue );
-    traceQUEUE_DELETE( pxQueue );
+    traceQUEUE_DELETE( (_Ptr<void>)pxQueue );
 
     #if ( configQUEUE_REGISTRY_SIZE > 0 )
     {
@@ -2072,7 +2074,7 @@ void vQueueDelete(QueueHandle_t xQueue)
     {
         /* The queue can only have been allocated dynamically - free it
          * again. */
-        vPortFree<Queue_t>( pxQueue );
+        vPortFree( (_Ptr<char>)pxQueue );
     }
     #elif ( ( configSUPPORT_DYNAMIC_ALLOCATION == 1 ) && ( configSUPPORT_STATIC_ALLOCATION == 1 ) )
     {
@@ -2080,7 +2082,7 @@ void vQueueDelete(QueueHandle_t xQueue)
          * check before attempting to free the memory. */
         if( pxQueue->ucStaticallyAllocated == ( uint8_t ) pdFALSE )
         {
-            vPortFree<Queue_t>( pxQueue );
+            vPortFree( (_Ptr<char>)pxQueue );
         }
         else
         {
@@ -2792,7 +2794,7 @@ BaseType_t xQueueIsQueueFullFromISR(const QueueHandle_t xQueue)
             pxEntryToWrite->pcQueueName = pcQueueName;
             pxEntryToWrite->xHandle = xQueue;
 
-            traceQUEUE_REGISTRY_ADD( xQueue, pcQueueName );
+            traceQUEUE_REGISTRY_ADD( (_Ptr<void>)xQueue, pcQueueName );
         }
     }
 
@@ -3029,7 +3031,7 @@ BaseType_t xQueueIsQueueFullFromISR(const QueueHandle_t xQueue)
         {
             const int8_t cTxLock = pxQueueSetContainer->cTxLock;
 
-            traceQUEUE_SET_SEND( pxQueueSetContainer );
+            traceQUEUE_SET_SEND( (_Ptr<void>)pxQueueSetContainer, pxQueueSetContainer->uxMessagesWaiting );
 
             /* The data copied is the handle of the queue that contains data. */
             xReturn = prvCopyDataToQueue( pxQueueSetContainer, (_Ptr<void>)&pxQueue, queueSEND_TO_BACK );

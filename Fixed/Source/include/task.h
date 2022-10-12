@@ -465,7 +465,7 @@ typedef enum
  * \ingroup Tasks
  */
 #if ( configSUPPORT_STATIC_ALLOCATION == 1 )
-    TaskHandle_t xTaskCreateStatic(TaskFunction_t pxTaskCode, const _Nt_array_ptr<const char> pcName: count(configMAX_TASK_NAME_LEN), const uint32_t ulStackDepth, _Ptr<void> const pvParameters, UBaseType_t uxPriority, const _Array_ptr<StackType_t> puxStackBuffer: count(ulStackDepth), const _Ptr<StaticTask_t> pxTaskBuffer) PRIVILEGED_FUNCTION;
+    TaskHandle_t xTaskCreateStatic(TaskFunction_t pxTaskCode, const _Nt_array_ptr<const char> pcName, const uint32_t ulStackDepth, _Ptr<void> const pvParameters, UBaseType_t uxPriority, const _Array_ptr<StackType_t> puxStackBuffer: count(ulStackDepth), const _Ptr<StaticTask_t> pxTaskBuffer) PRIVILEGED_FUNCTION;
 #endif /* configSUPPORT_STATIC_ALLOCATION */
 
 /**

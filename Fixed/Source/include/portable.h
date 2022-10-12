@@ -169,17 +169,17 @@ void vPortGetHeapStats(_Ptr<HeapStats_t> pxHeapStat);
 /*
  * Map to the memory management routines required for the port.
  */
-_For_any(T) _Ptr<T> pvPortMalloc( size_t xSize ) PRIVILEGED_FUNCTION;
-_For_any(T) _Ptr<T> pvPortCalloc( size_t xNum,
-                     size_t xSize ) PRIVILEGED_FUNCTION;
-_For_any(T) void vPortFree(_Ptr<T> pv ) PRIVILEGED_FUNCTION;
+_Array_ptr<char> pvPortMalloc( size_t xSize ): count(xSize)  PRIVILEGED_FUNCTION;
+_Array_ptr<char> pvPortCalloc( size_t xNum,
+                     size_t xSize ): count(xSize) PRIVILEGED_FUNCTION;
+void vPortFree(_Ptr<char> pv ) PRIVILEGED_FUNCTION;
 void vPortInitialiseBlocks( void ) PRIVILEGED_FUNCTION;
 size_t xPortGetFreeHeapSize( void ) PRIVILEGED_FUNCTION;
 size_t xPortGetMinimumEverFreeHeapSize( void ) PRIVILEGED_FUNCTION;
 
 #if ( configSTACK_ALLOCATION_FROM_SEPARATE_HEAP == 1 )
-    void * pvPortMallocStack( size_t xSize ) PRIVILEGED_FUNCTION;
-    void vPortFreeStack( void * pv ) PRIVILEGED_FUNCTION;
+    _Array_ptr<char> pvPortMallocStack( size_t xSize ): count(xSize) PRIVILEGED_FUNCTION;
+    vPortFreeStack( _Ptr<char> pv ) PRIVILEGED_FUNCTION;
 #else
     #define pvPortMallocStack    pvPortMalloc
     #define vPortFreeStack       vPortFree

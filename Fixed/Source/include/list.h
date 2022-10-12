@@ -292,7 +292,9 @@ typedef struct xLIST
         {                                                                                      \
             ( pxConstList )->pxIndex = ( pxConstList )->pxIndex->pxNext;                       \
         }                                                                                      \
-        ( pxTCB ) = _Dynamic_bounds_cast<_Ptr<TCB_t>>(( pxConstList )->pxIndex->pvOwner);      \
+        _Unchecked{                                                                            \
+            ( pxTCB ) = _Assume_bounds_cast<_Ptr<TCB_t>>(( pxConstList )->pxIndex->pvOwner);   \
+        }                                                                                      \
     }
 
 /*

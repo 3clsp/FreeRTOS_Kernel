@@ -54,8 +54,10 @@ void vListInitialise(const _Ptr<List_t> pxList)
     /* The list structure contains a list item which is used to mark the
      * end of the list.  To initialise the list the list end is inserted
      * as the only list entry. */
-    pxList->pxIndex = _Dynamic_bounds_cast<_Ptr<ListItem_t>>(&( pxList->xListEnd )); /*lint !e826 !e740 !e9087 The mini list structure is used as the list end to save RAM.  This is checked and valid. */
-
+    // Structs of different sizes. Can't cast in checked scope.
+    _Unchecked{
+        pxList->pxIndex = _Assume_bounds_cast<_Ptr<ListItem_t>>(&( pxList->xListEnd )); /*lint !e826 !e740 !e9087 The mini list structure is used as the list end to save RAM.  This is checked and valid. */
+    }
     listSET_FIRST_LIST_ITEM_INTEGRITY_CHECK_VALUE( &( pxList->xListEnd ) );
 
     /* The list end value is the highest possible value in the list to
@@ -64,9 +66,10 @@ void vListInitialise(const _Ptr<List_t> pxList)
 
     /* The list end next and previous pointers point to itself so we know
      * when the list is empty. */
-    pxList->xListEnd.pxNext = _Dynamic_bounds_cast<_Ptr<ListItem_t>>( &( pxList->xListEnd ));     /*lint !e826 !e740 !e9087 The mini list structure is used as the list end to save RAM.  This is checked and valid. */
-    pxList->xListEnd.pxPrevious = _Dynamic_bounds_cast<_Ptr<ListItem_t>>( &( pxList->xListEnd )); /*lint !e826 !e740 !e9087 The mini list structure is used as the list end to save RAM.  This is checked and valid. */
-
+    _Unchecked{
+        pxList->xListEnd.pxNext = _Assume_bounds_cast<_Ptr<ListItem_t>>( &( pxList->xListEnd ));     /*lint !e826 !e740 !e9087 The mini list structure is used as the list end to save RAM.  This is checked and valid. */
+        pxList->xListEnd.pxPrevious = _Assume_bounds_cast<_Ptr<ListItem_t>>( &( pxList->xListEnd )); /*lint !e826 !e740 !e9087 The mini list structure is used as the list end to save RAM.  This is checked and valid. */
+    }
     /* Initialize the remaining fields of xListEnd when it is a proper ListItem_t */
     #if ( configUSE_MINI_LIST_ITEM == 0 )
     {
@@ -175,13 +178,14 @@ void vListInsert(const _Ptr<List_t> pxList, const _Ptr<ListItem_t> pxNewListItem
         *      the priority of the tick interrupt is at or below
         *      configMAX_SYSCALL_INTERRUPT_PRIORITY.
         **********************************************************************/
-
-        for( pxIterator = _Dynamic_bounds_cast<_Ptr<ListItem_t>>(&( pxList->xListEnd )); 
-        pxIterator->pxNext->xItemValue <= xValueOfInsertion; pxIterator = pxIterator->pxNext ) /*lint !e826 !e740 !e9087 The mini list structure is used as the list end to save RAM.  This is checked and valid. *//*lint !e440 The iterator moves to a different value, not xValueOfInsertion. */
-        {
-            /* There is nothing to do here, just iterating to the wanted
-             * insertion position. */
-        }
+       _Unchecked{
+            for( pxIterator = _Assume_bounds_cast<_Ptr<ListItem_t>>(&( pxList->xListEnd )); 
+            pxIterator->pxNext->xItemValue <= xValueOfInsertion; pxIterator = pxIterator->pxNext ) /*lint !e826 !e740 !e9087 The mini list structure is used as the list end to save RAM.  This is checked and valid. *//*lint !e440 The iterator moves to a different value, not xValueOfInsertion. */
+            {
+                /* There is nothing to do here, just iterating to the wanted
+                 * insertion position. */
+            }
+       }
     }
 
     pxNewListItem->pxNext = pxIterator->pxNext;

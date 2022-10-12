@@ -123,8 +123,6 @@ extern void vAssertCalled(const _Ptr<const char> pcFileName, unsigned long ulLin
  * used with multiple project configurations.  If it is
  */
 
-#define projCOVERAGE_TEST  1
-
 #if ( projCOVERAGE_TEST == 1 )
 
 /* Insert NOPs in empty decision paths to ensure both true and false paths
