@@ -344,8 +344,7 @@ static void prvInitialiseNewStreamBuffer(const _Ptr<StreamBuffer_t> pxStreamBuff
         if( xBufferSizeBytes < ( xBufferSizeBytes + 1 + sizeof( StreamBuffer_t ) ) )
         {
             xBufferSizeBytes++;
-            /// IS THIS FINE?
-            pucAllocatedMemory = _Dynamic_bounds_cast<_Array_ptr<uint8_t>>(pvPortMalloc( xBufferSizeBytes + sizeof( StreamBuffer_t ) ), count(tmpBufferSize + 1 + sizeof(StreamBuffer_t))); /*lint !e9079 malloc() only returns void*. */
+            pucAllocatedMemory = (_Array_ptr<uint8_t>)pvPortMalloc( tmpBufferSize + 1 + sizeof(StreamBuffer_t) ); /*lint !e9079 malloc() only returns void*. */
         }
         else
         {

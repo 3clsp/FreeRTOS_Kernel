@@ -70,12 +70,14 @@
 
 typedef struct QueuePointers
 {
-    _Array_ptr<int8_t> pcTail;     /*< Points to the byte at the end of the queue storage area.  Once more byte is allocated than necessary to store the queue items, this is used as a marker. */
-    _Array_ptr<int8_t> pcReadFrom; /*< Points to the last place that a queued item was read from when the structure is used as a queue. */
+    _Ptr<int8_t> pcHead; /*< Points to the beginning of the queue storage area. */
+    _Array_ptr<int8_t> pcTail: bounds(pcHead, pcTail);     /*< Points to the byte at the end of the queue storage area.  Once more byte is allocated than necessary to store the queue items, this is used as a marker. */
+    _Array_ptr<int8_t> pcReadFrom: bounds(pcHead, pcTail); /*< Points to the last place that a queued item was read from when the structure is used as a queue. */
 } QueuePointers_t;
 
 typedef struct SemaphoreData
 {
+    _Ptr<int8_t> dummy;
     TaskHandle_t xMutexHolder;        /*< The handle of the task that holds the mutex. */
     UBaseType_t uxRecursiveCallCount; /*< Maintains a count of the number of times a recursive mutex has been recursively 'taken' when the structure is used as a mutex. */
 } SemaphoreData_t;
@@ -302,10 +304,14 @@ BaseType_t xQueueGenericReset(QueueHandle_t xQueue, BaseType_t xNewQueue)
     {
         taskENTER_CRITICAL();
         {
-            pxQueue->u.xQueue.pcTail = pxQueue->pcHead + ( pxQueue->uxLength * pxQueue->uxItemSize ); /*lint !e9016 Pointer arithmetic allowed on char types, especially when it assists conveying intent. */
+            _Bundled{
+                pxQueue->u.xQueue.pcHead = pxQueue->pcHead;
+                pxQueue->u.xQueue.pcTail = pxQueue->pcHead + ( pxQueue->uxLength * pxQueue->uxItemSize ); /*lint !e9016 Pointer arithmetic allowed on char types, especially when it assists conveying intent. */
+                pxQueue->u.xQueue.pcReadFrom = pxQueue->pcHead + ( ( pxQueue->uxLength - 1U ) * pxQueue->uxItemSize ); /*lint !e9016 Pointer arithmetic allowed on char types, especially when it assists conveying intent. */
+
+            }
             pxQueue->uxMessagesWaiting = ( UBaseType_t ) 0U;
             pxQueue->pcWriteTo = pxQueue->pcHead;
-            pxQueue->u.xQueue.pcReadFrom = pxQueue->pcHead + ( ( pxQueue->uxLength - 1U ) * pxQueue->uxItemSize ); /*lint !e9016 Pointer arithmetic allowed on char types, especially when it assists conveying intent. */
             pxQueue->cRxLock = queueUNLOCKED;
             pxQueue->cTxLock = queueUNLOCKED;
 
@@ -1728,8 +1734,8 @@ BaseType_t xQueuePeek(QueueHandle_t xQueue, _Ptr<uint8_t> const pvBuffer, TickTy
 {
     BaseType_t xEntryTimeSet = pdFALSE;
     TimeOut_t xTimeOut;
-    _Array_ptr<int8_t> pcOriginalReadPosition = NULL;
     const _Ptr<Queue_t> pxQueue = xQueue;
+    _Array_ptr<int8_t> pcOriginalReadPosition: bounds(pxQueue->u.xQueue.pcHead, pxQueue->u.xQueue.pcTail) = NULL;
 
     /* Check the pointer is not NULL. */
     configASSERT( ( pxQueue ) );
@@ -1767,7 +1773,7 @@ BaseType_t xQueuePeek(QueueHandle_t xQueue, _Ptr<uint8_t> const pvBuffer, TickTy
 
                 /* The data is not being removed, so reset the read pointer. */
                 pxQueue->u.xQueue.pcReadFrom = pcOriginalReadPosition;
-
+                
                 /* The data is being left in the queue, so see if there are
                  * any other tasks waiting for the data. */
                 if( listLIST_IS_EMPTY( &( pxQueue->xTasksWaitingToReceive ) ) == pdFALSE )
@@ -1967,8 +1973,8 @@ BaseType_t xQueuePeekFromISR(QueueHandle_t xQueue, _Ptr<uint8_t> const pvBuffer)
 {
     BaseType_t xReturn;
     UBaseType_t uxSavedInterruptStatus;
-    _Array_ptr<int8_t> pcOriginalReadPosition = NULL;
     const _Ptr<Queue_t> pxQueue = xQueue;
+    _Array_ptr<int8_t> pcOriginalReadPosition: bounds(pxQueue->u.xQueue.pcHead, pxQueue->u.xQueue.pcTail) = NULL;
 
     configASSERT( pxQueue );
     configASSERT( !( ( pvBuffer == NULL ) && ( pxQueue->uxItemSize != ( UBaseType_t ) 0U ) ) );
@@ -2204,9 +2210,7 @@ static BaseType_t prvCopyDataToQueue(const _Ptr<Queue_t> pxQueue, _Ptr<const uin
     }
     else
     {
-        _Unchecked{
-            ( void ) memcpy( ( void* ) pxQueue->u.xQueue.pcReadFrom, pvItemToQueue, ( size_t ) pxQueue->uxItemSize ); /*lint !e961 !e9087 !e418 MISRA exception as the casts are only redundant for some ports.  Cast to void required by function signature and safe as no alignment requirement and copy length specified in bytes.  Assert checks null pointer only used when length is 0. */
-        }
+        ( void ) memcpy<void>(  pxQueue->u.xQueue.pcReadFrom, pvItemToQueue, ( size_t ) pxQueue->uxItemSize ); /*lint !e961 !e9087 !e418 MISRA exception as the casts are only redundant for some ports.  Cast to void required by function signature and safe as no alignment requirement and copy length specified in bytes.  Assert checks null pointer only used when length is 0. */
         pxQueue->u.xQueue.pcReadFrom -= pxQueue->uxItemSize;
 
         if( pxQueue->u.xQueue.pcReadFrom < pxQueue->pcHead ) /*lint !e946 MISRA exception justified as comparison of pointers is the cleanest solution. */
