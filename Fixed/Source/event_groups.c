@@ -63,6 +63,62 @@
     #define eventEVENT_BITS_CONTROL_BYTES    0xff000000UL
 #endif
 
+// All unchecked calls to external functions are wrapped in macros.
+#define UncheckedtraceEVENT_GROUP_SET_BITS_FROM_ISR( xEventGroup, uxBitsToSet )                             \
+    _Unchecked{                                                                                             \
+        traceEVENT_GROUP_SET_BITS_FROM_ISR( (void*) xEventGroup, uxBitsToSet );                             \
+    }
+
+#define UncheckedtraceEVENT_GROUP_DELETE( xEventGroup )                                                     \
+    _Unchecked{                                                                                             \
+        traceEVENT_GROUP_DELETE( (void*) xEventGroup );                                                     \
+    }
+
+#define UncheckedtraceEVENT_GROUP_SET_BITS( xEventGroup, uxBitsToSet )                                      \
+    _Unchecked{                                                                                             \
+        traceEVENT_GROUP_SET_BITS( (void*) xEventGroup, uxBitsToSet );                                      \
+    }
+
+#define UncheckedtraceEVENT_GROUP_CLEAR_BITS_FROM_ISR( xEventGroup, uxBitsToClear )                         \
+    _Unchecked{                                                                                             \
+        traceEVENT_GROUP_CLEAR_BITS_FROM_ISR( (void*) xEventGroup, uxBitsToClear );                         \
+    }
+
+#define UncheckedtraceEVENT_GROUP_CLEAR_BITS( xEventGroup, uxBitsToClear )                                  \
+    _Unchecked{                                                                                             \
+        traceEVENT_GROUP_CLEAR_BITS( (void*) xEventGroup, uxBitsToClear );                                  \
+    }
+
+#define UncheckedtraceEVENT_GROUP_WAIT_BITS_END( xEventGroup, uxBitsToWaitFor, xTimeoutOccurred )           \
+    _Unchecked{                                                                                             \
+        traceEVENT_GROUP_WAIT_BITS_END( (void*) xEventGroup, uxBitsToWaitFor, xTimeoutOccurred );           \
+    }
+
+#define UncheckedtraceEVENT_GROUP_WAIT_BITS_BLOCK( xEventGroup, uxBitsToWaitFor )                           \
+    _Unchecked{                                                                                             \
+        traceEVENT_GROUP_WAIT_BITS_BLOCK( (void*) xEventGroup, uxBitsToWaitFor );                           \
+    }   
+
+#define UncheckedtraceEVENT_GROUP_SYNC_END( xEventGroup, uxBitsToSet, uxBitsToWaitFor, xTimeoutOccurred )   \
+    _Unchecked{                                                                                             \
+        traceEVENT_GROUP_SYNC_END( (void*) xEventGroup, uxBitsToSet, uxBitsToWaitFor, xTimeoutOccurred );   \
+    }
+
+#define UncheckedtraceEVENT_GROUP_SYNC_BLOCK( xEventGroup, uxBitsToSet, uxBitsToWaitFor )                   \
+    _Unchecked{                                                                                             \
+        traceEVENT_GROUP_SYNC_BLOCK( (void*) xEventGroup, uxBitsToSet, uxBitsToWaitFor );                   \
+    }
+
+#define UncheckedtraceEVENT_GROUP_CREATE_FAILED()                                                           \
+    _Unchecked{                                                                                             \
+        traceEVENT_GROUP_CREATE_FAILED();                                                                   \
+    }
+
+#define UncheckedtraceEVENT_GROUP_CREATE( pxEventBits )                                                     \
+    _Unchecked{                                                                                             \
+        traceEVENT_GROUP_CREATE( (void*) pxEventBits );                                                     \
+    }
+
 typedef struct EventGroupDef_t
 {
     EventBits_t uxEventBits;
@@ -129,13 +185,13 @@ static BaseType_t prvTestWaitCondition( const EventBits_t uxCurrentEventBits,
             }
             #endif /* configSUPPORT_DYNAMIC_ALLOCATION */
 
-            traceEVENT_GROUP_CREATE( (_Ptr<void>)pxEventBits );
+            UncheckedtraceEVENT_GROUP_CREATE( pxEventBits );
         }
         else
             /* xEventGroupCreateStatic should only ever be called with
              * pxEventGroupBuffer pointing to a pre-allocated (compile time
              * allocated) StaticEventGroup_t variable. */
-            traceEVENT_GROUP_CREATE_FAILED();
+            UncheckedtraceEVENT_GROUP_CREATE_FAILED();
 
         return pxEventBits;
     }
@@ -178,10 +234,10 @@ static BaseType_t prvTestWaitCondition( const EventBits_t uxCurrentEventBits,
             }
             #endif /* configSUPPORT_STATIC_ALLOCATION */
 
-            traceEVENT_GROUP_CREATE( (_Ptr<void>)pxEventBits );
+            UncheckedtraceEVENT_GROUP_CREATE( pxEventBits );
         }
         else
-            traceEVENT_GROUP_CREATE_FAILED(); /*lint !e9063 Else branch only exists to allow tracing and does not generate code if trace macros are not defined. */
+            UncheckedtraceEVENT_GROUP_CREATE_FAILED(); /*lint !e9063 Else branch only exists to allow tracing and does not generate code if trace macros are not defined. */
 
         return pxEventBits;
     }
@@ -226,7 +282,7 @@ EventBits_t xEventGroupSync(EventGroupHandle_t xEventGroup,
         {
             if( xTicksToWait != ( TickType_t ) 0 )
             {
-                traceEVENT_GROUP_SYNC_BLOCK( (_Ptr<void>)xEventGroup, uxBitsToSet, uxBitsToWaitFor );
+                UncheckedtraceEVENT_GROUP_SYNC_BLOCK( xEventGroup, uxBitsToSet, uxBitsToWaitFor );
 
                 /* Store the bits that the calling task is waiting for in the
                  * task's event list item so the kernel knows when a match is
@@ -293,7 +349,7 @@ EventBits_t xEventGroupSync(EventGroupHandle_t xEventGroup,
         uxReturn &= ~eventEVENT_BITS_CONTROL_BYTES;
     }
 
-    traceEVENT_GROUP_SYNC_END( (_Ptr<void>)xEventGroup, uxBitsToSet, uxBitsToWaitFor, xTimeoutOccurred );
+    UncheckedtraceEVENT_GROUP_SYNC_END( xEventGroup, uxBitsToSet, uxBitsToWaitFor, xTimeoutOccurred );
 
     /* Prevent compiler warnings when trace macros are not used. */
     ( void ) xTimeoutOccurred;
@@ -377,7 +433,7 @@ EventBits_t xEventGroupWaitBits(EventGroupHandle_t xEventGroup,
              * being returned without being set if it is not done. */
             uxReturn = 0;
 
-            traceEVENT_GROUP_WAIT_BITS_BLOCK( (_Ptr<void>)xEventGroup, uxBitsToWaitFor );
+            UncheckedtraceEVENT_GROUP_WAIT_BITS_BLOCK( xEventGroup, uxBitsToWaitFor );
         }
     }
     xAlreadyYielded = xTaskResumeAll();
@@ -423,7 +479,7 @@ EventBits_t xEventGroupWaitBits(EventGroupHandle_t xEventGroup,
         uxReturn &= ~eventEVENT_BITS_CONTROL_BYTES;
     }
 
-    traceEVENT_GROUP_WAIT_BITS_END( (_Ptr<void>)xEventGroup, uxBitsToWaitFor, xTimeoutOccurred );
+    UncheckedtraceEVENT_GROUP_WAIT_BITS_END( xEventGroup, uxBitsToWaitFor, xTimeoutOccurred );
 
     /* Prevent compiler warnings when trace macros are not used. */
     ( void ) xTimeoutOccurred;
@@ -445,7 +501,7 @@ EventBits_t xEventGroupClearBits(EventGroupHandle_t xEventGroup,
 
     taskENTER_CRITICAL();
     {
-        traceEVENT_GROUP_CLEAR_BITS( (_Ptr<void>)xEventGroup, uxBitsToClear );
+        UncheckedtraceEVENT_GROUP_CLEAR_BITS( xEventGroup, uxBitsToClear );
 
         /* The value returned is the event group value prior to the bits being
          * cleared. */
@@ -466,7 +522,7 @@ EventBits_t xEventGroupClearBits(EventGroupHandle_t xEventGroup,
     {
         BaseType_t xReturn;
 
-        traceEVENT_GROUP_CLEAR_BITS_FROM_ISR( (_Ptr<void>)xEventGroup, uxBitsToClear );
+        UncheckedtraceEVENT_GROUP_CLEAR_BITS_FROM_ISR( xEventGroup, uxBitsToClear );
         _Unchecked{
             xReturn = xTimerPendFunctionCallFromISR((void (*)(void*, unsigned int))vEventGroupClearBitsCallback, (void*)xEventGroup, ( uint32_t ) uxBitsToClear, NULL); /*lint !e9087 Can't avoid cast to void* as a generic callback function not specific to this use case. Callback casts back to original type so safe. */
         }
@@ -513,7 +569,7 @@ EventBits_t xEventGroupSetBits(EventGroupHandle_t xEventGroup,
     pxListEnd = listGET_END_MARKER( pxList );  /*lint !e826 !e740 !e9087 The mini list structure is used as the list end to save RAM.  This is checked and valid. */
     vTaskSuspendAll();
     {
-        traceEVENT_GROUP_SET_BITS( (_Ptr<void>)xEventGroup, uxBitsToSet );
+        UncheckedtraceEVENT_GROUP_SET_BITS( xEventGroup, uxBitsToSet );
 
         pxListItem = listGET_HEAD_ENTRY( pxList );
 
@@ -593,7 +649,7 @@ void vEventGroupDelete(EventGroupHandle_t xEventGroup)
 
     vTaskSuspendAll();
     {
-        traceEVENT_GROUP_DELETE( (_Ptr<void>)xEventGroup );
+        UncheckedtraceEVENT_GROUP_DELETE( xEventGroup );
 
         while( listCURRENT_LIST_LENGTH( pxTasksWaitingForBits ) > ( UBaseType_t ) 0 )
         {
@@ -681,7 +737,7 @@ static BaseType_t prvTestWaitCondition( const EventBits_t uxCurrentEventBits,
     {
         BaseType_t xReturn;
 
-        traceEVENT_GROUP_SET_BITS_FROM_ISR( (_Ptr<void>)xEventGroup, uxBitsToSet );
+        UncheckedtraceEVENT_GROUP_SET_BITS_FROM_ISR( xEventGroup, uxBitsToSet );
         _Unchecked{
             xReturn = xTimerPendFunctionCallFromISR((void (*)(void *, unsigned int))vEventGroupSetBitsCallback, (void*)xEventGroup, ( uint32_t ) uxBitsToSet, pxHigherPriorityTaskWoken ); /*lint !e9087 Can't avoid cast to void* as a callback function not specific to this use case. Callback casts back to original type so safe. */
         }

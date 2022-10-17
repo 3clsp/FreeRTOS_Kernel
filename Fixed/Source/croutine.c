@@ -108,7 +108,7 @@
         _Ptr<CRCB_t> pxCoRoutine = NULL;
 
         /* Allocate the memory that will store the co-routine control block. */
-        pxCoRoutine = pvPortMalloc<CRCB_t>( sizeof( CRCB_t ) );
+        pxCoRoutine = (_Ptr<CRCB_t>)pvPortMalloc( sizeof( CRCB_t ) );
 
         if( pxCoRoutine )
         {

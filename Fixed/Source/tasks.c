@@ -221,7 +221,9 @@
  * the task.  It is inserted at the end of the list.
  */
 #define prvAddTaskToReadyList( pxTCB )                                                                 \
-    traceMOVED_TASK_TO_READY_STATE( pxTCB );                                                           \
+    _Unchecked{                                                                                        \
+        traceMOVED_TASK_TO_READY_STATE( (void*) pxTCB );                                                       \
+    }                                                                                                  \
     taskRECORD_READY_PRIORITY( ( pxTCB )->uxPriority );                                                \
     listINSERT_END( &( pxReadyTasksLists[ ( pxTCB )->uxPriority ] ), &( ( pxTCB )->xStateListItem ) ); \
     tracePOST_MOVED_TASK_TO_READY_STATE( pxTCB )
@@ -248,6 +250,101 @@
 #else
     #define taskEVENT_LIST_ITEM_VALUE_IN_USE    0x80000000UL
 #endif
+
+// All unchecked calls to external functions are wrapped in macros.
+#define UncheckedtraceTASK_CREATE( pxNewTCB )                                                                             \
+    _Unchecked {                                                                                                          \
+        traceTASK_CREATE( (void*) pxNewTCB );                                                                             \
+    }
+
+#define UncheckedtraceTASK_DELETE( pxTCB )                                                                                \
+    _Unchecked {                                                                                                          \
+        traceTASK_DELETE( (void*) pxTCB );                                                                                \
+    }
+
+#define UncheckedtraceTASK_NOTIFY_GIVE_FROM_ISR( uxIndexToNotify )                                                        \
+    _Unchecked {                                                                                                          \
+        traceTASK_NOTIFY_GIVE_FROM_ISR( (void*) uxIndexToNotify );                                                        \
+    }
+
+#define UncheckedtraceTASK_NOTIFY( uxIndexToNotify )                                                                      \
+    _Unchecked {                                                                                                          \
+        traceTASK_NOTIFY( (void*) uxIndexToNotify );                                                                      \
+    }
+
+#define UncheckedtraceTASK_NOTIFY_FROM_ISR( uxIndexToNotify )                                                             \
+    _Unchecked {                                                                                                          \
+        traceTASK_NOTIFY_FROM_ISR( uxIndexToNotify );                                                                     \
+    }
+
+#define UncheckedtraceTASK_NOTIFY_WAIT( uxIndexToWait )                                                                   \
+    /* Let the macro use a temporary variable of the same name as global variable. */                                     \
+    _Ptr<TCB_t> pxCurrentTCB = pxCurrentTCB;                                                                              \
+    _Unchecked {                                                                                                          \
+        traceTASK_NOTIFY_WAIT( uxIndexToWait );                                                                           \
+    }
+
+#define UncheckedtraceTASK_NOTIFY_WAIT_BLOCK( uxIndexToWait )                                                             \
+    _Unchecked {                                                                                                          \
+        traceTASK_NOTIFY_WAIT_BLOCK( uxIndexToWait );                                                                     \
+    }
+
+#define UncheckedtraceTASK_NOTIFY_TAKE( uxIndexToWait )                                                                   \
+    /* Let the macro use a temporary variable of the same name as global variable. */                                     \
+    _Ptr<TCB_t> pxCurrentTCB = pxCurrentTCB;                                                                              \
+    _Unchecked {                                                                                                          \
+        traceTASK_NOTIFY_TAKE( uxIndexToWait );                                                                           \
+    }
+
+#define UncheckedtraceTASK_NOTIFY_TAKE_BLOCK( uxIndexToWait )                                                             \
+    _Unchecked {                                                                                                          \
+        traceTASK_NOTIFY_TAKE_BLOCK( uxIndexToWait );                                                                     \
+    }
+
+#define UncheckedtraceTASK_PRIORITY_DISINHERIT( pxTCB, uxPriorityToUse )                                                  \
+    _Unchecked {                                                                                                          \
+        traceTASK_PRIORITY_DISINHERIT( (void*) pxTCB, uxPriorityToUse );                                                  \
+    }
+
+#define UncheckedtraceTASK_PRIORITY_INHERIT( pxMutexHolderTCB, uxPriority )                                               \
+    _Unchecked {                                                                                                          \
+        traceTASK_PRIORITY_INHERIT( (void*) pxMutexHolderTCB, uxPriority );                                               \
+    }
+
+#define UncheckedtraceTASK_DELAY_UNTIL( xTimeToWake )                                                                     \
+    _Unchecked {                                                                                                          \
+        traceTASK_DELAY_UNTIL( xTimeToWake );                                                                             \
+    }
+
+#define UncheckedtraceTASK_SWITCHED_IN()                                                                                  \
+    _Unchecked {                                                                                                          \
+        traceTASK_SWITCHED_IN();                                                                                          \
+    }
+
+#define UncheckedtraceTASK_RESUME_FROM_ISR( pxTCB )                                                                       \
+    _Unchecked {                                                                                                          \
+        traceTASK_RESUME_FROM_ISR( (void*) pxTCB );                                                                       \
+    }
+
+#define UncheckedtraceTASK_RESUME( pxTCB )                                                                                \
+    _Unchecked {                                                                                                          \
+        traceTASK_RESUME( (void*) pxTCB );                                                                                \
+    }
+
+#define UncheckedtraceTASK_SUSPEND( pxTCB )                                                                               \
+    _Unchecked {                                                                                                          \
+        traceTASK_SUSPEND( (void*) pxTCB );                                                                               \
+    }
+
+#define UncheckedtraceTASK_PRIORITY_SET( pxTCB, uxNewPriority )                                                           \
+    _Unchecked {                                                                                                          \
+        traceTASK_PRIORITY_SET( (void*) pxTCB, uxNewPriority );                                                           \
+    }
+
+#define UncheckedtraceTASK_DELAY()                                                                                        \
+    _Unchecked {                                                                                                          \
+        traceTASK_DELAY();                                                                                                \
+    }
 
 /*
  * Task control block.  A task control block (TCB) is allocated for each task,
@@ -1093,7 +1190,7 @@ static void prvAddNewTaskToReadyList(_Ptr<TCB_t> pxNewTCB)
             pxNewTCB->uxTCBNumber = uxTaskNumber;
         }
         #endif /* configUSE_TRACE_FACILITY */
-        traceTASK_CREATE( pxNewTCB );
+        UncheckedtraceTASK_CREATE( pxNewTCB );
         prvAddTaskToReadyList(pxNewTCB );
 
         portSETUP_TCB( pxNewTCB );
@@ -1174,7 +1271,7 @@ static void prvAddNewTaskToReadyList(_Ptr<TCB_t> pxNewTCB)
 
                 /* Call the delete hook before portPRE_TASK_DELETE_HOOK() as
                  * portPRE_TASK_DELETE_HOOK() does not return in the Win32 port. */
-                traceTASK_DELETE( pxTCB );
+                UncheckedtraceTASK_DELETE( pxTCB );
 
                 /* The pre-delete hook is primarily for the Windows simulator,
                  * in which Windows specific clean up operations are performed,
@@ -1186,7 +1283,7 @@ static void prvAddNewTaskToReadyList(_Ptr<TCB_t> pxNewTCB)
             else
             {
                 --uxCurrentNumberOfTasks;
-                traceTASK_DELETE( pxTCB );
+                UncheckedtraceTASK_DELETE( pxTCB );
 
                 /* Reset the next expected unblock time in case it referred to
                  * the task that has just been deleted. */
@@ -1278,7 +1375,7 @@ static void prvAddNewTaskToReadyList(_Ptr<TCB_t> pxNewTCB)
 
             if( xShouldDelay != pdFALSE )
             {
-                traceTASK_DELAY_UNTIL( xTimeToWake );
+                UncheckedtraceTASK_DELAY_UNTIL( xTimeToWake );
 
                 /* prvAddCurrentTaskToDelayedList() needs the block time, not
                  * the time to wake, so subtract the current tick count. */
@@ -1320,7 +1417,7 @@ static void prvAddNewTaskToReadyList(_Ptr<TCB_t> pxNewTCB)
             configASSERT( uxSchedulerSuspended == 0 );
             vTaskSuspendAll();
             {
-                traceTASK_DELAY();
+                UncheckedtraceTASK_DELAY();
 
                 /* A task that is removed from the event list while the
                  * scheduler is suspended will not get placed in the ready
@@ -1541,7 +1638,7 @@ static void prvAddNewTaskToReadyList(_Ptr<TCB_t> pxNewTCB)
              * task that is being changed. */
             pxTCB = prvGetTCBFromHandle( xTask );
 
-            traceTASK_PRIORITY_SET( pxTCB, uxNewPriority );
+            UncheckedtraceTASK_PRIORITY_SET( pxTCB, uxNewPriority );
 
             #if ( configUSE_MUTEXES == 1 )
             {
@@ -1692,7 +1789,7 @@ static void prvAddNewTaskToReadyList(_Ptr<TCB_t> pxNewTCB)
              * being suspended. */
             pxTCB = prvGetTCBFromHandle( xTaskToSuspend );
 
-            traceTASK_SUSPEND( pxTCB );
+            UncheckedtraceTASK_SUSPEND( pxTCB );
 
             /* Remove task from the ready/delayed list and place in the
              * suspended list. */
@@ -1849,7 +1946,7 @@ static void prvAddNewTaskToReadyList(_Ptr<TCB_t> pxNewTCB)
             {
                 if( prvTaskIsTaskSuspended( pxTCB ) != pdFALSE )
                 {
-                    traceTASK_RESUME( pxTCB );
+                    UncheckedtraceTASK_RESUME( pxTCB );
 
                     /* The ready list can be accessed even if the scheduler is
                      * suspended because this is inside a critical section. */
@@ -1918,7 +2015,7 @@ static void prvAddNewTaskToReadyList(_Ptr<TCB_t> pxNewTCB)
         {
             if( prvTaskIsTaskSuspended( pxTCB ) != pdFALSE )
             {
-                traceTASK_RESUME_FROM_ISR( pxTCB );
+                UncheckedtraceTASK_RESUME_FROM_ISR( pxTCB );
 
                 /* Check the ready lists can be accessed. */
                 if( uxSchedulerSuspended == ( UBaseType_t ) pdFALSE )
@@ -2063,7 +2160,7 @@ void vTaskStartScheduler( void )
          * FreeRTOSConfig.h file. */
         portCONFIGURE_TIMER_FOR_RUN_TIME_STATS();
 
-        traceTASK_SWITCHED_IN();
+        UncheckedtraceTASK_SWITCHED_IN();
 
         /* Setting up the timer tick is hardware specific and thus in the
          * portable interface. */
@@ -3078,7 +3175,7 @@ void vTaskSwitchContext( void )
          * optimised asm code. */
         
         taskSELECT_HIGHEST_PRIORITY_TASK(); /*lint !e9079 void * is used as this macro is used with timers and co-routines too.  Alignment is known to be fine as the type of the pointer stored and retrieved is the same. */
-        traceTASK_SWITCHED_IN();
+        UncheckedtraceTASK_SWITCHED_IN();
 
         /* After the new task is switched in, update the global errno. */
         #if ( configUSE_POSIX_ERRNO == 1 )
@@ -3179,7 +3276,7 @@ void vTaskPlaceOnUnorderedEventList( _Ptr<List_t> pxEventList,
             xTicksToWait = portMAX_DELAY;
         }
 
-        traceTASK_DELAY_UNTIL( ( xTickCount + xTicksToWait ) );
+        UncheckedtraceTASK_DELAY_UNTIL( ( xTickCount + xTicksToWait ) );
         prvAddCurrentTaskToDelayedList( xTicksToWait, xWaitIndefinitely );
     }
 
@@ -4134,7 +4231,7 @@ static void prvResetNextTaskUnblockTime( void )
                     pxMutexHolderTCB->uxPriority = pxCurrentTCB->uxPriority;
                 }
 
-                traceTASK_PRIORITY_INHERIT( pxMutexHolderTCB, pxCurrentTCB->uxPriority );
+                UncheckedtraceTASK_PRIORITY_INHERIT( pxMutexHolderTCB, pxCurrentTCB->uxPriority );
 
                 /* Inheritance occurred. */
                 xReturn = pdTRUE;
@@ -4209,7 +4306,7 @@ static void prvResetNextTaskUnblockTime( void )
 
                     /* Disinherit the priority before adding the task into the
                      * new  ready list. */
-                    traceTASK_PRIORITY_DISINHERIT( pxTCB, pxTCB->uxBasePriority );
+                    UncheckedtraceTASK_PRIORITY_DISINHERIT( pxTCB, pxTCB->uxBasePriority );
                     pxTCB->uxPriority = pxTCB->uxBasePriority;
 
                     /* Reset the event list item value.  It cannot be in use for
@@ -4294,7 +4391,7 @@ static void prvResetNextTaskUnblockTime( void )
                     /* Disinherit the priority, remembering the previous
                      * priority to facilitate determining the subject task's
                      * state. */
-                    traceTASK_PRIORITY_DISINHERIT( pxTCB, uxPriorityToUse );
+                    UncheckedtraceTASK_PRIORITY_DISINHERIT( pxTCB, uxPriorityToUse );
                     uxPriorityUsedOnEntry = pxTCB->uxPriority;
                     pxTCB->uxPriority = uxPriorityToUse;
 
@@ -4745,7 +4842,7 @@ TickType_t uxTaskResetEventItemValue( void )
                 if( xTicksToWait > ( TickType_t ) 0 )
                 {
                     prvAddCurrentTaskToDelayedList( xTicksToWait, pdTRUE );
-                    traceTASK_NOTIFY_TAKE_BLOCK( uxIndexToWait );
+                    UncheckedtraceTASK_NOTIFY_TAKE_BLOCK( uxIndexToWait );
 
                     /* All ports are written to allow a yield in a critical
                      * section (some will yield immediately, others wait until the
@@ -4767,7 +4864,7 @@ TickType_t uxTaskResetEventItemValue( void )
 
         taskENTER_CRITICAL();
         {
-            traceTASK_NOTIFY_TAKE( uxIndexToWait );
+            UncheckedtraceTASK_NOTIFY_TAKE( uxIndexToWait );
             ulReturn = tmppxCurrentTCB->ulNotifiedValue[ uxIndexToWait ];
 
             if( ulReturn != 0UL )
@@ -4821,7 +4918,7 @@ TickType_t uxTaskResetEventItemValue( void )
                 if( xTicksToWait > ( TickType_t ) 0 )
                 {
                     prvAddCurrentTaskToDelayedList( xTicksToWait, pdTRUE );
-                    traceTASK_NOTIFY_WAIT_BLOCK( uxIndexToWait );
+                    UncheckedtraceTASK_NOTIFY_WAIT_BLOCK( uxIndexToWait );
 
                     /* All ports are written to allow a yield in a critical
                      * section (some will yield immediately, others wait until the
@@ -4843,7 +4940,7 @@ TickType_t uxTaskResetEventItemValue( void )
 
         taskENTER_CRITICAL();
         {
-            traceTASK_NOTIFY_WAIT( uxIndexToWait );
+            UncheckedtraceTASK_NOTIFY_WAIT( uxIndexToWait );
 
             if( pulNotificationValue != NULL )
             {
@@ -4946,7 +5043,7 @@ TickType_t uxTaskResetEventItemValue( void )
                     break;
             }
 
-            traceTASK_NOTIFY( uxIndexToNotify );
+            UncheckedtraceTASK_NOTIFY( uxIndexToNotify );
 
             /* If the task is in the blocked state specifically to wait for a
              * notification then unblock it now. */
@@ -5083,7 +5180,7 @@ TickType_t uxTaskResetEventItemValue( void )
                     break;
             }
 
-            traceTASK_NOTIFY_FROM_ISR( uxIndexToNotify );
+            UncheckedtraceTASK_NOTIFY_FROM_ISR( uxIndexToNotify );
 
             /* If the task is in the blocked state specifically to wait for a
              * notification then unblock it now. */
@@ -5172,7 +5269,7 @@ TickType_t uxTaskResetEventItemValue( void )
              * semaphore. */
             ( pxTCB->ulNotifiedValue[ uxIndexToNotify ] )++;
 
-            traceTASK_NOTIFY_GIVE_FROM_ISR( uxIndexToNotify );
+            UncheckedtraceTASK_NOTIFY_GIVE_FROM_ISR( uxIndexToNotify );
 
             /* If the task is in the blocked state specifically to wait for a
              * notification then unblock it now. */

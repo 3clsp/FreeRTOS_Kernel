@@ -221,6 +221,72 @@
 
 /*-----------------------------------------------------------*/
 
+// All unchecked calls to external functions are wrapped in macros.
+#define UncheckedtraceSTREAM_BUFFER_CREATE( pxStreamBuffer, xIsMessageBuffer )                                  \
+    _Unchecked{                                                                                                 \
+        traceSTREAM_BUFFER_CREATE( (void*) pxStreamBuffer, xIsMessageBuffer );                                  \    
+    }
+
+#define UncheckedtraceSTREAM_BUFFER_CREATE_FAILED( xIsMessageBuffer )                                           \
+    _Unchecked{                                                                                                 \
+        traceSTREAM_BUFFER_CREATE_FAILED( xIsMessageBuffer );                                                   \
+    }
+
+#define UncheckedtraceSTREAM_BUFFER_CREATE_STATIC_FAILED( xReturn, xIsMessageBuffer )                           \
+    _Unchecked{                                                                                                 \
+        traceSTREAM_BUFFER_CREATE_STATIC_FAILED( xReturn, xIsMessageBuffer );                                   \
+    }
+
+#define UncheckedtraceSTREAM_BUFFER_DELETE( xStreamBuffer )                                                     \
+    _Unchecked{                                                                                                 \
+        traceSTREAM_BUFFER_DELETE( (void*) xStreamBuffer );                                                     \
+    }
+
+#define UncheckedtraceSTREAM_BUFFER_RESET( xStreamBuffer )                                                      \
+    _Unchecked{                                                                                                 \
+        traceSTREAM_BUFFER_RESET( (void*) xStreamBuffer );                                                      \
+    }
+
+#define UncheckedtraceBLOCKING_ON_STREAM_BUFFER_SEND( xStreamBuffer )                                           \
+    _Unchecked{                                                                                                 \
+        traceBLOCKING_ON_STREAM_BUFFER_SEND( (void*) xStreamBuffer );                                           \
+    }
+
+#define UncheckedtraceSTREAM_BUFFER_SEND( xStreamBuffer, xBytesSent )                                           \
+    _Unchecked{                                                                                                 \
+        traceSTREAM_BUFFER_SEND( (void*) xStreamBuffer, xBytesSent );                                           \
+    }
+
+#define UncheckedtraceSTREAM_BUFFER_SEND_FAILED( xStreamBuffer )                                                \
+    _Unchecked{                                                                                                 \
+        traceSTREAM_BUFFER_SEND_FAILED( (void*) xStreamBuffer );                                                \
+    }
+
+#define UncheckedtraceSTREAM_BUFFER_SEND_FROM_ISR( xStreamBuffer, xBytesSent )                                  \
+    _Unchecked{                                                                                                 \
+        traceSTREAM_BUFFER_SEND_FROM_ISR( (void*) xStreamBuffer, xBytesSent );                                  \
+    }
+
+#define UncheckedtraceBLOCKING_ON_STREAM_BUFFER_RECEIVE( xStreamBuffer )                                        \
+    _Unchecked{                                                                                                 \
+        traceBLOCKING_ON_STREAM_BUFFER_RECEIVE( (void*) xStreamBuffer );                                        \
+    }
+
+#define UncheckedtraceSTREAM_BUFFER_RECEIVE( xStreamBuffer, xBytesReceived )                                    \
+    _Unchecked{                                                                                                 \
+        traceSTREAM_BUFFER_RECEIVE( (void*) xStreamBuffer, xBytesReceived );                                    \
+    }
+
+#define UncheckedtraceSTREAM_BUFFER_RECEIVE_FAILED( xStreamBuffer )                                             \
+    _Unchecked{                                                                                                 \
+        traceSTREAM_BUFFER_RECEIVE_FAILED( (void*) xStreamBuffer );                                             \
+    }
+
+#define UncheckedtraceSTREAM_BUFFER_RECEIVE_FROM_ISR( xStreamBuffer, xBytesReceived )                           \
+    _Unchecked{                                                                                                 \
+        traceSTREAM_BUFFER_RECEIVE_FROM_ISR( (void*) xStreamBuffer, xBytesReceived );                           \
+    }
+
 /* Structure that hold state information on the buffer. */
 typedef struct StreamBufferDef_t                 /*lint !e9058 Style convention uses tag. */
 {
@@ -361,11 +427,11 @@ static void prvInitialiseNewStreamBuffer(const _Ptr<StreamBuffer_t> pxStreamBuff
                                           pxSendCompletedCallback,
                                           pxReceiveCompletedCallback );
 
-            traceSTREAM_BUFFER_CREATE( ( ( _Ptr<StreamBuffer_t> ) pucAllocatedMemory ), xIsMessageBuffer );
+            UncheckedtraceSTREAM_BUFFER_CREATE( pucAllocatedMemory, xIsMessageBuffer );
         }
         else
         {
-            traceSTREAM_BUFFER_CREATE_FAILED( xIsMessageBuffer );
+            UncheckedtraceSTREAM_BUFFER_CREATE_FAILED( xIsMessageBuffer );
         }
 
         return ( StreamBufferHandle_t ) pucAllocatedMemory; /*lint !e9087 !e826 Safe cast as allocated memory is aligned. */
@@ -433,14 +499,14 @@ static void prvInitialiseNewStreamBuffer(const _Ptr<StreamBuffer_t> pxStreamBuff
              * again. */
             pxStreamBuffer->ucFlags |= sbFLAGS_IS_STATICALLY_ALLOCATED;
 
-            traceSTREAM_BUFFER_CREATE( pxStreamBuffer, xIsMessageBuffer );
+            UncheckedtraceSTREAM_BUFFER_CREATE( pxStreamBuffer, xIsMessageBuffer );
 
             xReturn = ( StreamBufferHandle_t ) pxStaticStreamBuffer; /*lint !e9087 Data hiding requires cast to opaque type. */
         }
         else
         {
             xReturn = NULL;
-            traceSTREAM_BUFFER_CREATE_STATIC_FAILED( xReturn, xIsMessageBuffer );
+            UncheckedtraceSTREAM_BUFFER_CREATE_STATIC_FAILED( xReturn, xIsMessageBuffer );
         }
 
         return xReturn;
@@ -454,7 +520,7 @@ void vStreamBufferDelete(StreamBufferHandle_t xStreamBuffer)
 
     configASSERT( pxStreamBuffer );
 
-    traceSTREAM_BUFFER_DELETE( xStreamBuffer );
+    UncheckedtraceSTREAM_BUFFER_DELETE( xStreamBuffer );
 
     if( ( pxStreamBuffer->ucFlags & sbFLAGS_IS_STATICALLY_ALLOCATED ) == ( uint8_t ) pdFALSE )
     {
@@ -528,7 +594,7 @@ BaseType_t xStreamBufferReset(StreamBufferHandle_t xStreamBuffer)
             }
             #endif
 
-            traceSTREAM_BUFFER_RESET( xStreamBuffer );
+            UncheckedtraceSTREAM_BUFFER_RESET( xStreamBuffer );
 
             xReturn = pdPASS;
         }
@@ -696,7 +762,7 @@ size_t xStreamBufferSend(StreamBufferHandle_t xStreamBuffer, _Array_ptr<const ui
             }
             taskEXIT_CRITICAL();
 
-            traceBLOCKING_ON_STREAM_BUFFER_SEND( xStreamBuffer );
+            UncheckedtraceBLOCKING_ON_STREAM_BUFFER_SEND( xStreamBuffer );
             ( void ) xTaskNotifyWait( ( uint32_t ) 0, ( uint32_t ) 0, NULL, xTicksToWait );
             pxStreamBuffer->xTaskWaitingToSend = NULL;
         } while( xTaskCheckForTimeOut( &xTimeOut, &xTicksToWait ) == pdFALSE );
@@ -719,7 +785,7 @@ size_t xStreamBufferSend(StreamBufferHandle_t xStreamBuffer, _Array_ptr<const ui
 
     if( xReturn > ( size_t ) 0 )
     {
-        traceSTREAM_BUFFER_SEND( xStreamBuffer, xReturn );
+        UncheckedtraceSTREAM_BUFFER_SEND( xStreamBuffer, xReturn );
 
         /* Was a task waiting for the data? */
         if( prvBytesInBuffer( pxStreamBuffer ) >= pxStreamBuffer->xTriggerLevelBytes )
@@ -734,7 +800,7 @@ size_t xStreamBufferSend(StreamBufferHandle_t xStreamBuffer, _Array_ptr<const ui
     else
     {
         mtCOVERAGE_TEST_MARKER();
-        traceSTREAM_BUFFER_SEND_FAILED( xStreamBuffer );
+        UncheckedtraceSTREAM_BUFFER_SEND_FAILED( xStreamBuffer );
     }
 
     return xReturn;
@@ -783,7 +849,7 @@ size_t xStreamBufferSendFromISR(StreamBufferHandle_t xStreamBuffer, _Array_ptr<c
         mtCOVERAGE_TEST_MARKER();
     }
 
-    traceSTREAM_BUFFER_SEND_FROM_ISR( xStreamBuffer, xReturn );
+    UncheckedtraceSTREAM_BUFFER_SEND_FROM_ISR( xStreamBuffer, xReturn );
 
     return xReturn;
 }
@@ -892,7 +958,7 @@ size_t xStreamBufferReceive(StreamBufferHandle_t xStreamBuffer, _Array_ptr<uint8
         if( xBytesAvailable <= xBytesToStoreMessageLength )
         {
             /* Wait for data to be available. */
-            traceBLOCKING_ON_STREAM_BUFFER_RECEIVE( xStreamBuffer );
+            UncheckedtraceBLOCKING_ON_STREAM_BUFFER_RECEIVE( xStreamBuffer );
             ( void ) xTaskNotifyWait( ( uint32_t ) 0, ( uint32_t ) 0, NULL, xTicksToWait );
             pxStreamBuffer->xTaskWaitingToReceive = NULL;
 
@@ -921,7 +987,7 @@ size_t xStreamBufferReceive(StreamBufferHandle_t xStreamBuffer, _Array_ptr<uint8
         /* Was a task waiting for space in the buffer? */
         if( xReceivedLength != ( size_t ) 0 )
         {
-            traceSTREAM_BUFFER_RECEIVE( xStreamBuffer, xReceivedLength );
+            UncheckedtraceSTREAM_BUFFER_RECEIVE( xStreamBuffer, xReceivedLength );
             prvRECEIVE_COMPLETED( xStreamBuffer );
         }
         else
@@ -931,7 +997,7 @@ size_t xStreamBufferReceive(StreamBufferHandle_t xStreamBuffer, _Array_ptr<uint8
     }
     else
     {
-        traceSTREAM_BUFFER_RECEIVE_FAILED( xStreamBuffer );
+        UncheckedtraceSTREAM_BUFFER_RECEIVE_FAILED( xStreamBuffer );
         mtCOVERAGE_TEST_MARKER();
     }
 
@@ -1028,7 +1094,7 @@ size_t xStreamBufferReceiveFromISR(StreamBufferHandle_t xStreamBuffer, _Array_pt
         mtCOVERAGE_TEST_MARKER();
     }
 
-    traceSTREAM_BUFFER_RECEIVE_FROM_ISR( xStreamBuffer, xReceivedLength );
+    UncheckedtraceSTREAM_BUFFER_RECEIVE_FROM_ISR( xStreamBuffer, xReceivedLength );
 
     return xReceivedLength;
 }

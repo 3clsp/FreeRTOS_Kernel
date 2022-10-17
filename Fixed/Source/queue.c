@@ -68,6 +68,102 @@
 #define uxQueueType               pcHead
 #define queueQUEUE_IS_MUTEX       NULL
 
+// All unchecked calls to external functions are wrapped in macros.
+#define UncheckedtraceQUEUE_CREATE_FAILED( ucQueueType )                             \
+    _Unchecked{                                                                      \
+        traceQUEUE_CREATE_FAILED( ucQueueType );                                     \
+    }
+
+#define UncheckedtraceQUEUE_CREATE( pxNewQueue )                                     \
+    _Unchecked{                                                                      \
+        traceQUEUE_CREATE( (void*)pxNewQueue );                                      \
+    }
+
+#define UncheckedtraceGIVE_MUTEX_RECURSIVE_FAILED( pxMutex )                         \
+    _Unchecked{                                                                      \
+        traceGIVE_MUTEX_RECURSIVE_FAILED( (void*)pxMutex );                          \
+    }
+
+#define UncheckedtraceQUEUE_SEND( pxQueue )                                          \
+    _Unchecked{                                                                      \
+        traceQUEUE_SEND( (void*)pxQueue );                                           \
+    }
+
+#define UncheckedtraceQUEUE_SEND_FAILED( pxQueue )                                   \
+    _Unchecked{                                                                      \
+        traceQUEUE_SEND_FAILED( (void*)pxQueue );                                    \
+    }
+
+#define UncheckedtraceBLOCKING_ON_QUEUE_SEND( pxQueue )                              \
+    _Unchecked{                                                                      \
+        traceBLOCKING_ON_QUEUE_SEND( (void*)pxQueue );                               \
+    }
+
+#define UncheckedtraceQUEUE_SEND_FROM_ISR( pxQueue )                                 \
+    _Unchecked{                                                                      \
+        traceQUEUE_SEND_FROM_ISR( (void*)pxQueue );                                  \
+    }
+
+#define UncheckedtraceQUEUE_SEND_FROM_ISR_FAILED( pxQueue )                          \
+    _Unchecked{                                                                      \
+        traceQUEUE_SEND_FROM_ISR_FAILED( (void*)pxQueue );                           \
+    }
+
+#define UncheckedtraceQUEUE_RECEIVE( pxQueue )                                       \
+    _Unchecked{                                                                      \
+        traceQUEUE_RECEIVE( (void*)pxQueue );                                        \
+    }
+
+#define UncheckedtraceQUEUE_RECEIVE_FAILED( pxQueue )                                \
+    _Unchecked{                                                                      \
+        traceQUEUE_RECEIVE_FAILED( (void*)pxQueue );                                 \
+    }
+
+#define UncheckedtraceBLOCKING_ON_QUEUE_RECEIVE( pxQueue )                           \  
+    _Unchecked{                                                                      \
+        traceBLOCKING_ON_QUEUE_RECEIVE( (void*)pxQueue );                            \
+    }
+
+#define UncheckedtraceQUEUE_PEEK( pxQueue )                                          \
+    _Unchecked{                                                                      \
+        traceQUEUE_PEEK( (void*)pxQueue );                                           \
+    }
+
+#define UncheckedtraceQUEUE_PEEK_FAILED( pxQueue )                                   \
+    _Unchecked{                                                                      \
+        traceQUEUE_PEEK_FAILED( (void*)pxQueue );                                    \
+    }
+
+#define UncheckedtraceBLOCKING_ON_QUEUE_PEEK( pxQueue )                              \
+    _Unchecked{                                                                      \
+        traceBLOCKING_ON_QUEUE_PEEK( (void*)pxQueue );                               \
+    }
+
+#define UncheckedtraceQUEUE_RECEIVE_FROM_ISR( pxQueue )                              \
+    _Unchecked{                                                                      \
+        traceQUEUE_RECEIVE_FROM_ISR( (void*)pxQueue );                               \
+    }
+
+#define UncheckedtraceQUEUE_RECEIVE_FROM_ISR_FAILED( pxQueue )                       \
+    _Unchecked{                                                                      \
+        traceQUEUE_RECEIVE_FROM_ISR_FAILED( (void*)pxQueue );                        \
+    }
+
+#define UncheckedtraceQUEUE_DELETE( pxQueue )                                        \
+    _Unchecked{                                                                      \
+        traceQUEUE_DELETE( (void*)pxQueue );                                         \
+    }
+
+#define UncheckedtraceQUEUE_REGISTRY_ADD( pxQueue, pcQueueName )                     \
+    _Unchecked{                                                                      \
+        traceQUEUE_REGISTRY_ADD( (void*)pxQueue, (const char *)pcQueueName );        \
+    }
+
+#define UncheckedtraceQUEUE_SET_SEND( pxQueueSetContainer )                          \
+    _Unchecked{                                                                      \
+        traceQUEUE_SET_SEND( (void*)pxQueueSetContainer );                           \
+    }
+
 typedef struct QueuePointers
 {
     _Ptr<int8_t> pcHead; /*< Points to the beginning of the queue storage area. */
@@ -471,7 +567,7 @@ BaseType_t xQueueGenericReset(QueueHandle_t xQueue, BaseType_t xNewQueue)
             }
             else
             {
-                traceQUEUE_CREATE_FAILED( ucQueueType );
+                UncheckedtraceQUEUE_CREATE_FAILED( ucQueueType );
                 mtCOVERAGE_TEST_MARKER();
             }
         }
@@ -537,7 +633,7 @@ static void prvInitialiseNewQueue(const UBaseType_t uxQueueLength, const UBaseTy
     }
     #endif /* configUSE_QUEUE_SETS */
 
-    traceQUEUE_CREATE( (_Ptr<void>)pxNewQueue );
+    UncheckedtraceQUEUE_CREATE( pxNewQueue );
 }
 /*-----------------------------------------------------------*/
 
@@ -716,7 +812,7 @@ static void prvInitialiseNewQueue(const UBaseType_t uxQueueLength, const UBaseTy
              * holder. */
             xReturn = pdFAIL;
 
-            traceGIVE_MUTEX_RECURSIVE_FAILED( (_Ptr<void>)pxMutex );
+            UncheckedtraceGIVE_MUTEX_RECURSIVE_FAILED( pxMutex );
         }
 
         return xReturn;
@@ -863,7 +959,7 @@ BaseType_t xQueueGenericSend(QueueHandle_t xQueue, _Ptr<const uint8_t> const pvI
              * queue is full. */
             if( ( pxQueue->uxMessagesWaiting < pxQueue->uxLength ) || ( xCopyPosition == queueOVERWRITE ) )
             {
-                traceQUEUE_SEND( (_Ptr<void>)pxQueue, pxQueue->uxMessagesWaiting );
+                UncheckedtraceQUEUE_SEND( pxQueue );
 
                 #if ( configUSE_QUEUE_SETS == 1 )
                 {
@@ -974,7 +1070,7 @@ BaseType_t xQueueGenericSend(QueueHandle_t xQueue, _Ptr<const uint8_t> const pvI
 
                     /* Return to the original privilege level before exiting
                      * the function. */
-                    traceQUEUE_SEND_FAILED( (_Ptr<void>)pxQueue );
+                    UncheckedtraceQUEUE_SEND_FAILED( pxQueue );
                     return errQUEUE_FULL;
                 }
                 else if( xEntryTimeSet == pdFALSE )
@@ -1004,7 +1100,7 @@ BaseType_t xQueueGenericSend(QueueHandle_t xQueue, _Ptr<const uint8_t> const pvI
         {
             if( prvIsQueueFull( pxQueue ) != pdFALSE )
             {
-                traceBLOCKING_ON_QUEUE_SEND( (_Ptr<void>)pxQueue );
+                UncheckedtraceBLOCKING_ON_QUEUE_SEND( pxQueue );
                 vTaskPlaceOnEventList( &( pxQueue->xTasksWaitingToSend ), xTicksToWait );
 
                 /* Unlocking the queue means queue events can effect the
@@ -1037,7 +1133,7 @@ BaseType_t xQueueGenericSend(QueueHandle_t xQueue, _Ptr<const uint8_t> const pvI
             prvUnlockQueue( pxQueue );
             ( void ) xTaskResumeAll();
 
-            traceQUEUE_SEND_FAILED( (_Ptr<void>)pxQueue );
+            UncheckedtraceQUEUE_SEND_FAILED( pxQueue );
             return errQUEUE_FULL;
         }
     } /*lint -restore */
@@ -1082,7 +1178,7 @@ BaseType_t xQueueGenericSendFromISR(QueueHandle_t xQueue, _Ptr<const uint8_t> co
             const int8_t cTxLock = pxQueue->cTxLock;
             const UBaseType_t uxPreviousMessagesWaiting = pxQueue->uxMessagesWaiting;
 
-            traceQUEUE_SEND_FROM_ISR( (_Ptr<void>)pxQueue, pxQueue->uxMessagesWaiting );
+            UncheckedtraceQUEUE_SEND_FROM_ISR( pxQueue );
 
             /* Semaphores use xQueueGiveFromISR(), so pxQueue will not be a
              *  semaphore or mutex.  That means prvCopyDataToQueue() cannot result
@@ -1196,7 +1292,7 @@ BaseType_t xQueueGenericSendFromISR(QueueHandle_t xQueue, _Ptr<const uint8_t> co
         }
         else
         {
-            traceQUEUE_SEND_FROM_ISR_FAILED( (_Ptr<void>)pxQueue );
+            UncheckedtraceQUEUE_SEND_FROM_ISR_FAILED( pxQueue );
             xReturn = errQUEUE_FULL;
         }
     }
@@ -1256,7 +1352,7 @@ BaseType_t xQueueGiveFromISR(QueueHandle_t xQueue, _Ptr<BaseType_t> const pxHigh
         {
             const int8_t cTxLock = pxQueue->cTxLock;
 
-            traceQUEUE_SEND_FROM_ISR( (_Ptr<void>)pxQueue, pxQueue->uxMessagesWaiting );
+            UncheckedtraceQUEUE_SEND_FROM_ISR( pxQueue );
 
             /* A task can only have an inherited priority if it is a mutex
              * holder - and if there is a mutex holder then the mutex cannot be
@@ -1361,7 +1457,7 @@ BaseType_t xQueueGiveFromISR(QueueHandle_t xQueue, _Ptr<BaseType_t> const pxHigh
         }
         else
         {
-            traceQUEUE_SEND_FROM_ISR_FAILED( (_Ptr<void>)pxQueue );
+            UncheckedtraceQUEUE_SEND_FROM_ISR_FAILED( pxQueue );
             xReturn = errQUEUE_FULL;
         }
     }
@@ -1406,7 +1502,7 @@ BaseType_t xQueueReceive(QueueHandle_t xQueue, _Ptr<uint8_t> const pvBuffer, Tic
             {
                 /* Data available, remove one item. */
                 prvCopyDataFromQueue( pxQueue, pvBuffer );
-                traceQUEUE_RECEIVE( (_Ptr<void>)pxQueue, pxQueue->uxMessagesWaiting );
+                UncheckedtraceQUEUE_RECEIVE( pxQueue );
                 pxQueue->uxMessagesWaiting = uxMessagesWaiting - ( UBaseType_t ) 1;
 
                 /* There is now space in the queue, were any tasks waiting to
@@ -1438,7 +1534,7 @@ BaseType_t xQueueReceive(QueueHandle_t xQueue, _Ptr<uint8_t> const pvBuffer, Tic
                     /* The queue was empty and no block time is specified (or
                      * the block time has expired) so leave now. */
                     taskEXIT_CRITICAL();
-                    traceQUEUE_RECEIVE_FAILED( (_Ptr<void>)pxQueue );
+                    UncheckedtraceQUEUE_RECEIVE_FAILED( pxQueue );
                     return errQUEUE_EMPTY;
                 }
                 else if( xEntryTimeSet == pdFALSE )
@@ -1470,7 +1566,7 @@ BaseType_t xQueueReceive(QueueHandle_t xQueue, _Ptr<uint8_t> const pvBuffer, Tic
              * the task on the list of tasks waiting to receive from the queue. */
             if( prvIsQueueEmpty( pxQueue ) != pdFALSE )
             {
-                traceBLOCKING_ON_QUEUE_RECEIVE( (_Ptr<void>)pxQueue );
+                UncheckedtraceBLOCKING_ON_QUEUE_RECEIVE( pxQueue );
                 vTaskPlaceOnEventList( &( pxQueue->xTasksWaitingToReceive ), xTicksToWait );
                 prvUnlockQueue( pxQueue );
 
@@ -1500,7 +1596,7 @@ BaseType_t xQueueReceive(QueueHandle_t xQueue, _Ptr<uint8_t> const pvBuffer, Tic
 
             if( prvIsQueueEmpty( pxQueue ) != pdFALSE )
             {
-                traceQUEUE_RECEIVE_FAILED( (_Ptr<void>)pxQueue );
+                UncheckedtraceQUEUE_RECEIVE_FAILED( pxQueue );
                 return errQUEUE_EMPTY;
             }
             else
@@ -1551,7 +1647,7 @@ BaseType_t xQueueSemaphoreTake(QueueHandle_t xQueue, TickType_t xTicksToWait)
              * must be the highest priority task wanting to access the queue. */
             if( uxSemaphoreCount > ( UBaseType_t ) 0 )
             {
-                traceQUEUE_RECEIVE( (_Ptr<void>)pxQueue, pxQueue->uxMessagesWaiting );
+                UncheckedtraceQUEUE_RECEIVE( pxQueue );
 
                 /* Semaphores are queues with a data size of zero and where the
                  * messages waiting is the semaphore's count.  Reduce the count. */
@@ -1609,7 +1705,7 @@ BaseType_t xQueueSemaphoreTake(QueueHandle_t xQueue, TickType_t xTicksToWait)
                     /* The semaphore count was 0 and no block time is specified
                      * (or the block time has expired) so exit now. */
                     taskEXIT_CRITICAL();
-                    traceQUEUE_RECEIVE_FAILED( (_Ptr<void>)pxQueue );
+                    UncheckedtraceQUEUE_RECEIVE_FAILED( pxQueue );
                     return errQUEUE_EMPTY;
                 }
                 else if( xEntryTimeSet == pdFALSE )
@@ -1643,7 +1739,7 @@ BaseType_t xQueueSemaphoreTake(QueueHandle_t xQueue, TickType_t xTicksToWait)
              * queue being empty is equivalent to the semaphore count being 0. */
             if( prvIsQueueEmpty( pxQueue ) != pdFALSE )
             {
-                traceBLOCKING_ON_QUEUE_RECEIVE( (_Ptr<void>)pxQueue );
+                UncheckedtraceBLOCKING_ON_QUEUE_RECEIVE( pxQueue );
 
                 #if ( configUSE_MUTEXES == 1 )
                 {
@@ -1718,7 +1814,7 @@ BaseType_t xQueueSemaphoreTake(QueueHandle_t xQueue, TickType_t xTicksToWait)
                 }
                 #endif /* configUSE_MUTEXES */
 
-                traceQUEUE_RECEIVE_FAILED( (_Ptr<void>)pxQueue );
+                UncheckedtraceQUEUE_RECEIVE_FAILED( pxQueue );
                 return errQUEUE_EMPTY;
             }
             else
@@ -1769,7 +1865,7 @@ BaseType_t xQueuePeek(QueueHandle_t xQueue, _Ptr<uint8_t> const pvBuffer, TickTy
                  * data, not removing it. */
                 pcOriginalReadPosition = pxQueue->u.xQueue.pcReadFrom;
                 prvCopyDataFromQueue( pxQueue, pvBuffer );
-                traceQUEUE_PEEK( (_Ptr<void>)pxQueue );
+                UncheckedtraceQUEUE_PEEK( pxQueue );
 
                 /* The data is not being removed, so reset the read pointer. */
                 pxQueue->u.xQueue.pcReadFrom = pcOriginalReadPosition;
@@ -1803,7 +1899,7 @@ BaseType_t xQueuePeek(QueueHandle_t xQueue, _Ptr<uint8_t> const pvBuffer, TickTy
                     /* The queue was empty and no block time is specified (or
                      * the block time has expired) so leave now. */
                     taskEXIT_CRITICAL();
-                    traceQUEUE_PEEK_FAILED( (_Ptr<void>)pxQueue );
+                    UncheckedtraceQUEUE_PEEK_FAILED( pxQueue );
                     return errQUEUE_EMPTY;
                 }
                 else if( xEntryTimeSet == pdFALSE )
@@ -1836,7 +1932,7 @@ BaseType_t xQueuePeek(QueueHandle_t xQueue, _Ptr<uint8_t> const pvBuffer, TickTy
             * queue now, and if not enter the Blocked state to wait for data. */
             if( prvIsQueueEmpty( pxQueue ) != pdFALSE )
             {
-                traceBLOCKING_ON_QUEUE_PEEK( (_Ptr<void>)pxQueue );
+                UncheckedtraceBLOCKING_ON_QUEUE_PEEK( pxQueue );
                 vTaskPlaceOnEventList( &( pxQueue->xTasksWaitingToReceive ), xTicksToWait );
                 prvUnlockQueue( pxQueue );
 
@@ -1866,7 +1962,7 @@ BaseType_t xQueuePeek(QueueHandle_t xQueue, _Ptr<uint8_t> const pvBuffer, TickTy
 
             if( prvIsQueueEmpty( pxQueue ) != pdFALSE )
             {
-                traceQUEUE_PEEK_FAILED( (_Ptr<void>)pxQueue );
+                UncheckedtraceQUEUE_PEEK_FAILED( pxQueue );
                 return errQUEUE_EMPTY;
             }
             else
@@ -1912,7 +2008,7 @@ BaseType_t xQueueReceiveFromISR(QueueHandle_t xQueue, _Ptr<uint8_t> const pvBuff
         {
             const int8_t cRxLock = pxQueue->cRxLock;
 
-            traceQUEUE_RECEIVE_FROM_ISR( (_Ptr<void>)pxQueue, pxQueue->uxMessagesWaiting );
+            UncheckedtraceQUEUE_RECEIVE_FROM_ISR( pxQueue );
 
             prvCopyDataFromQueue( pxQueue, pvBuffer );
             pxQueue->uxMessagesWaiting = uxMessagesWaiting - ( UBaseType_t ) 1;
@@ -1960,7 +2056,7 @@ BaseType_t xQueueReceiveFromISR(QueueHandle_t xQueue, _Ptr<uint8_t> const pvBuff
         else
         {
             xReturn = pdFAIL;
-            traceQUEUE_RECEIVE_FROM_ISR_FAILED( (_Ptr<void>)pxQueue );
+            UncheckedtraceQUEUE_RECEIVE_FROM_ISR_FAILED( pxQueue );
         }
     }
     portCLEAR_INTERRUPT_MASK_FROM_ISR( uxSavedInterruptStatus );
@@ -2073,7 +2169,7 @@ void vQueueDelete(QueueHandle_t xQueue)
     _Ptr<Queue_t> const pxQueue = xQueue;
 
     configASSERT( pxQueue );
-    traceQUEUE_DELETE( (_Ptr<void>)pxQueue );
+    UncheckedtraceQUEUE_DELETE( pxQueue );
 
     #if ( configQUEUE_REGISTRY_SIZE > 0 )
     {
@@ -2802,7 +2898,7 @@ BaseType_t xQueueIsQueueFullFromISR(const QueueHandle_t xQueue)
             pxEntryToWrite->pcQueueName = pcQueueName;
             pxEntryToWrite->xHandle = xQueue;
 
-            traceQUEUE_REGISTRY_ADD( (_Ptr<void>)xQueue, pcQueueName );
+            UncheckedtraceQUEUE_REGISTRY_ADD( xQueue, pcQueueName );
         }
     }
 
@@ -3039,7 +3135,7 @@ BaseType_t xQueueIsQueueFullFromISR(const QueueHandle_t xQueue)
         {
             const int8_t cTxLock = pxQueueSetContainer->cTxLock;
 
-            traceQUEUE_SET_SEND( (_Ptr<void>)pxQueueSetContainer, pxQueueSetContainer->uxMessagesWaiting );
+            UncheckedtraceQUEUE_SET_SEND( pxQueueSetContainer );
 
             /* The data copied is the handle of the queue that contains data. */
             xReturn = prvCopyDataToQueue( pxQueueSetContainer, (_Ptr<uint8_t>)&pxQueue, queueSEND_TO_BACK );

@@ -14,7 +14,6 @@
 	- Added unchecked scope and assume bounds caste since there is cast from struct to struct of different size.
 
 - queue.c: compiles
-	- Need bounds for members of `QueuePointers_t`?
 	- void* in parameter of copy function changed to uint8_t since it is used in memcpy and this change won't cause issues.
 	- Memcpy with arguments of unknown bounds in unchecked scope.
 

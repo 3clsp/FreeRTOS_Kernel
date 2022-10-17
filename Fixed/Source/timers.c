@@ -73,6 +73,32 @@
     #define tmrSTATUS_IS_STATICALLY_ALLOCATED    ( ( uint8_t ) 0x02 )
     #define tmrSTATUS_IS_AUTORELOAD              ( ( uint8_t ) 0x04 )
 
+
+    // All unchecked calls to external functions are wrapped in macros.
+    #define UncheckedtraceTIMER_CREATE( pxNewTimer )                                                        \
+        _Unchecked {                                                                                        \
+            traceTIMER_CREATE( (void*)pxNewTimer );                                                         \
+        }
+
+    #define UncheckedtraceTIMER_COMMAND_SEND( pxTimer, xCommandID, xOptionalValue, xReturn )                \
+        _Unchecked {                                                                                        \
+            traceTIMER_COMMAND_SEND( (void*)pxTimer, xCommandID, xOptionalValue, xReturn );                 \
+        }
+
+    #define UncheckedtraceTIMER_EXPIRED( pxTimer )                                                          \
+        _Unchecked {                                                                                        \
+            traceTIMER_EXPIRED( (void*)pxTimer );                                                           \
+        }
+    #define UncheckedtracePEND_FUNC_CALL_FROM_ISR( xFunctionToPend, pvParameter1, pvParameter2, xReturn )   \
+        _Unchecked {                                                                                        \
+            tracePEND_FUNC_CALL_FROM_ISR( xFunctionToPend, pvParameter1, pvParameter2, xReturn );           \
+        }
+
+    #define UncheckedtracePEND_FUNC_CALL( xFunctionToPend, pvParameter1, pvParameter2, xReturn )            \
+        _Unchecked {                                                                                        \
+            tracePEND_FUNC_CALL( xFunctionToPend, pvParameter1, pvParameter2, xReturn );                    \
+        }
+
 /* The definition of the timers themselves. */
     typedef struct tmrTimerControl                  /* The old naming convention is used to prevent breaking kernel aware debuggers. */
     {
@@ -361,7 +387,7 @@
             pxNewTimer->ucStatus |= tmrSTATUS_IS_AUTORELOAD;
         }
 
-        traceTIMER_CREATE( (_Ptr<void>)pxNewTimer );
+        UncheckedtraceTIMER_CREATE( pxNewTimer );
     }
 /*-----------------------------------------------------------*/
 
@@ -397,7 +423,7 @@
                 xReturn = xQueueSendToBackFromISR( xTimerQueue, (_Ptr<const uint8_t>)&xMessage, pxHigherPriorityTaskWoken );
             }
 
-            traceTIMER_COMMAND_SEND( (_Ptr<void>)xTimer, xCommandID, xOptionalValue, xReturn );
+            UncheckedtraceTIMER_COMMAND_SEND( xTimer, xCommandID, xOptionalValue, xReturn );
         }
         else
         {
@@ -507,7 +533,7 @@
             xExpiredTime += pxTimer->xTimerPeriodInTicks;
 
             /* Call the timer callback. */
-            traceTIMER_EXPIRED( (_Ptr<void>)pxTimer );
+            UncheckedtraceTIMER_EXPIRED( pxTimer );
             pxTimer->pxCallbackFunction( (TimerHandle_t ) pxTimer );
         }
     }
@@ -537,7 +563,7 @@
         }
 
         /* Call the timer callback. */
-        traceTIMER_EXPIRED( (_Ptr<void>)pxTimer );
+        UncheckedtraceTIMER_EXPIRED( pxTimer );
         pxTimer->pxCallbackFunction( ( TimerHandle_t ) pxTimer) ;
     }
 /*-----------------------------------------------------------*/
@@ -813,7 +839,7 @@
                             }
 
                             /* Call the timer callback. */
-                            traceTIMER_EXPIRED( (_Ptr<void>)pxTimer );
+                            UncheckedtraceTIMER_EXPIRED( pxTimer );
                             pxTimer->pxCallbackFunction( ( TimerHandle_t ) pxTimer);
                         }
                         else
@@ -1027,7 +1053,7 @@
 
             xReturn = xQueueSendFromISR( xTimerQueue, (_Ptr<const uint8_t>)&xMessage, pxHigherPriorityTaskWoken );
 
-            tracePEND_FUNC_CALL_FROM_ISR( xFunctionToPend, pvParameter1, ulParameter2, xReturn );
+            UncheckedtracePEND_FUNC_CALL_FROM_ISR( xFunctionToPend, pvParameter1, ulParameter2, xReturn );
 
             return xReturn;
         }
@@ -1056,7 +1082,7 @@
 
             xReturn = xQueueSendToBack( xTimerQueue, (_Ptr<const uint8_t>)&xMessage, xTicksToWait );
 
-            tracePEND_FUNC_CALL( xFunctionToPend, pvParameter1, ulParameter2, xReturn );
+            UncheckedtracePEND_FUNC_CALL( xFunctionToPend, pvParameter1, ulParameter2, xReturn );
 
             return xReturn;
         }
