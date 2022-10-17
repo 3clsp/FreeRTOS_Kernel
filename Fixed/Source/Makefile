@@ -56,7 +56,7 @@ SRC := .
 OBJ := .
 
 SOURCES := $(wildcard $(SRC)/*.c)
-OBJECTS := $(patsubst $(SRC)/%.c, $(OBJ)/%.o, $(SOURCES))
+OBJECTS := $(SOURCES:.c=.o)
 
 all: $(OBJECTS)
 
