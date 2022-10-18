@@ -1,6 +1,6 @@
 # Example working of Checked C
 
-This folder contains the kernel source code that was modified to add a out-of-bounds access.
+This folder contains the kernel source code that was modified to add an out-of-bounds access.
 We modify the function `vQueueAddToRegistry` inside the `queue.c`.
 
 ```c
@@ -31,8 +31,8 @@ void vQueueAddToRegistry(QueueHandle_t xQueue, _Nt_array_ptr<const char> pcQueue
 PRIVILEGED_DATA QueueRegistryItem_t xQueueRegistry _Checked[ configQUEUE_REGISTRY_SIZE ];
 ```
 
-We added a `+ 1` in the for loop termination condition. This causes ux to go till `configQUEUE_REGISTRY_SIZE`
-and triggers an Illegal Instruction.
+We added a `+ 1` in the `for` loop termination condition. This causes `ux` to go till `configQUEUE_REGISTRY_SIZE`
+and trigger an Illegal Instruction.
 
 
 ```sh
