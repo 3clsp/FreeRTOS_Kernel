@@ -45,6 +45,6 @@ Illegal instruction (core dumped)
 ```
 
 We can verify that the crash is happening where we expected it to happen by using [gdb](https://www.sourceware.org/gdb/).
-![Crash Image](./img/crash.png).
+![Crash Image](./img/crash.png)
 
 [ud2](http://www.nacad.ufrj.br/online/intel/vtune/users_guide/mergedProjects/analyzer_ec/mergedProjects/reference_olh/mergedProjects/instructions/instruct32_hh/vc316.htm)(Undefined Instruction) is the instruction Checked C uses to terminate the program execution.

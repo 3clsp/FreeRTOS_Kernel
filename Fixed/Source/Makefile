@@ -1,6 +1,6 @@
-CC = /home/sourag/Desktop/checkedc-llvm-project/build/bin/clang-12
+CC = clang
 
-FREERTOS_ROOT := /home/sourag/Desktop/FreeRTOS
+FREERTOS_ROOT := /path/to/FreeRTOS
 FREERTOS_DIR := $(abspath $(FREERTOS_ROOT))/FreeRTOS
 FREERTOS_PLUS_DIR := $(abspath $(FREERTOS_ROOT))/FreeRTOS-Plus
 
