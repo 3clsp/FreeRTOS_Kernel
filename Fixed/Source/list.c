@@ -49,12 +49,11 @@
 * PUBLIC LIST API documented in list.h
 *----------------------------------------------------------*/
 
-void vListInitialise(const _Ptr<List_t> pxList)
+void vListInitialise( const _Ptr<List_t> pxList )
 {
     /* The list structure contains a list item which is used to mark the
      * end of the list.  To initialise the list the list end is inserted
      * as the only list entry. */
-    // Structs of different sizes. Can't cast in checked scope.
     _Unchecked{
         pxList->pxIndex = _Assume_bounds_cast<_Ptr<ListItem_t>>(&( pxList->xListEnd )); /*lint !e826 !e740 !e9087 The mini list structure is used as the list end to save RAM.  This is checked and valid. */
     }
@@ -70,6 +69,7 @@ void vListInitialise(const _Ptr<List_t> pxList)
         pxList->xListEnd.pxNext = _Assume_bounds_cast<_Ptr<ListItem_t>>( &( pxList->xListEnd ));     /*lint !e826 !e740 !e9087 The mini list structure is used as the list end to save RAM.  This is checked and valid. */
         pxList->xListEnd.pxPrevious = _Assume_bounds_cast<_Ptr<ListItem_t>>( &( pxList->xListEnd )); /*lint !e826 !e740 !e9087 The mini list structure is used as the list end to save RAM.  This is checked and valid. */
     }
+
     /* Initialize the remaining fields of xListEnd when it is a proper ListItem_t */
     #if ( configUSE_MINI_LIST_ITEM == 0 )
     {
@@ -88,7 +88,7 @@ void vListInitialise(const _Ptr<List_t> pxList)
 }
 /*-----------------------------------------------------------*/
 
-void vListInitialiseItem(const _Ptr<ListItem_t> pxItem)
+void vListInitialiseItem( const _Ptr<ListItem_t> pxItem )
 {
     /* Make sure the list item is not recorded as being on a list. */
     pxItem->pxContainer = NULL;
@@ -100,7 +100,8 @@ void vListInitialiseItem(const _Ptr<ListItem_t> pxItem)
 }
 /*-----------------------------------------------------------*/
 
-void vListInsertEnd(const _Ptr<List_t> pxList, const _Ptr<ListItem_t> pxNewListItem)
+void vListInsertEnd( const _Ptr<List_t> pxList,
+                     const _Ptr<ListItem_t> pxNewListItem )
 {
     const _Ptr<ListItem_t> pxIndex = pxList->pxIndex;
 
@@ -129,7 +130,8 @@ void vListInsertEnd(const _Ptr<List_t> pxList, const _Ptr<ListItem_t> pxNewListI
 }
 /*-----------------------------------------------------------*/
 
-void vListInsert(const _Ptr<List_t> pxList, const _Ptr<ListItem_t> pxNewListItem)
+void vListInsert( const _Ptr<List_t> pxList,
+                  const _Ptr<ListItem_t> pxNewListItem )
 {
     _Ptr<ListItem_t> pxIterator = NULL;
     const TickType_t xValueOfInsertion = pxNewListItem->xItemValue;
@@ -178,9 +180,9 @@ void vListInsert(const _Ptr<List_t> pxList, const _Ptr<ListItem_t> pxNewListItem
         *      the priority of the tick interrupt is at or below
         *      configMAX_SYSCALL_INTERRUPT_PRIORITY.
         **********************************************************************/
-       _Unchecked{
-            for( pxIterator = _Assume_bounds_cast<_Ptr<ListItem_t>>(&( pxList->xListEnd )); 
-            pxIterator->pxNext->xItemValue <= xValueOfInsertion; pxIterator = pxIterator->pxNext ) /*lint !e826 !e740 !e9087 The mini list structure is used as the list end to save RAM.  This is checked and valid. *//*lint !e440 The iterator moves to a different value, not xValueOfInsertion. */
+
+        _Unchecked{
+            for( pxIterator = _Assume_bounds_cast<_Ptr<ListItem_t>>(&( pxList->xListEnd )); pxIterator->pxNext->xItemValue <= xValueOfInsertion; pxIterator = pxIterator->pxNext ) /*lint !e826 !e740 !e9087 The mini list structure is used as the list end to save RAM.  This is checked and valid. *//*lint !e440 The iterator moves to a different value, not xValueOfInsertion. */
             {
                 /* There is nothing to do here, just iterating to the wanted
                  * insertion position. */
@@ -201,11 +203,12 @@ void vListInsert(const _Ptr<List_t> pxList, const _Ptr<ListItem_t> pxNewListItem
 }
 /*-----------------------------------------------------------*/
 
-UBaseType_t uxListRemove(const _Ptr<ListItem_t> pxItemToRemove)
+UBaseType_t uxListRemove( const _Ptr<ListItem_t> pxItemToRemove )
 {
 /* The list item knows which list it is in.  Obtain the list from the list
  * item. */
-    _Ptr<List_t> pxList = pxItemToRemove->pxContainer;
+    const _Ptr<List_t> pxList = pxItemToRemove->pxContainer;
+
     pxItemToRemove->pxNext->pxPrevious = pxItemToRemove->pxPrevious;
     pxItemToRemove->pxPrevious->pxNext = pxItemToRemove->pxNext;
 
@@ -218,7 +221,9 @@ UBaseType_t uxListRemove(const _Ptr<ListItem_t> pxItemToRemove)
         pxList->pxIndex = pxItemToRemove->pxPrevious;
     }
     else
+    {
         mtCOVERAGE_TEST_MARKER();
+    }
 
     pxItemToRemove->pxContainer = NULL;
     ( pxList->uxNumberOfItems )--;

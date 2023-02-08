@@ -94,7 +94,7 @@
     #endif
 
     #ifndef configSET_TLS_BLOCK
-        #define configSET_TLS_BLOCK( xTLSBlock )    _impure_ptr = &( xTLSBlock )
+        #define configSET_TLS_BLOCK( xTLSBlock )    ( _impure_ptr = &( xTLSBlock ) )
     #endif
 
     #ifndef configDEINIT_TLS_BLOCK
@@ -157,10 +157,6 @@
 
 #ifndef configUSE_16_BIT_TICKS
     #error Missing definition:  configUSE_16_BIT_TICKS must be defined in FreeRTOSConfig.h as either 1 or 0.  See the Configuration section of the FreeRTOS API documentation for details.
-#endif
-
-#ifndef configUSE_CO_ROUTINES
-    #define configUSE_CO_ROUTINES    0
 #endif
 
 #ifndef INCLUDE_vTaskPrioritySet
@@ -257,10 +253,8 @@
     #define INCLUDE_xTaskGetCurrentTaskHandle    1
 #endif
 
-#if configUSE_CO_ROUTINES != 0
-    #ifndef configMAX_CO_ROUTINE_PRIORITIES
-        #error configMAX_CO_ROUTINE_PRIORITIES must be greater than or equal to 1.
-    #endif
+#if ( defined( configUSE_CO_ROUTINES ) && configUSE_CO_ROUTINES != 0 )
+    #warning Co-routines have been removed from FreeRTOS-Kernel versions released after V10.5.1. You can view previous versions of the FreeRTOS Kernel at github.com/freertos/freertos-kernel/tree/V10.5.1 .
 #endif
 
 #ifndef configUSE_DAEMON_TASK_STARTUP_HOOK
@@ -360,11 +354,11 @@
 #endif
 
 #ifndef portCLEAR_INTERRUPT_MASK_FROM_ISR
-    #define portCLEAR_INTERRUPT_MASK_FROM_ISR( uxSavedStatusValue )    ( void ) uxSavedStatusValue
+    #define portCLEAR_INTERRUPT_MASK_FROM_ISR( uxSavedStatusValue )    ( void ) ( uxSavedStatusValue )
 #endif
 
 #ifndef portCLEAN_UP_TCB
-    #define portCLEAN_UP_TCB( pxTCB )    ( void ) pxTCB
+    #define portCLEAN_UP_TCB( pxTCB )    ( void ) ( pxTCB )
 #endif
 
 #ifndef portPRE_TASK_DELETE_HOOK
@@ -372,7 +366,7 @@
 #endif
 
 #ifndef portSETUP_TCB
-    #define portSETUP_TCB( pxTCB )    ( void ) pxTCB
+    #define portSETUP_TCB( pxTCB )    ( void ) ( pxTCB )
 #endif
 
 #ifndef configQUEUE_REGISTRY_SIZE
@@ -684,7 +678,7 @@
 #endif
 
 #ifndef traceEVENT_GROUP_SYNC_END
-    #define traceEVENT_GROUP_SYNC_END( xEventGroup, uxBitsToSet, uxBitsToWaitFor, xTimeoutOccurred )    ( void ) xTimeoutOccurred
+    #define traceEVENT_GROUP_SYNC_END( xEventGroup, uxBitsToSet, uxBitsToWaitFor, xTimeoutOccurred )    ( void ) ( xTimeoutOccurred )
 #endif
 
 #ifndef traceEVENT_GROUP_WAIT_BITS_BLOCK
@@ -692,7 +686,7 @@
 #endif
 
 #ifndef traceEVENT_GROUP_WAIT_BITS_END
-    #define traceEVENT_GROUP_WAIT_BITS_END( xEventGroup, uxBitsToWaitFor, xTimeoutOccurred )    ( void ) xTimeoutOccurred
+    #define traceEVENT_GROUP_WAIT_BITS_END( xEventGroup, uxBitsToWaitFor, xTimeoutOccurred )    ( void ) ( xTimeoutOccurred )
 #endif
 
 #ifndef traceEVENT_GROUP_CLEAR_BITS
@@ -961,6 +955,16 @@
     #define configSUPPORT_DYNAMIC_ALLOCATION    1
 #endif
 
+#if ( ( configUSE_STATS_FORMATTING_FUNCTIONS > 0 ) && ( configSUPPORT_DYNAMIC_ALLOCATION != 1 ) )
+    #error configUSE_STATS_FORMATTING_FUNCTIONS cannot be used without dynamic allocation, but configSUPPORT_DYNAMIC_ALLOCATION is not set to 1.
+#endif
+
+#if ( configUSE_STATS_FORMATTING_FUNCTIONS > 0 )
+    #if ( ( configUSE_TRACE_FACILITY != 1 ) && ( configGENERATE_RUN_TIME_STATS != 1 ) )
+        #error configUSE_STATS_FORMATTING_FUNCTIONS is 1 but the functions it enables are not used because neither configUSE_TRACE_FACILITY or configGENERATE_RUN_TIME_STATS are 1.  Set configUSE_STATS_FORMATTING_FUNCTIONS to 0 in FreeRTOSConfig.h.
+    #endif
+#endif
+
 #ifndef configSTACK_DEPTH_TYPE
 
 /* Defaults to uint16_t for backward compatibility, but can be overridden
@@ -1013,7 +1017,7 @@
     #define portTICK_TYPE_ENTER_CRITICAL()
     #define portTICK_TYPE_EXIT_CRITICAL()
     #define portTICK_TYPE_SET_INTERRUPT_MASK_FROM_ISR()         0
-    #define portTICK_TYPE_CLEAR_INTERRUPT_MASK_FROM_ISR( x )    ( void ) x
+    #define portTICK_TYPE_CLEAR_INTERRUPT_MASK_FROM_ISR( x )    ( void ) ( x )
 #endif /* if ( portTICK_TYPE_IS_ATOMIC == 0 ) */
 
 /* Definitions to allow backward compatibility with FreeRTOS versions prior to
@@ -1064,7 +1068,6 @@
     #define xTaskParameters               TaskParameters_t
     #define xTaskStatusType               TaskStatus_t
     #define xTimerHandle                  TimerHandle_t
-    #define xCoRoutineHandle              CoRoutineHandle_t
     #define pdTASK_HOOK_CODE              TaskHookFunction_t
     #define portTICK_RATE_MS              portTICK_PERIOD_MS
     #define pcTaskGetTaskName             pcTaskGetName
@@ -1194,7 +1197,7 @@ struct xSTATIC_LIST_ITEM
         TickType_t xDummy1;
     #endif
     TickType_t xDummy2;
-    void *  pvDummy3[4] : itype(_Ptr<void> _Checked[ 4 ]);
+    void * pvDummy3[ 4 ] : itype(_Ptr<void> _Checked[ 4 ]);
     #if ( configUSE_LIST_DATA_INTEGRITY_CHECK_BYTES == 1 )
         TickType_t xDummy4;
     #endif
@@ -1209,7 +1212,7 @@ typedef struct xSTATIC_LIST_ITEM StaticListItem_t;
             TickType_t xDummy1;
         #endif
         TickType_t xDummy2;
-        void * pvDummy3[2]: itype(_Ptr<void> _Checked[ 2 ]);
+        void * pvDummy3[ 2 ] : itype(_Ptr<void> _Checked[ 2 ]);
     };
     typedef struct xSTATIC_MINI_LIST_ITEM StaticMiniListItem_t;
 #else /* if ( configUSE_MINI_LIST_ITEM == 1 ) */
@@ -1223,7 +1226,7 @@ typedef struct xSTATIC_LIST
         TickType_t xDummy1;
     #endif
     UBaseType_t uxDummy2;
-    void * pvDummy3: itype(_Ptr<void>);
+    void * pvDummy3 : itype(_Ptr<void>);
     StaticMiniListItem_t xDummy4;
     #if ( configUSE_LIST_DATA_INTEGRITY_CHECK_BYTES == 1 )
         TickType_t xDummy5;
@@ -1245,33 +1248,33 @@ typedef struct xSTATIC_LIST
  */
 typedef struct xSTATIC_TCB
 {
-    void * pxDummy1: itype(_Ptr<void>);
+    void * pxDummy1 : itype(_Ptr<void>);
     #if ( portUSING_MPU_WRAPPERS == 1 )
         xMPU_SETTINGS xDummy2;
     #endif
-    StaticListItem_t xDummy3[2]: itype(StaticListItem_t _Checked[ 2 ]);
+    StaticListItem_t xDummy3[ 2 ] : itype(StaticListItem_t _Checked[ 2 ]);
     UBaseType_t uxDummy5;
     // Needed as we added a new member to the TCB to track stack size.
     uint32_t usDummy23;
-    void * pxDummy6: itype(_Ptr<void>);
-    uint8_t ucDummy7[ configMAX_TASK_NAME_LEN ]: itype(uint8_t _Nt_checked[ configMAX_TASK_NAME_LEN ]);
+    void * pxDummy6 : itype(_Ptr<void>);
+    uint8_t ucDummy7[ configMAX_TASK_NAME_LEN ] : itype(uint8_t _Nt_checked[ configMAX_TASK_NAME_LEN ]);
     #if ( ( portSTACK_GROWTH > 0 ) || ( configRECORD_STACK_HIGH_ADDRESS == 1 ) )
-        void * pxDummy8: itype(_Ptr<void>);
+        void * pxDummy8 : itype(_Ptr<void>);
     #endif
     #if ( portCRITICAL_NESTING_IN_TCB == 1 )
         UBaseType_t uxDummy9;
     #endif
     #if ( configUSE_TRACE_FACILITY == 1 )
-        UBaseType_t uxDummy10[2]: itype(UBaseType_t _Checked[ 2 ]);
+        UBaseType_t uxDummy10[ 2 ] : itype(UBaseType_t _Checked[ 2 ]);
     #endif
     #if ( configUSE_MUTEXES == 1 )
-        UBaseType_t uxDummy12[2]: itype(UBaseType_t _Checked[ 2 ]);
+        UBaseType_t uxDummy12[ 2 ] : itype(UBaseType_t _Checked[ 2 ]);
     #endif
     #if ( configUSE_APPLICATION_TASK_TAG == 1 )
-        void * pxDummy14: itype(_Ptr<void>);
+        void * pxDummy14 : itype(_Ptr<void>);
     #endif
     #if ( configNUM_THREAD_LOCAL_STORAGE_POINTERS > 0 )
-        void * pvDummy15[ configNUM_THREAD_LOCAL_STORAGE_POINTERS ]: itype(_Ptr<void> _Checked[ configNUM_THREAD_LOCAL_STORAGE_POINTERS ]);
+        void * pvDummy15[ configNUM_THREAD_LOCAL_STORAGE_POINTERS ] : itype(_Ptr<void> _Checked[ configNUM_THREAD_LOCAL_STORAGE_POINTERS ]);
     #endif
     #if ( configGENERATE_RUN_TIME_STATS == 1 )
         configRUN_TIME_COUNTER_TYPE ulDummy16;
@@ -1280,8 +1283,8 @@ typedef struct xSTATIC_TCB
         configTLS_BLOCK_TYPE xDummy17;
     #endif
     #if ( configUSE_TASK_NOTIFICATIONS == 1 )
-        uint32_t ulDummy18[ configTASK_NOTIFICATION_ARRAY_ENTRIES ]: itype(uint32_t _Checked[ configTASK_NOTIFICATION_ARRAY_ENTRIES ]);
-        uint8_t ucDummy19[ configTASK_NOTIFICATION_ARRAY_ENTRIES ]: itype(uint8_t _Checked[ configTASK_NOTIFICATION_ARRAY_ENTRIES ]);
+        uint32_t ulDummy18[ configTASK_NOTIFICATION_ARRAY_ENTRIES ] : itype(uint32_t _Checked[ configTASK_NOTIFICATION_ARRAY_ENTRIES ]);
+        uint8_t ucDummy19[ configTASK_NOTIFICATION_ARRAY_ENTRIES ] : itype(uint8_t _Checked[ configTASK_NOTIFICATION_ARRAY_ENTRIES ]);
     #endif
     #if ( tskSTATIC_AND_DYNAMIC_ALLOCATION_POSSIBLE != 0 )
         uint8_t uxDummy20;
@@ -1311,24 +1314,24 @@ typedef struct xSTATIC_TCB
  */
 typedef struct xSTATIC_QUEUE
 {
-    void * pvDummy1[4]: itype(_Ptr<void> _Checked[ 4 ]);
+    void * pvDummy1[ 4 ] : itype(_Ptr<void> _Checked[ 4 ]);
 
     union
     {
-        void * pvDummy2: itype(_Ptr<void>);
+        void * pvDummy2 : itype(_Ptr<void>);
         UBaseType_t uxDummy2;
     } u;
 
-    StaticList_t xDummy3[2]: itype(StaticList_t _Checked[ 2 ]);
-    UBaseType_t uxDummy4[3]: itype(UBaseType_t _Checked[ 3 ]);
-    uint8_t ucDummy5[2]: itype(uint8_t _Checked[ 2 ]);
+    StaticList_t xDummy3[ 2 ] : itype(StaticList_t _Checked[ 2 ]);
+    UBaseType_t uxDummy4[ 3 ] : itype(UBaseType_t _Checked[ 3 ]);
+    uint8_t ucDummy5[ 2 ] : itype(uint8_t _Checked[ 2 ]);
 
     #if ( ( configSUPPORT_STATIC_ALLOCATION == 1 ) && ( configSUPPORT_DYNAMIC_ALLOCATION == 1 ) )
         uint8_t ucDummy6;
     #endif
 
     #if ( configUSE_QUEUE_SETS == 1 )
-        void * pvDummy7: itype(_Ptr<void>);
+        void * pvDummy7 : itype(_Ptr<void>);
     #endif
 
     #if ( configUSE_TRACE_FACILITY == 1 )
@@ -1382,10 +1385,10 @@ typedef struct xSTATIC_EVENT_GROUP
  */
 typedef struct xSTATIC_TIMER
 {
-    void * pvDummy1: itype(_Ptr<void>);
+    void * pvDummy1 : itype(_Ptr<void>);
     StaticListItem_t xDummy2;
     TickType_t xDummy3;
-    void * pvDummy5: itype(_Ptr<void>);
+    void * pvDummy5 : itype(_Ptr<void>);
     TaskFunction_t pvDummy6;
     #if ( configUSE_TRACE_FACILITY == 1 )
         UBaseType_t uxDummy7;
@@ -1409,14 +1412,14 @@ typedef struct xSTATIC_TIMER
  */
 typedef struct xSTATIC_STREAM_BUFFER
 {
-    size_t uxDummy1[4]: itype(size_t _Checked[ 4 ]);
-    void * pvDummy2[3]: itype(_Ptr<void> _Checked[ 3 ]);
+    size_t uxDummy1[ 4 ] : itype(size_t _Checked[ 4 ]);
+    void * pvDummy2[ 3 ] : itype(_Ptr<void> _Checked[ 3 ]);
     uint8_t ucDummy3;
     #if ( configUSE_TRACE_FACILITY == 1 )
         UBaseType_t uxDummy4;
     #endif
     #if ( configUSE_SB_COMPLETED_CALLBACK == 1 )
-        void * pvDummy5[2]: itype(_Ptr<void> _Checked[ 2 ]);
+        void * pvDummy5[ 2 ] : itype(_Ptr<void> _Checked[ 2 ]);
     #endif
 } StaticStreamBuffer_t;
 

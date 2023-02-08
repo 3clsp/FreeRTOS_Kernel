@@ -106,24 +106,27 @@
  */
 #if ( portUSING_MPU_WRAPPERS == 1 )
     #if ( portHAS_STACK_OVERFLOW_CHECKING == 1 )
-        StackType_t * pxPortInitialiseStack( StackType_t * pxTopOfStack,
-                                             StackType_t * pxEndOfStack,
+        _Ptr<StackType_t> pxPortInitialiseStack( _Ptr<StackType_t> pxTopOfStack,
+                                             _Ptr<StackType_t> pxEndOfStack,
                                              TaskFunction_t pxCode,
-                                             void * pvParameters,
+                                             _Ptr<void> pvParameters,
                                              BaseType_t xRunPrivileged ) PRIVILEGED_FUNCTION;
     #else
-        StackType_t * pxPortInitialiseStack( StackType_t * pxTopOfStack,
+        _Ptr<StackType_t> pxPortInitialiseStack( _Ptr<StackType_t> pxTopOfStack,
                                              TaskFunction_t pxCode,
-                                             void * pvParameters,
+                                             _Ptr<void> pvParameters,
                                              BaseType_t xRunPrivileged ) PRIVILEGED_FUNCTION;
     #endif
 #else /* if ( portUSING_MPU_WRAPPERS == 1 ) */
     #if ( portHAS_STACK_OVERFLOW_CHECKING == 1 )
-        _Ptr<StackType_t> pxPortInitialiseStack(_Array_ptr<StackType_t> pxTopOfStack, _Array_ptr<StackType_t> pxEndOfStack, TaskFunction_t pxCode, _Ptr<void> pvParameters) PRIVILEGED_FUNCTION;
-    #else
-        StackType_t * pxPortInitialiseStack( StackType_t * pxTopOfStack,
+        _Ptr<StackType_t> pxPortInitialiseStack( _Ptr<StackType_t> pxTopOfStack,
+                                             _Ptr<StackType_t> pxEndOfStack,
                                              TaskFunction_t pxCode,
-                                             void * pvParameters ) PRIVILEGED_FUNCTION;
+                                             _Ptr<void> pvParameters ) PRIVILEGED_FUNCTION;
+    #else
+        _Ptr<StackType_t> pxPortInitialiseStack( _Ptr<StackType_t> pxTopOfStack,
+                                             TaskFunction_t pxCode,
+                                             _Ptr<void> pvParameters ) PRIVILEGED_FUNCTION;
     #endif
 #endif /* if ( portUSING_MPU_WRAPPERS == 1 ) */
 
@@ -158,28 +161,28 @@ typedef struct xHeapStats
  * terminated by a HeapRegions_t structure that has a size of 0.  The region
  * with the lowest start address must appear first in the array.
  */
-void vPortDefineHeapRegions(const _Ptr<const HeapRegion_t> pxHeapRegions) PRIVILEGED_FUNCTION;
+void vPortDefineHeapRegions( const _Ptr<const HeapRegion_t> pxHeapRegions ) PRIVILEGED_FUNCTION;
 
 /*
  * Returns a HeapStats_t structure filled with information about the current
  * heap state.
  */
-void vPortGetHeapStats(_Ptr<HeapStats_t> pxHeapStat);
+void vPortGetHeapStats( _Ptr<HeapStats_t> pxHeapStats );
 
 /*
  * Map to the memory management routines required for the port.
  */
-_Array_ptr<char> pvPortMalloc( size_t xSize ): count(xSize)  PRIVILEGED_FUNCTION;
+_Array_ptr<char> pvPortMalloc( size_t xSize ) : count(xSize) PRIVILEGED_FUNCTION;
 _Array_ptr<char> pvPortCalloc( size_t xNum,
-                     size_t xSize ): count(xSize) PRIVILEGED_FUNCTION;
-void vPortFree(_Ptr<char> pv ) PRIVILEGED_FUNCTION;
+                     size_t xSize ) : count(xSize) PRIVILEGED_FUNCTION;
+void vPortFree( _Ptr<char> pv ) PRIVILEGED_FUNCTION;
 void vPortInitialiseBlocks( void ) PRIVILEGED_FUNCTION;
 size_t xPortGetFreeHeapSize( void ) PRIVILEGED_FUNCTION;
 size_t xPortGetMinimumEverFreeHeapSize( void ) PRIVILEGED_FUNCTION;
 
 #if ( configSTACK_ALLOCATION_FROM_SEPARATE_HEAP == 1 )
-    _Array_ptr<char> pvPortMallocStack( size_t xSize ): count(xSize) PRIVILEGED_FUNCTION;
-    vPortFreeStack( _Ptr<char> pv ) PRIVILEGED_FUNCTION;
+    _Array_ptr<char> pvPortMallocStack( size_t xSize ) : count(xSize) PRIVILEGED_FUNCTION;
+    void vPortFreeStack( _Ptr<char> pv ) PRIVILEGED_FUNCTION;
 #else
     #define pvPortMallocStack    pvPortMalloc
     #define vPortFreeStack       vPortFree
@@ -220,9 +223,9 @@ void vPortEndScheduler( void ) PRIVILEGED_FUNCTION;
  */
 #if ( portUSING_MPU_WRAPPERS == 1 )
     struct xMEMORY_REGION;
-    void vPortStoreTaskMPUSettings( xMPU_SETTINGS * xMPUSettings,
-                                    const struct xMEMORY_REGION * const xRegions,
-                                    StackType_t * pxBottomOfStack,
+    void vPortStoreTaskMPUSettings( _Ptr<xMPU_SETTINGS> xMPUSettings,
+                                    _Ptr<const struct xMEMORY_REGION> const xRegions,
+                                    _Ptr<StackType_t> pxBottomOfStack,
                                     uint32_t ulStackDepth ) PRIVILEGED_FUNCTION;
 #endif
 

@@ -47,7 +47,7 @@
 * PUBLIC LIST API documented in list.h
 *----------------------------------------------------------*/
 
-void vListInitialise(List_t *const pxList : itype(const _Ptr<List_t>))
+void vListInitialise( List_t * const pxList )
 {
     /* The list structure contains a list item which is used to mark the
      * end of the list.  To initialise the list the list end is inserted
@@ -83,7 +83,7 @@ void vListInitialise(List_t *const pxList : itype(const _Ptr<List_t>))
 }
 /*-----------------------------------------------------------*/
 
-void vListInitialiseItem(ListItem_t *const pxItem : itype(const _Ptr<ListItem_t>))
+void vListInitialiseItem( ListItem_t * const pxItem )
 {
     /* Make sure the list item is not recorded as being on a list. */
     pxItem->pxContainer = NULL;
@@ -95,9 +95,10 @@ void vListInitialiseItem(ListItem_t *const pxItem : itype(const _Ptr<ListItem_t>
 }
 /*-----------------------------------------------------------*/
 
-void vListInsertEnd(List_t * const pxList : itype(const _Ptr<List_t>), ListItem_t *const pxNewListItem : itype(const _Ptr<ListItem_t>))
+void vListInsertEnd( List_t * const pxList,
+                     ListItem_t * const pxNewListItem )
 {
-    const _Ptr<ListItem_t> pxIndex = pxList->pxIndex;
+    ListItem_t * const pxIndex = pxList->pxIndex;
 
     /* Only effective when configASSERT() is also defined, these tests may catch
      * the list data structures being overwritten in memory.  They will not catch
@@ -124,7 +125,8 @@ void vListInsertEnd(List_t * const pxList : itype(const _Ptr<List_t>), ListItem_
 }
 /*-----------------------------------------------------------*/
 
-void vListInsert(List_t * const pxList : itype(const _Ptr<List_t>), ListItem_t *const pxNewListItem : itype(const _Ptr<ListItem_t>))
+void vListInsert( List_t * const pxList,
+                  ListItem_t * const pxNewListItem )
 {
     ListItem_t * pxIterator;
     const TickType_t xValueOfInsertion = pxNewListItem->xItemValue;
@@ -194,7 +196,7 @@ void vListInsert(List_t * const pxList : itype(const _Ptr<List_t>), ListItem_t *
 }
 /*-----------------------------------------------------------*/
 
-UBaseType_t uxListRemove(ListItem_t *const pxItemToRemove : itype(const _Ptr<ListItem_t>))
+UBaseType_t uxListRemove( ListItem_t * const pxItemToRemove )
 {
 /* The list item knows which list it is in.  Obtain the list from the list
  * item. */

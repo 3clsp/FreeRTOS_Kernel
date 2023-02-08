@@ -1,6 +1,6 @@
 CC = clang
 
-FREERTOS_ROOT := /path/to/FreeRTOS
+FREERTOS_ROOT := /workdisk/sourag/FreeRTOS
 FREERTOS_DIR := $(abspath $(FREERTOS_ROOT))/FreeRTOS
 FREERTOS_PLUS_DIR := $(abspath $(FREERTOS_ROOT))/FreeRTOS-Plus
 

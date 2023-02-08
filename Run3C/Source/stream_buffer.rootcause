@@ -1,0 +1,1216 @@
+[-] Array variable length not found:pucStreamBufferStorageArea
+In file included from /workdisk/sourag/3crun/FreeRTOS/FreeRTOS/Source/stream_buffer.c:30:
+In file included from /workdisk/sourag/mine/checkedc-llvm-project/build/lib/clang/12.0.0/include/stdint.h:52:
+In file included from /usr/include/stdint.h:27:
+/usr/include/x86_64-linux-gnu/bits/types.h:155:12: warning: Root cause for 0 unchecked pointers: Source code in non-writable file.
+__STD_TYPE __FSID_T_TYPE __fsid_t;      /* Type of file system IDs.  */
+           ^
+/usr/include/x86_64-linux-gnu/bits/types.h:171:27: warning: Root cause for 0 unchecked pointers: Source code in non-writable file.
+__STD_TYPE __TIMER_T_TYPE __timer_t;
+                          ^
+/usr/include/x86_64-linux-gnu/bits/types.h:203:15: warning: Root cause for 0 unchecked pointers: Source code in non-writable file.
+typedef char *__caddr_t;
+              ^
+In file included from /workdisk/sourag/3crun/FreeRTOS/FreeRTOS/Source/stream_buffer.c:31:
+In file included from /workdisk/sourag/mine/checkedc-llvm-project/build/lib/clang/12.0.0/include/string.h:22:
+In file included from /workdisk/sourag/mine/checkedc-llvm-project/build/lib/clang/12.0.0/include/string_checked.h:19:
+/usr/include/string.h:43:14: warning: Root cause for 0 unchecked pointers: Source code in non-writable file.
+extern void *memcpy (void *__restrict __dest, const void *__restrict __src,
+             ^
+/usr/include/string.h:47:14: warning: Root cause for 0 unchecked pointers: Source code in non-writable file.
+extern void *memmove (void *__dest, const void *__src, size_t __n)
+             ^
+/usr/include/string.h:54:14: warning: Root cause for 0 unchecked pointers: Source code in non-writable file.
+extern void *memccpy (void *__restrict __dest, const void *__restrict __src,
+             ^
+/usr/include/string.h:61:14: warning: Root cause for 0 unchecked pointers: Source code in non-writable file.
+extern void *memset (void *__s, int __c, size_t __n) __THROW __nonnull ((1));
+             ^
+/usr/include/string.h:64:12: warning: Root cause for 0 unchecked pointers: Source code in non-writable file.
+extern int memcmp (const void *__s1, const void *__s2, size_t __n)
+           ^
+/usr/include/string.h:91:14: warning: Root cause for 0 unchecked pointers: Source code in non-writable file.
+extern void *memchr (const void *__s, int __c, size_t __n)
+             ^
+In file included from /workdisk/sourag/3crun/FreeRTOS/FreeRTOS/Source/stream_buffer.c:31:
+In file included from /workdisk/sourag/mine/checkedc-llvm-project/build/lib/clang/12.0.0/include/string.h:22:
+/workdisk/sourag/mine/checkedc-llvm-project/build/lib/clang/12.0.0/include/string_checked.h:89:7: warning: Root cause for 0 unchecked pointers: Source code in non-writable file.
+char *strcpy(char * restrict dest,
+      ^
+/workdisk/sourag/mine/checkedc-llvm-project/build/lib/clang/12.0.0/include/string_checked.h:89:30: warning: Root cause for 0 unchecked pointers: Unchecked pointer in parameter or return of undefined function strcpy
+char *strcpy(char * restrict dest,
+                             ^
+In file included from /workdisk/sourag/3crun/FreeRTOS/FreeRTOS/Source/stream_buffer.c:31:
+In file included from /workdisk/sourag/mine/checkedc-llvm-project/build/lib/clang/12.0.0/include/string.h:22:
+In file included from /workdisk/sourag/mine/checkedc-llvm-project/build/lib/clang/12.0.0/include/string_checked.h:19:
+/usr/include/string.h:122:14: warning: Root cause for 0 unchecked pointers: Source code in non-writable file.
+extern char *strcpy (char *__restrict __dest, const char *__restrict __src)
+             ^
+/usr/include/string.h:125:14: warning: Root cause for 0 unchecked pointers: Source code in non-writable file.
+extern char *strncpy (char *__restrict __dest,
+             ^
+In file included from /workdisk/sourag/3crun/FreeRTOS/FreeRTOS/Source/stream_buffer.c:31:
+In file included from /workdisk/sourag/mine/checkedc-llvm-project/build/lib/clang/12.0.0/include/string.h:22:
+/workdisk/sourag/mine/checkedc-llvm-project/build/lib/clang/12.0.0/include/string_checked.h:95:7: warning: Root cause for 0 unchecked pointers: Source code in non-writable file.
+char *strncpy(char * restrict dest : count(n),
+      ^
+/workdisk/sourag/mine/checkedc-llvm-project/build/lib/clang/12.0.0/include/string_checked.h:105:7: warning: Root cause for 0 unchecked pointers: Source code in non-writable file.
+char *strcat(char * restrict dest,
+      ^
+/workdisk/sourag/mine/checkedc-llvm-project/build/lib/clang/12.0.0/include/string_checked.h:105:30: warning: Root cause for 0 unchecked pointers: Unchecked pointer in parameter or return of undefined function strcat
+char *strcat(char * restrict dest,
+                             ^
+In file included from /workdisk/sourag/3crun/FreeRTOS/FreeRTOS/Source/stream_buffer.c:31:
+In file included from /workdisk/sourag/mine/checkedc-llvm-project/build/lib/clang/12.0.0/include/string.h:22:
+In file included from /workdisk/sourag/mine/checkedc-llvm-project/build/lib/clang/12.0.0/include/string_checked.h:19:
+/usr/include/string.h:130:14: warning: Root cause for 0 unchecked pointers: Source code in non-writable file.
+extern char *strcat (char *__restrict __dest, const char *__restrict __src)
+             ^
+In file included from /workdisk/sourag/3crun/FreeRTOS/FreeRTOS/Source/stream_buffer.c:31:
+In file included from /workdisk/sourag/mine/checkedc-llvm-project/build/lib/clang/12.0.0/include/string.h:22:
+/workdisk/sourag/mine/checkedc-llvm-project/build/lib/clang/12.0.0/include/string_checked.h:114:7: warning: Root cause for 0 unchecked pointers: Source code in non-writable file.
+char *strncat(char * restrict dest,
+      ^
+In file included from /workdisk/sourag/3crun/FreeRTOS/FreeRTOS/Source/stream_buffer.c:31:
+In file included from /workdisk/sourag/mine/checkedc-llvm-project/build/lib/clang/12.0.0/include/string.h:22:
+In file included from /workdisk/sourag/mine/checkedc-llvm-project/build/lib/clang/12.0.0/include/string_checked.h:19:
+/usr/include/string.h:133:40: warning: Root cause for 0 unchecked pointers: Unchecked pointer in parameter or return of undefined function strncat
+extern char *strncat (char *__restrict __dest, const char *__restrict __src,
+                                       ^
+/usr/include/string.h:133:14: warning: Root cause for 0 unchecked pointers: Source code in non-writable file.
+extern char *strncat (char *__restrict __dest, const char *__restrict __src,
+             ^
+/usr/include/string.h:133:14: warning: Root cause for 0 unchecked pointers: Unchecked pointer in parameter or return of undefined function strncat
+/usr/include/string.h:137:12: warning: Root cause for 0 unchecked pointers: Source code in non-writable file.
+extern int strcmp (const char *__s1, const char *__s2)
+           ^
+In file included from /workdisk/sourag/3crun/FreeRTOS/FreeRTOS/Source/stream_buffer.c:31:
+In file included from /workdisk/sourag/mine/checkedc-llvm-project/build/lib/clang/12.0.0/include/string.h:22:
+/workdisk/sourag/mine/checkedc-llvm-project/build/lib/clang/12.0.0/include/string_checked.h:122:5: warning: Root cause for 0 unchecked pointers: Source code in non-writable file.
+int strcmp(const char *src1 : itype(_Nt_array_ptr<const char>),
+    ^
+In file included from /workdisk/sourag/3crun/FreeRTOS/FreeRTOS/Source/stream_buffer.c:31:
+In file included from /workdisk/sourag/mine/checkedc-llvm-project/build/lib/clang/12.0.0/include/string.h:22:
+In file included from /workdisk/sourag/mine/checkedc-llvm-project/build/lib/clang/12.0.0/include/string_checked.h:19:
+/usr/include/string.h:140:12: warning: Root cause for 0 unchecked pointers: Source code in non-writable file.
+extern int strncmp (const char *__s1, const char *__s2, size_t __n)
+           ^
+In file included from /workdisk/sourag/3crun/FreeRTOS/FreeRTOS/Source/stream_buffer.c:31:
+In file included from /workdisk/sourag/mine/checkedc-llvm-project/build/lib/clang/12.0.0/include/string.h:22:
+/workdisk/sourag/mine/checkedc-llvm-project/build/lib/clang/12.0.0/include/string_checked.h:134:5: warning: Root cause for 0 unchecked pointers: Source code in non-writable file.
+int strncmp(const char *src : itype(_Nt_array_ptr<const char>),
+    ^
+In file included from /workdisk/sourag/3crun/FreeRTOS/FreeRTOS/Source/stream_buffer.c:31:
+In file included from /workdisk/sourag/mine/checkedc-llvm-project/build/lib/clang/12.0.0/include/string.h:22:
+In file included from /workdisk/sourag/mine/checkedc-llvm-project/build/lib/clang/12.0.0/include/string_checked.h:19:
+/usr/include/string.h:144:12: warning: Root cause for 0 unchecked pointers: Source code in non-writable file.
+extern int strcoll (const char *__s1, const char *__s2)
+           ^
+In file included from /workdisk/sourag/3crun/FreeRTOS/FreeRTOS/Source/stream_buffer.c:31:
+In file included from /workdisk/sourag/mine/checkedc-llvm-project/build/lib/clang/12.0.0/include/string.h:22:
+/workdisk/sourag/mine/checkedc-llvm-project/build/lib/clang/12.0.0/include/string_checked.h:124:5: warning: Root cause for 0 unchecked pointers: Source code in non-writable file.
+int strcoll(const char *src1 : itype(_Nt_array_ptr<const char>),
+    ^
+In file included from /workdisk/sourag/3crun/FreeRTOS/FreeRTOS/Source/stream_buffer.c:31:
+In file included from /workdisk/sourag/mine/checkedc-llvm-project/build/lib/clang/12.0.0/include/string.h:22:
+In file included from /workdisk/sourag/mine/checkedc-llvm-project/build/lib/clang/12.0.0/include/string_checked.h:19:
+/usr/include/string.h:147:15: warning: Root cause for 0 unchecked pointers: Source code in non-writable file.
+extern size_t strxfrm (char *__restrict __dest,
+              ^
+In file included from /workdisk/sourag/3crun/FreeRTOS/FreeRTOS/Source/stream_buffer.c:31:
+In file included from /workdisk/sourag/mine/checkedc-llvm-project/build/lib/clang/12.0.0/include/string.h:22:
+/workdisk/sourag/mine/checkedc-llvm-project/build/lib/clang/12.0.0/include/string_checked.h:138:8: warning: Root cause for 0 unchecked pointers: Source code in non-writable file.
+size_t strxfrm(char * restrict dest : count(n),
+       ^
+In file included from /workdisk/sourag/3crun/FreeRTOS/FreeRTOS/Source/stream_buffer.c:31:
+In file included from /workdisk/sourag/mine/checkedc-llvm-project/build/lib/clang/12.0.0/include/string.h:22:
+In file included from /workdisk/sourag/mine/checkedc-llvm-project/build/lib/clang/12.0.0/include/string_checked.h:19:
+In file included from /usr/include/string.h:153:
+In file included from /usr/include/x86_64-linux-gnu/bits/types/locale_t.h:22:
+/usr/include/x86_64-linux-gnu/bits/types/__locale_t.h:31:25: warning: Root cause for 0 unchecked pointers: Source code in non-writable file.
+  struct __locale_data *__locales[13]; /* 13 = __LC_LAST. */
+                        ^
+/usr/include/x86_64-linux-gnu/bits/types/__locale_t.h:34:29: warning: Root cause for 0 unchecked pointers: Source code in non-writable file.
+  const unsigned short int *__ctype_b;
+                            ^
+/usr/include/x86_64-linux-gnu/bits/types/__locale_t.h:35:14: warning: Root cause for 0 unchecked pointers: Source code in non-writable file.
+  const int *__ctype_tolower;
+             ^
+/usr/include/x86_64-linux-gnu/bits/types/__locale_t.h:36:14: warning: Root cause for 0 unchecked pointers: Source code in non-writable file.
+  const int *__ctype_toupper;
+             ^
+/usr/include/x86_64-linux-gnu/bits/types/__locale_t.h:39:15: warning: Root cause for 0 unchecked pointers: Source code in non-writable file.
+  const char *__names[13];
+              ^
+/usr/include/x86_64-linux-gnu/bits/types/__locale_t.h:42:33: warning: Root cause for 0 unchecked pointers: Source code in non-writable file.
+typedef struct __locale_struct *__locale_t;
+                                ^
+In file included from /workdisk/sourag/3crun/FreeRTOS/FreeRTOS/Source/stream_buffer.c:31:
+In file included from /workdisk/sourag/mine/checkedc-llvm-project/build/lib/clang/12.0.0/include/string.h:22:
+In file included from /workdisk/sourag/mine/checkedc-llvm-project/build/lib/clang/12.0.0/include/string_checked.h:19:
+In file included from /usr/include/string.h:153:
+/usr/include/x86_64-linux-gnu/bits/types/locale_t.h:24:20: warning: Root cause for 0 unchecked pointers: Source code in non-writable file.
+typedef __locale_t locale_t;
+                   ^
+In file included from /workdisk/sourag/3crun/FreeRTOS/FreeRTOS/Source/stream_buffer.c:31:
+In file included from /workdisk/sourag/mine/checkedc-llvm-project/build/lib/clang/12.0.0/include/string.h:22:
+In file included from /workdisk/sourag/mine/checkedc-llvm-project/build/lib/clang/12.0.0/include/string_checked.h:19:
+/usr/include/string.h:156:12: warning: Root cause for 0 unchecked pointers: Source code in non-writable file.
+extern int strcoll_l (const char *__s1, const char *__s2, locale_t __l)
+           ^
+/usr/include/string.h:156:35: warning: Root cause for 0 unchecked pointers: Unchecked pointer in parameter or return of undefined function strcoll_l
+extern int strcoll_l (const char *__s1, const char *__s2, locale_t __l)
+                                  ^
+/usr/include/string.h:156:53: warning: Root cause for 0 unchecked pointers: Unchecked pointer in parameter or return of undefined function strcoll_l
+extern int strcoll_l (const char *__s1, const char *__s2, locale_t __l)
+                                                    ^
+/usr/include/string.h:156:68: warning: Root cause for 0 unchecked pointers: Unchecked pointer in parameter or return of undefined function strcoll_l
+extern int strcoll_l (const char *__s1, const char *__s2, locale_t __l)
+                                                                   ^
+/usr/include/string.h:160:15: warning: Root cause for 0 unchecked pointers: Source code in non-writable file.
+extern size_t strxfrm_l (char *__dest, const char *__src, size_t __n,
+              ^
+/usr/include/string.h:160:32: warning: Root cause for 0 unchecked pointers: Unchecked pointer in parameter or return of undefined function strxfrm_l
+extern size_t strxfrm_l (char *__dest, const char *__src, size_t __n,
+                               ^
+/usr/include/string.h:160:52: warning: Root cause for 0 unchecked pointers: Unchecked pointer in parameter or return of undefined function strxfrm_l
+extern size_t strxfrm_l (char *__dest, const char *__src, size_t __n,
+                                                   ^
+/usr/include/string.h:161:14: warning: Root cause for 0 unchecked pointers: Unchecked pointer in parameter or return of undefined function strxfrm_l
+                         locale_t __l) __THROW __nonnull ((2, 4));
+                                  ^
+/usr/include/string.h:167:14: warning: Root cause for 0 unchecked pointers: Source code in non-writable file.
+extern char *strdup (const char *__s)
+             ^
+In file included from /workdisk/sourag/3crun/FreeRTOS/FreeRTOS/Source/stream_buffer.c:31:
+In file included from /workdisk/sourag/mine/checkedc-llvm-project/build/lib/clang/12.0.0/include/string.h:22:
+/workdisk/sourag/mine/checkedc-llvm-project/build/lib/clang/12.0.0/include/string_checked.h:169:7: warning: Root cause for 0 unchecked pointers: Source code in non-writable file.
+char *strdup(const char *s : itype(_Nt_array_ptr<const char>)) : itype(_Nt_array_ptr<char>);
+      ^
+In file included from /workdisk/sourag/3crun/FreeRTOS/FreeRTOS/Source/stream_buffer.c:31:
+In file included from /workdisk/sourag/mine/checkedc-llvm-project/build/lib/clang/12.0.0/include/string.h:22:
+In file included from /workdisk/sourag/mine/checkedc-llvm-project/build/lib/clang/12.0.0/include/string_checked.h:19:
+/usr/include/string.h:175:14: warning: Root cause for 0 unchecked pointers: Source code in non-writable file.
+extern char *strndup (const char *__string, size_t __n)
+             ^
+/usr/include/string.h:175:35: warning: Root cause for 0 unchecked pointers: Unchecked pointer in parameter or return of undefined function strndup
+extern char *strndup (const char *__string, size_t __n)
+                                  ^
+/usr/include/string.h:175:14: warning: Root cause for 0 unchecked pointers: Unchecked pointer in parameter or return of undefined function strndup
+extern char *strndup (const char *__string, size_t __n)
+             ^
+/usr/include/string.h:226:14: warning: Root cause for 0 unchecked pointers: Source code in non-writable file.
+extern char *strchr (const char *__s, int __c)
+             ^
+In file included from /workdisk/sourag/3crun/FreeRTOS/FreeRTOS/Source/stream_buffer.c:31:
+In file included from /workdisk/sourag/mine/checkedc-llvm-project/build/lib/clang/12.0.0/include/string.h:22:
+/workdisk/sourag/mine/checkedc-llvm-project/build/lib/clang/12.0.0/include/string_checked.h:146:7: warning: Root cause for 0 unchecked pointers: Source code in non-writable file.
+char *strchr(const char *s : itype(_Nt_array_ptr<const char>), int c) :
+      ^
+In file included from /workdisk/sourag/3crun/FreeRTOS/FreeRTOS/Source/stream_buffer.c:31:
+In file included from /workdisk/sourag/mine/checkedc-llvm-project/build/lib/clang/12.0.0/include/string.h:22:
+In file included from /workdisk/sourag/mine/checkedc-llvm-project/build/lib/clang/12.0.0/include/string_checked.h:19:
+/usr/include/string.h:253:14: warning: Root cause for 0 unchecked pointers: Source code in non-writable file.
+extern char *strrchr (const char *__s, int __c)
+             ^
+In file included from /workdisk/sourag/3crun/FreeRTOS/FreeRTOS/Source/stream_buffer.c:31:
+In file included from /workdisk/sourag/mine/checkedc-llvm-project/build/lib/clang/12.0.0/include/string.h:22:
+/workdisk/sourag/mine/checkedc-llvm-project/build/lib/clang/12.0.0/include/string_checked.h:155:7: warning: Root cause for 0 unchecked pointers: Source code in non-writable file.
+char *strrchr(const char *s : itype(_Nt_array_ptr<const char>), int c) :
+      ^
+In file included from /workdisk/sourag/3crun/FreeRTOS/FreeRTOS/Source/stream_buffer.c:31:
+In file included from /workdisk/sourag/mine/checkedc-llvm-project/build/lib/clang/12.0.0/include/string.h:22:
+In file included from /workdisk/sourag/mine/checkedc-llvm-project/build/lib/clang/12.0.0/include/string_checked.h:19:
+/usr/include/string.h:273:15: warning: Root cause for 0 unchecked pointers: Source code in non-writable file.
+extern size_t strcspn (const char *__s, const char *__reject)
+              ^
+In file included from /workdisk/sourag/3crun/FreeRTOS/FreeRTOS/Source/stream_buffer.c:31:
+In file included from /workdisk/sourag/mine/checkedc-llvm-project/build/lib/clang/12.0.0/include/string.h:22:
+/workdisk/sourag/mine/checkedc-llvm-project/build/lib/clang/12.0.0/include/string_checked.h:149:8: warning: Root cause for 0 unchecked pointers: Source code in non-writable file.
+size_t strcspn(const char *s1 : itype(_Nt_array_ptr<const char>),
+       ^
+In file included from /workdisk/sourag/3crun/FreeRTOS/FreeRTOS/Source/stream_buffer.c:31:
+In file included from /workdisk/sourag/mine/checkedc-llvm-project/build/lib/clang/12.0.0/include/string.h:22:
+In file included from /workdisk/sourag/mine/checkedc-llvm-project/build/lib/clang/12.0.0/include/string_checked.h:19:
+/usr/include/string.h:277:15: warning: Root cause for 0 unchecked pointers: Source code in non-writable file.
+extern size_t strspn (const char *__s, const char *__accept)
+              ^
+In file included from /workdisk/sourag/3crun/FreeRTOS/FreeRTOS/Source/stream_buffer.c:31:
+In file included from /workdisk/sourag/mine/checkedc-llvm-project/build/lib/clang/12.0.0/include/string.h:22:
+/workdisk/sourag/mine/checkedc-llvm-project/build/lib/clang/12.0.0/include/string_checked.h:157:8: warning: Root cause for 0 unchecked pointers: Source code in non-writable file.
+size_t strspn(const char *s1 : itype(_Nt_array_ptr<const char>),
+       ^
+In file included from /workdisk/sourag/3crun/FreeRTOS/FreeRTOS/Source/stream_buffer.c:31:
+In file included from /workdisk/sourag/mine/checkedc-llvm-project/build/lib/clang/12.0.0/include/string.h:22:
+In file included from /workdisk/sourag/mine/checkedc-llvm-project/build/lib/clang/12.0.0/include/string_checked.h:19:
+/usr/include/string.h:303:14: warning: Root cause for 0 unchecked pointers: Source code in non-writable file.
+extern char *strpbrk (const char *__s, const char *__accept)
+             ^
+In file included from /workdisk/sourag/3crun/FreeRTOS/FreeRTOS/Source/stream_buffer.c:31:
+In file included from /workdisk/sourag/mine/checkedc-llvm-project/build/lib/clang/12.0.0/include/string.h:22:
+/workdisk/sourag/mine/checkedc-llvm-project/build/lib/clang/12.0.0/include/string_checked.h:152:7: warning: Root cause for 0 unchecked pointers: Source code in non-writable file.
+char *strpbrk(const char *s1 : itype(_Nt_array_ptr<const char>),
+      ^
+In file included from /workdisk/sourag/3crun/FreeRTOS/FreeRTOS/Source/stream_buffer.c:31:
+In file included from /workdisk/sourag/mine/checkedc-llvm-project/build/lib/clang/12.0.0/include/string.h:22:
+In file included from /workdisk/sourag/mine/checkedc-llvm-project/build/lib/clang/12.0.0/include/string_checked.h:19:
+/usr/include/string.h:330:14: warning: Root cause for 0 unchecked pointers: Source code in non-writable file.
+extern char *strstr (const char *__haystack, const char *__needle)
+             ^
+In file included from /workdisk/sourag/3crun/FreeRTOS/FreeRTOS/Source/stream_buffer.c:31:
+In file included from /workdisk/sourag/mine/checkedc-llvm-project/build/lib/clang/12.0.0/include/string.h:22:
+/workdisk/sourag/mine/checkedc-llvm-project/build/lib/clang/12.0.0/include/string_checked.h:159:7: warning: Root cause for 0 unchecked pointers: Source code in non-writable file.
+char *strstr(const char *s1 : itype(_Nt_array_ptr<const char>),
+      ^
+In file included from /workdisk/sourag/3crun/FreeRTOS/FreeRTOS/Source/stream_buffer.c:31:
+In file included from /workdisk/sourag/mine/checkedc-llvm-project/build/lib/clang/12.0.0/include/string.h:22:
+In file included from /workdisk/sourag/mine/checkedc-llvm-project/build/lib/clang/12.0.0/include/string_checked.h:19:
+/usr/include/string.h:336:14: warning: Root cause for 0 unchecked pointers: Source code in non-writable file.
+extern char *strtok (char *__restrict __s, const char *__restrict __delim)
+             ^
+In file included from /workdisk/sourag/3crun/FreeRTOS/FreeRTOS/Source/stream_buffer.c:31:
+In file included from /workdisk/sourag/mine/checkedc-llvm-project/build/lib/clang/12.0.0/include/string.h:22:
+/workdisk/sourag/mine/checkedc-llvm-project/build/lib/clang/12.0.0/include/string_checked.h:162:7: warning: Root cause for 0 unchecked pointers: Source code in non-writable file.
+char *strtok(char * restrict s1 : itype(restrict _Nt_array_ptr<char>),
+      ^
+In file included from /workdisk/sourag/3crun/FreeRTOS/FreeRTOS/Source/stream_buffer.c:31:
+In file included from /workdisk/sourag/mine/checkedc-llvm-project/build/lib/clang/12.0.0/include/string.h:22:
+In file included from /workdisk/sourag/mine/checkedc-llvm-project/build/lib/clang/12.0.0/include/string_checked.h:19:
+/usr/include/string.h:341:14: warning: Root cause for 0 unchecked pointers: Source code in non-writable file.
+extern char *__strtok_r (char *__restrict __s,
+             ^
+/usr/include/string.h:341:43: warning: Root cause for 0 unchecked pointers: Unchecked pointer in parameter or return of undefined function __strtok_r
+extern char *__strtok_r (char *__restrict __s,
+                                          ^
+/usr/include/string.h:342:28: warning: Root cause for 0 unchecked pointers: Unchecked pointer in parameter or return of undefined function __strtok_r
+                         const char *__restrict __delim,
+                                                ^
+/usr/include/string.h:343:23: warning: Root cause for 0 unchecked pointers: Unchecked pointer in parameter or return of undefined function __strtok_r
+                         char **__restrict __save_ptr)
+                                           ^
+/usr/include/string.h:346:14: warning: Root cause for 0 unchecked pointers: Source code in non-writable file.
+extern char *strtok_r (char *__restrict __s, const char *__restrict __delim,
+             ^
+/usr/include/string.h:346:41: warning: Root cause for 0 unchecked pointers: Unchecked pointer in parameter or return of undefined function strtok_r
+extern char *strtok_r (char *__restrict __s, const char *__restrict __delim,
+                                        ^
+/usr/include/string.h:346:69: warning: Root cause for 0 unchecked pointers: Unchecked pointer in parameter or return of undefined function strtok_r
+extern char *strtok_r (char *__restrict __s, const char *__restrict __delim,
+                                                                    ^
+/usr/include/string.h:347:28: warning: Root cause for 0 unchecked pointers: Unchecked pointer in parameter or return of undefined function strtok_r
+                       char **__restrict __save_ptr)
+                                         ^
+/usr/include/string.h:385:15: warning: Root cause for 0 unchecked pointers: Source code in non-writable file.
+extern size_t strlen (const char *__s)
+              ^
+In file included from /workdisk/sourag/3crun/FreeRTOS/FreeRTOS/Source/stream_buffer.c:31:
+In file included from /workdisk/sourag/mine/checkedc-llvm-project/build/lib/clang/12.0.0/include/string.h:22:
+/workdisk/sourag/mine/checkedc-llvm-project/build/lib/clang/12.0.0/include/string_checked.h:167:8: warning: Root cause for 0 unchecked pointers: Source code in non-writable file.
+size_t strlen(const char *s : itype(_Nt_array_ptr<const char>));
+       ^
+In file included from /workdisk/sourag/3crun/FreeRTOS/FreeRTOS/Source/stream_buffer.c:31:
+In file included from /workdisk/sourag/mine/checkedc-llvm-project/build/lib/clang/12.0.0/include/string.h:22:
+In file included from /workdisk/sourag/mine/checkedc-llvm-project/build/lib/clang/12.0.0/include/string_checked.h:19:
+/usr/include/string.h:391:15: warning: Root cause for 0 unchecked pointers: Source code in non-writable file.
+extern size_t strnlen (const char *__string, size_t __maxlen)
+              ^
+/usr/include/string.h:391:36: warning: Root cause for 0 unchecked pointers: Unchecked pointer in parameter or return of undefined function strnlen
+extern size_t strnlen (const char *__string, size_t __maxlen)
+                                   ^
+/usr/include/string.h:397:14: warning: Root cause for 0 unchecked pointers: Source code in non-writable file.
+extern char *strerror (int __errnum) __THROW;
+             ^
+In file included from /workdisk/sourag/3crun/FreeRTOS/FreeRTOS/Source/stream_buffer.c:31:
+In file included from /workdisk/sourag/mine/checkedc-llvm-project/build/lib/clang/12.0.0/include/string.h:22:
+/workdisk/sourag/mine/checkedc-llvm-project/build/lib/clang/12.0.0/include/string_checked.h:166:7: warning: Root cause for 0 unchecked pointers: Source code in non-writable file.
+char *strerror(int errnum) : itype(_Nt_array_ptr<char>);
+      ^
+In file included from /workdisk/sourag/3crun/FreeRTOS/FreeRTOS/Source/stream_buffer.c:31:
+In file included from /workdisk/sourag/mine/checkedc-llvm-project/build/lib/clang/12.0.0/include/string.h:22:
+In file included from /workdisk/sourag/mine/checkedc-llvm-project/build/lib/clang/12.0.0/include/string_checked.h:19:
+/usr/include/string.h:410:12: warning: Root cause for 0 unchecked pointers: Source code in non-writable file.
+extern int __REDIRECT_NTH (strerror_r,
+           ^
+/usr/include/string.h:428:14: warning: Root cause for 0 unchecked pointers: Source code in non-writable file.
+extern char *strerror_l (int __errnum, locale_t __l) __THROW;
+             ^
+/usr/include/string.h:428:49: warning: Root cause for 0 unchecked pointers: Unchecked pointer in parameter or return of undefined function strerror_l
+extern char *strerror_l (int __errnum, locale_t __l) __THROW;
+                                                ^
+In file included from /workdisk/sourag/3crun/FreeRTOS/FreeRTOS/Source/stream_buffer.c:31:
+In file included from /workdisk/sourag/mine/checkedc-llvm-project/build/lib/clang/12.0.0/include/string.h:22:
+In file included from /workdisk/sourag/mine/checkedc-llvm-project/build/lib/clang/12.0.0/include/string_checked.h:19:
+In file included from /usr/include/string.h:432:
+/usr/include/strings.h:34:12: warning: Root cause for 0 unchecked pointers: Source code in non-writable file.
+extern int bcmp (const void *__s1, const void *__s2, size_t __n)
+           ^
+/usr/include/strings.h:38:13: warning: Root cause for 0 unchecked pointers: Source code in non-writable file.
+extern void bcopy (const void *__src, void *__dest, size_t __n)
+            ^
+/usr/include/strings.h:42:13: warning: Root cause for 0 unchecked pointers: Source code in non-writable file.
+extern void bzero (void *__s, size_t __n) __THROW __nonnull ((1));
+            ^
+/usr/include/strings.h:68:14: warning: Root cause for 0 unchecked pointers: Source code in non-writable file.
+extern char *index (const char *__s, int __c)
+             ^
+/usr/include/strings.h:68:33: warning: Root cause for 0 unchecked pointers: Unchecked pointer in parameter or return of undefined function index
+extern char *index (const char *__s, int __c)
+                                ^
+/usr/include/strings.h:68:14: warning: Root cause for 0 unchecked pointers: Unchecked pointer in parameter or return of undefined function index
+extern char *index (const char *__s, int __c)
+             ^
+/usr/include/strings.h:96:14: warning: Root cause for 0 unchecked pointers: Source code in non-writable file.
+extern char *rindex (const char *__s, int __c)
+             ^
+/usr/include/strings.h:96:34: warning: Root cause for 0 unchecked pointers: Unchecked pointer in parameter or return of undefined function rindex
+extern char *rindex (const char *__s, int __c)
+                                 ^
+/usr/include/strings.h:96:14: warning: Root cause for 0 unchecked pointers: Unchecked pointer in parameter or return of undefined function rindex
+extern char *rindex (const char *__s, int __c)
+             ^
+/usr/include/strings.h:116:12: warning: Root cause for 0 unchecked pointers: Source code in non-writable file.
+extern int strcasecmp (const char *__s1, const char *__s2)
+           ^
+/usr/include/strings.h:116:36: warning: Root cause for 0 unchecked pointers: Unchecked pointer in parameter or return of undefined function strcasecmp
+extern int strcasecmp (const char *__s1, const char *__s2)
+                                   ^
+/usr/include/strings.h:116:54: warning: Root cause for 0 unchecked pointers: Unchecked pointer in parameter or return of undefined function strcasecmp
+extern int strcasecmp (const char *__s1, const char *__s2)
+                                                     ^
+/usr/include/strings.h:120:12: warning: Root cause for 0 unchecked pointers: Source code in non-writable file.
+extern int strncasecmp (const char *__s1, const char *__s2, size_t __n)
+           ^
+/usr/include/strings.h:120:37: warning: Root cause for 0 unchecked pointers: Unchecked pointer in parameter or return of undefined function strncasecmp
+extern int strncasecmp (const char *__s1, const char *__s2, size_t __n)
+                                    ^
+/usr/include/strings.h:120:55: warning: Root cause for 0 unchecked pointers: Unchecked pointer in parameter or return of undefined function strncasecmp
+extern int strncasecmp (const char *__s1, const char *__s2, size_t __n)
+                                                      ^
+/usr/include/strings.h:128:12: warning: Root cause for 0 unchecked pointers: Source code in non-writable file.
+extern int strcasecmp_l (const char *__s1, const char *__s2, locale_t __loc)
+           ^
+/usr/include/strings.h:128:38: warning: Root cause for 0 unchecked pointers: Unchecked pointer in parameter or return of undefined function strcasecmp_l
+extern int strcasecmp_l (const char *__s1, const char *__s2, locale_t __loc)
+                                     ^
+/usr/include/strings.h:128:56: warning: Root cause for 0 unchecked pointers: Unchecked pointer in parameter or return of undefined function strcasecmp_l
+extern int strcasecmp_l (const char *__s1, const char *__s2, locale_t __loc)
+                                                       ^
+/usr/include/strings.h:128:71: warning: Root cause for 0 unchecked pointers: Unchecked pointer in parameter or return of undefined function strcasecmp_l
+extern int strcasecmp_l (const char *__s1, const char *__s2, locale_t __loc)
+                                                                      ^
+/usr/include/strings.h:133:12: warning: Root cause for 0 unchecked pointers: Source code in non-writable file.
+extern int strncasecmp_l (const char *__s1, const char *__s2,
+           ^
+/usr/include/strings.h:133:39: warning: Root cause for 0 unchecked pointers: Unchecked pointer in parameter or return of undefined function strncasecmp_l
+extern int strncasecmp_l (const char *__s1, const char *__s2,
+                                      ^
+/usr/include/strings.h:133:57: warning: Root cause for 0 unchecked pointers: Unchecked pointer in parameter or return of undefined function strncasecmp_l
+extern int strncasecmp_l (const char *__s1, const char *__s2,
+                                                        ^
+/usr/include/strings.h:134:27: warning: Root cause for 0 unchecked pointers: Unchecked pointer in parameter or return of undefined function strncasecmp_l
+                          size_t __n, locale_t __loc)
+                                               ^
+In file included from /workdisk/sourag/3crun/FreeRTOS/FreeRTOS/Source/stream_buffer.c:31:
+In file included from /workdisk/sourag/mine/checkedc-llvm-project/build/lib/clang/12.0.0/include/string.h:22:
+In file included from /workdisk/sourag/mine/checkedc-llvm-project/build/lib/clang/12.0.0/include/string_checked.h:19:
+/usr/include/string.h:436:13: warning: Root cause for 0 unchecked pointers: Source code in non-writable file.
+extern void explicit_bzero (void *__s, size_t __n) __THROW __nonnull ((1));
+            ^
+/usr/include/string.h:440:14: warning: Root cause for 0 unchecked pointers: Source code in non-writable file.
+extern char *strsep (char **__restrict __stringp,
+             ^
+/usr/include/string.h:440:40: warning: Root cause for 0 unchecked pointers: Unchecked pointer in parameter or return of undefined function strsep
+extern char *strsep (char **__restrict __stringp,
+                                       ^
+/usr/include/string.h:441:31: warning: Root cause for 0 unchecked pointers: Unchecked pointer in parameter or return of undefined function strsep
+                     const char *__restrict __delim)
+                                            ^
+/usr/include/string.h:447:14: warning: Root cause for 0 unchecked pointers: Source code in non-writable file.
+extern char *strsignal (int __sig) __THROW;
+             ^
+/usr/include/string.h:450:14: warning: Root cause for 0 unchecked pointers: Source code in non-writable file.
+extern char *__stpcpy (char *__restrict __dest, const char *__restrict __src)
+             ^
+/usr/include/string.h:450:41: warning: Root cause for 0 unchecked pointers: Unchecked pointer in parameter or return of undefined function __stpcpy
+extern char *__stpcpy (char *__restrict __dest, const char *__restrict __src)
+                                        ^
+/usr/include/string.h:450:72: warning: Root cause for 0 unchecked pointers: Unchecked pointer in parameter or return of undefined function __stpcpy
+extern char *__stpcpy (char *__restrict __dest, const char *__restrict __src)
+                                                                       ^
+/usr/include/string.h:452:14: warning: Root cause for 0 unchecked pointers: Source code in non-writable file.
+extern char *stpcpy (char *__restrict __dest, const char *__restrict __src)
+             ^
+/usr/include/string.h:457:14: warning: Root cause for 0 unchecked pointers: Source code in non-writable file.
+extern char *__stpncpy (char *__restrict __dest,
+             ^
+/usr/include/string.h:457:42: warning: Root cause for 0 unchecked pointers: Unchecked pointer in parameter or return of undefined function __stpncpy
+extern char *__stpncpy (char *__restrict __dest,
+                                         ^
+/usr/include/string.h:458:27: warning: Root cause for 0 unchecked pointers: Unchecked pointer in parameter or return of undefined function __stpncpy
+                        const char *__restrict __src, size_t __n)
+                                               ^
+/usr/include/string.h:460:14: warning: Root cause for 0 unchecked pointers: Source code in non-writable file.
+extern char *stpncpy (char *__restrict __dest,
+             ^
+In file included from /workdisk/sourag/3crun/FreeRTOS/FreeRTOS/Source/stream_buffer.c:31:
+In file included from /workdisk/sourag/mine/checkedc-llvm-project/build/lib/clang/12.0.0/include/string.h:22:
+/workdisk/sourag/mine/checkedc-llvm-project/build/lib/clang/12.0.0/include/string_checked.h:65:25: warning: Root cause for 0 unchecked pointers: Source code in non-writable file.
+_Itype_for_any(T) void *memcpy(void * restrict dest : itype(restrict _Array_ptr<T>) byte_count(n),
+                        ^
+/workdisk/sourag/mine/checkedc-llvm-project/build/lib/clang/12.0.0/include/string_checked.h:72:7: warning: Root cause for 0 unchecked pointers: Default void* type
+void *memmove(void * dest : byte_count(n),
+      ^
+/workdisk/sourag/mine/checkedc-llvm-project/build/lib/clang/12.0.0/include/string_checked.h:79:7: warning: Root cause for 0 unchecked pointers: Default void* type
+void *memset(void * dest : byte_count(n),
+      ^
+/workdisk/sourag/mine/checkedc-llvm-project/build/lib/clang/12.0.0/include/string_checked.h:119:5: warning: Root cause for 0 unchecked pointers: Default void* type
+int memcmp(const void *src1 : byte_count(n), const void *src2 : byte_count(n),
+    ^
+/workdisk/sourag/mine/checkedc-llvm-project/build/lib/clang/12.0.0/include/string_checked.h:143:7: warning: Root cause for 0 unchecked pointers: Default void* type
+void *memchr(const void *s : byte_count(n), int c, size_t n) :
+      ^
+In file included from /workdisk/sourag/3crun/FreeRTOS/FreeRTOS/Source/stream_buffer.c:31:
+In file included from /workdisk/sourag/mine/checkedc-llvm-project/build/lib/clang/12.0.0/include/string.h:22:
+In file included from /workdisk/sourag/mine/checkedc-llvm-project/build/lib/clang/12.0.0/include/string_checked.h:171:
+In file included from /workdisk/sourag/mine/checkedc-llvm-project/build/lib/clang/12.0.0/include/_builtin_string_checked.h:13:
+/workdisk/sourag/mine/checkedc-llvm-project/build/lib/clang/12.0.0/include/_builtin_common.h:19:8: warning: Root cause for 0 unchecked pointers: Source code in non-writable file.
+size_t __builtin_object_size(const void* obj : itype(_Array_ptr<const void>),
+       ^
+/workdisk/sourag/mine/checkedc-llvm-project/build/lib/clang/12.0.0/include/_builtin_common.h:19:8: warning: Root cause for 0 unchecked pointers: Default void* type
+In file included from /workdisk/sourag/3crun/FreeRTOS/FreeRTOS/Source/stream_buffer.c:39:
+In file included from /workdisk/sourag/3crun/FreeRTOS/FreeRTOS/Source/include/FreeRTOS.h:59:
+/workdisk/sourag/3crun/FreeRTOS/FreeRTOS/Demo/Posix_GCC/FreeRTOSConfig.h:116:13: warning: Root cause for 0 unchecked pointers: Source code in non-writable file.
+extern void vAssertCalled( const char * const pcFileName,
+            ^
+/workdisk/sourag/3crun/FreeRTOS/FreeRTOS/Demo/Posix_GCC/FreeRTOSConfig.h:116:47: warning: Root cause for 0 unchecked pointers: Unchecked pointer in parameter or return of undefined function vAssertCalled
+extern void vAssertCalled( const char * const pcFileName,
+                                              ^
+In file included from /workdisk/sourag/3crun/FreeRTOS/FreeRTOS/Source/stream_buffer.c:39:
+In file included from /workdisk/sourag/3crun/FreeRTOS/FreeRTOS/Source/include/FreeRTOS.h:59:
+In file included from /workdisk/sourag/3crun/FreeRTOS/FreeRTOS/Demo/Posix_GCC/FreeRTOSConfig.h:152:
+In file included from /workdisk/sourag/3crun/FreeRTOS/FreeRTOS-Plus/Source/FreeRTOS-Plus-Trace/Include/trcRecorder.h:34:
+/workdisk/sourag/3crun/FreeRTOS/FreeRTOS-Plus/Source/FreeRTOS-Plus-Trace/Include/trcTypes.h:60:16: warning: Root cause for 0 unchecked pointers: Source code in non-writable file.
+typedef void (*TraceCounterCallback_t)(TraceCounterHandle_t xCounterHandle);
+               ^
+In file included from /workdisk/sourag/3crun/FreeRTOS/FreeRTOS/Source/stream_buffer.c:39:
+In file included from /workdisk/sourag/3crun/FreeRTOS/FreeRTOS/Source/include/FreeRTOS.h:59:
+In file included from /workdisk/sourag/3crun/FreeRTOS/FreeRTOS/Demo/Posix_GCC/FreeRTOSConfig.h:152:
+In file included from /workdisk/sourag/3crun/FreeRTOS/FreeRTOS-Plus/Source/FreeRTOS-Plus-Trace/Include/trcRecorder.h:71:
+/workdisk/sourag/3crun/FreeRTOS/FreeRTOS-Plus/Source/FreeRTOS-Plus-Trace/Include/trcKernelPort.h:102:10: warning: Root cause for 0 unchecked pointers: Source code in non-writable file.
+        uint8_t buffer[TRC_KERNEL_PORT_BUFFER_SIZE];
+                ^
+/workdisk/sourag/3crun/FreeRTOS/FreeRTOS-Plus/Source/FreeRTOS-Plus-Trace/Include/trcKernelPort.h:113:13: warning: Root cause for 0 unchecked pointers: Source code in non-writable file.
+traceResult xTraceKernelPortInitialize(TraceKernelPortDataBuffer_t* pxBuffer);
+            ^
+/workdisk/sourag/3crun/FreeRTOS/FreeRTOS-Plus/Source/FreeRTOS-Plus-Trace/Include/trcKernelPort.h:113:69: warning: Root cause for 0 unchecked pointers: Unchecked pointer in parameter or return of undefined function xTraceKernelPortInitialize
+traceResult xTraceKernelPortInitialize(TraceKernelPortDataBuffer_t* pxBuffer);
+                                                                    ^
+/workdisk/sourag/3crun/FreeRTOS/FreeRTOS-Plus/Source/FreeRTOS-Plus-Trace/Include/trcKernelPort.h:184:6: warning: Root cause for 0 unchecked pointers: Source code in non-writable file.
+void vTraceSetQueueName(void* pvQueue, const char* szName);
+     ^
+/workdisk/sourag/3crun/FreeRTOS/FreeRTOS-Plus/Source/FreeRTOS-Plus-Trace/Include/trcKernelPort.h:184:52: warning: Root cause for 0 unchecked pointers: Unchecked pointer in parameter or return of undefined function vTraceSetQueueName
+void vTraceSetQueueName(void* pvQueue, const char* szName);
+                                                   ^
+/workdisk/sourag/3crun/FreeRTOS/FreeRTOS-Plus/Source/FreeRTOS-Plus-Trace/Include/trcKernelPort.h:192:6: warning: Root cause for 0 unchecked pointers: Source code in non-writable file.
+void vTraceSetSemaphoreName(void* pvSemaphore, const char* szName);
+     ^
+/workdisk/sourag/3crun/FreeRTOS/FreeRTOS-Plus/Source/FreeRTOS-Plus-Trace/Include/trcKernelPort.h:192:60: warning: Root cause for 0 unchecked pointers: Unchecked pointer in parameter or return of undefined function vTraceSetSemaphoreName
+void vTraceSetSemaphoreName(void* pvSemaphore, const char* szName);
+                                                           ^
+/workdisk/sourag/3crun/FreeRTOS/FreeRTOS-Plus/Source/FreeRTOS-Plus-Trace/Include/trcKernelPort.h:200:6: warning: Root cause for 0 unchecked pointers: Source code in non-writable file.
+void vTraceSetMutexName(void* pvMutex, const char* szName);
+     ^
+/workdisk/sourag/3crun/FreeRTOS/FreeRTOS-Plus/Source/FreeRTOS-Plus-Trace/Include/trcKernelPort.h:200:52: warning: Root cause for 0 unchecked pointers: Unchecked pointer in parameter or return of undefined function vTraceSetMutexName
+void vTraceSetMutexName(void* pvMutex, const char* szName);
+                                                   ^
+/workdisk/sourag/3crun/FreeRTOS/FreeRTOS-Plus/Source/FreeRTOS-Plus-Trace/Include/trcKernelPort.h:210:6: warning: Root cause for 0 unchecked pointers: Source code in non-writable file.
+void vTraceSetEventGroupName(void* pvEventGroup, const char* szName);
+     ^
+/workdisk/sourag/3crun/FreeRTOS/FreeRTOS-Plus/Source/FreeRTOS-Plus-Trace/Include/trcKernelPort.h:210:62: warning: Root cause for 0 unchecked pointers: Unchecked pointer in parameter or return of undefined function vTraceSetEventGroupName
+void vTraceSetEventGroupName(void* pvEventGroup, const char* szName);
+                                                             ^
+/workdisk/sourag/3crun/FreeRTOS/FreeRTOS-Plus/Source/FreeRTOS-Plus-Trace/Include/trcKernelPort.h:229:6: warning: Root cause for 0 unchecked pointers: Source code in non-writable file.
+void vTraceSetStreamBufferName(void* pvStreamBuffer, const char* szName);
+     ^
+/workdisk/sourag/3crun/FreeRTOS/FreeRTOS-Plus/Source/FreeRTOS-Plus-Trace/Include/trcKernelPort.h:229:66: warning: Root cause for 0 unchecked pointers: Unchecked pointer in parameter or return of undefined function vTraceSetStreamBufferName
+void vTraceSetStreamBufferName(void* pvStreamBuffer, const char* szName);
+                                                                 ^
+/workdisk/sourag/3crun/FreeRTOS/FreeRTOS-Plus/Source/FreeRTOS-Plus-Trace/Include/trcKernelPort.h:237:6: warning: Root cause for 0 unchecked pointers: Source code in non-writable file.
+void vTraceSetMessageBufferName(void* pvMessageBuffer, const char* szName);
+     ^
+/workdisk/sourag/3crun/FreeRTOS/FreeRTOS-Plus/Source/FreeRTOS-Plus-Trace/Include/trcKernelPort.h:237:68: warning: Root cause for 0 unchecked pointers: Unchecked pointer in parameter or return of undefined function vTraceSetMessageBufferName
+void vTraceSetMessageBufferName(void* pvMessageBuffer, const char* szName);
+                                                                   ^
+/workdisk/sourag/3crun/FreeRTOS/FreeRTOS-Plus/Source/FreeRTOS-Plus-Trace/Include/trcKernelPort.h:264:13: warning: Root cause for 0 unchecked pointers: Source code in non-writable file.
+traceResult xTraceKernelPortGetUnusedStack(void* pvTask, TraceUnsignedBaseType_t *puxUnusedStack);
+            ^
+/workdisk/sourag/3crun/FreeRTOS/FreeRTOS-Plus/Source/FreeRTOS-Plus-Trace/Include/trcKernelPort.h:264:83: warning: Root cause for 0 unchecked pointers: Unchecked pointer in parameter or return of undefined function xTraceKernelPortGetUnusedStack
+traceResult xTraceKernelPortGetUnusedStack(void* pvTask, TraceUnsignedBaseType_t *puxUnusedStack);
+                                                                                  ^
+/workdisk/sourag/3crun/FreeRTOS/FreeRTOS-Plus/Source/FreeRTOS-Plus-Trace/Include/trcKernelPort.h:431:9: warning: Root cause for 0 unchecked pointers: Source code in non-writable file.
+uint8_t prvTraceGetQueueType(void* pvQueue);
+        ^
+/workdisk/sourag/3crun/FreeRTOS/FreeRTOS-Plus/Source/FreeRTOS-Plus-Trace/Include/trcKernelPort.h:440:10: warning: Root cause for 0 unchecked pointers: Source code in non-writable file.
+uint16_t prvTraceGetTaskNumberLow16(void* pvTask);
+         ^
+/workdisk/sourag/3crun/FreeRTOS/FreeRTOS-Plus/Source/FreeRTOS-Plus-Trace/Include/trcKernelPort.h:449:10: warning: Root cause for 0 unchecked pointers: Source code in non-writable file.
+uint16_t prvTraceGetTaskNumberHigh16(void* pvTask);
+         ^
+/workdisk/sourag/3crun/FreeRTOS/FreeRTOS-Plus/Source/FreeRTOS-Plus-Trace/Include/trcKernelPort.h:457:6: warning: Root cause for 0 unchecked pointers: Source code in non-writable file.
+void prvTraceSetTaskNumberLow16(void* pvTask, uint16_t uiValue);
+     ^
+/workdisk/sourag/3crun/FreeRTOS/FreeRTOS-Plus/Source/FreeRTOS-Plus-Trace/Include/trcKernelPort.h:465:6: warning: Root cause for 0 unchecked pointers: Source code in non-writable file.
+void prvTraceSetTaskNumberHigh16(void* pvTask, uint16_t uiValue);
+     ^
+/workdisk/sourag/3crun/FreeRTOS/FreeRTOS-Plus/Source/FreeRTOS-Plus-Trace/Include/trcKernelPort.h:474:10: warning: Root cause for 0 unchecked pointers: Source code in non-writable file.
+uint16_t prvTraceGetQueueNumberLow16(void* pvQueue);
+         ^
+/workdisk/sourag/3crun/FreeRTOS/FreeRTOS-Plus/Source/FreeRTOS-Plus-Trace/Include/trcKernelPort.h:483:10: warning: Root cause for 0 unchecked pointers: Source code in non-writable file.
+uint16_t prvTraceGetQueueNumberHigh16(void* pvQueue);
+         ^
+/workdisk/sourag/3crun/FreeRTOS/FreeRTOS-Plus/Source/FreeRTOS-Plus-Trace/Include/trcKernelPort.h:492:6: warning: Root cause for 0 unchecked pointers: Source code in non-writable file.
+void prvTraceSetQueueNumberLow16(void* pvQueue, uint16_t uiValue);
+     ^
+/workdisk/sourag/3crun/FreeRTOS/FreeRTOS-Plus/Source/FreeRTOS-Plus-Trace/Include/trcKernelPort.h:501:6: warning: Root cause for 0 unchecked pointers: Source code in non-writable file.
+void prvTraceSetQueueNumberHigh16(void* pvQueue, uint16_t uiValue);
+     ^
+/workdisk/sourag/3crun/FreeRTOS/FreeRTOS-Plus/Source/FreeRTOS-Plus-Trace/Include/trcKernelPort.h:512:10: warning: Root cause for 0 unchecked pointers: Source code in non-writable file.
+uint16_t prvTraceGetTimerNumberLow16(void* pvTimer);
+         ^
+/workdisk/sourag/3crun/FreeRTOS/FreeRTOS-Plus/Source/FreeRTOS-Plus-Trace/Include/trcKernelPort.h:521:10: warning: Root cause for 0 unchecked pointers: Source code in non-writable file.
+uint16_t prvTraceGetTimerNumberHigh16(void* pvTimer);
+         ^
+/workdisk/sourag/3crun/FreeRTOS/FreeRTOS-Plus/Source/FreeRTOS-Plus-Trace/Include/trcKernelPort.h:529:6: warning: Root cause for 0 unchecked pointers: Source code in non-writable file.
+void prvTraceSetTimerNumberLow16(void* pvTimer, uint16_t uiValue);
+     ^
+/workdisk/sourag/3crun/FreeRTOS/FreeRTOS-Plus/Source/FreeRTOS-Plus-Trace/Include/trcKernelPort.h:537:6: warning: Root cause for 0 unchecked pointers: Source code in non-writable file.
+void prvTraceSetTimerNumberHigh16(void* pvTimer, uint16_t uiValue);
+     ^
+/workdisk/sourag/3crun/FreeRTOS/FreeRTOS-Plus/Source/FreeRTOS-Plus-Trace/Include/trcKernelPort.h:550:10: warning: Root cause for 0 unchecked pointers: Source code in non-writable file.
+uint16_t prvTraceGetEventGroupNumberLow16(void* pvEventGroup);
+         ^
+/workdisk/sourag/3crun/FreeRTOS/FreeRTOS-Plus/Source/FreeRTOS-Plus-Trace/Include/trcKernelPort.h:559:10: warning: Root cause for 0 unchecked pointers: Source code in non-writable file.
+uint16_t prvTraceGetEventGroupNumberHigh16(void* pvEventGroup);
+         ^
+/workdisk/sourag/3crun/FreeRTOS/FreeRTOS-Plus/Source/FreeRTOS-Plus-Trace/Include/trcKernelPort.h:567:6: warning: Root cause for 0 unchecked pointers: Source code in non-writable file.
+void prvTraceSetEventGroupNumberLow16(void* pvEventGroup, uint16_t uiValue);
+     ^
+/workdisk/sourag/3crun/FreeRTOS/FreeRTOS-Plus/Source/FreeRTOS-Plus-Trace/Include/trcKernelPort.h:575:6: warning: Root cause for 0 unchecked pointers: Source code in non-writable file.
+void prvTraceSetEventGroupNumberHigh16(void* handle, uint16_t value);
+     ^
+/workdisk/sourag/3crun/FreeRTOS/FreeRTOS-Plus/Source/FreeRTOS-Plus-Trace/Include/trcKernelPort.h:588:10: warning: Root cause for 57 unchecked pointers: Source code in non-writable file.
+uint16_t prvTraceGetStreamBufferNumberLow16(void* pvStreamBuffer);
+         ^
+/workdisk/sourag/3crun/FreeRTOS/FreeRTOS-Plus/Source/FreeRTOS-Plus-Trace/Include/trcKernelPort.h:597:10: warning: Root cause for 57 unchecked pointers: Source code in non-writable file.
+uint16_t prvTraceGetStreamBufferNumberHigh16(void* pvStreamBuffer);
+         ^
+/workdisk/sourag/3crun/FreeRTOS/FreeRTOS-Plus/Source/FreeRTOS-Plus-Trace/Include/trcKernelPort.h:605:6: warning: Root cause for 57 unchecked pointers: Source code in non-writable file.
+void prvTraceSetStreamBufferNumberLow16(void* pvStreamBuffer, uint16_t uiValue);
+     ^
+/workdisk/sourag/3crun/FreeRTOS/FreeRTOS-Plus/Source/FreeRTOS-Plus-Trace/Include/trcKernelPort.h:613:6: warning: Root cause for 57 unchecked pointers: Source code in non-writable file.
+void prvTraceSetStreamBufferNumberHigh16(void* pvStreamBuffer, uint16_t uiValue);
+     ^
+/workdisk/sourag/3crun/FreeRTOS/FreeRTOS-Plus/Source/FreeRTOS-Plus-Trace/Include/trcKernelPort.h:837:13: warning: Root cause for 0 unchecked pointers: Source code in non-writable file.
+const char* pszTraceGetErrorNotEnoughHandles(traceObjectClass objectclass);
+            ^
+/workdisk/sourag/3crun/FreeRTOS/FreeRTOS-Plus/Source/FreeRTOS-Plus-Trace/Include/trcKernelPort.h:842:7: warning: Root cause for 0 unchecked pointers: Source code in non-writable file.
+void* prvTraceGetCurrentTaskHandle(void);
+      ^
+/workdisk/sourag/3crun/FreeRTOS/FreeRTOS-Plus/Source/FreeRTOS-Plus-Trace/Include/trcKernelPort.h:844:25: warning: Root cause for 0 unchecked pointers: Source code in non-writable file.
+extern traceObjectClass TraceQueueClassTable[5];
+                        ^
+In file included from /workdisk/sourag/3crun/FreeRTOS/FreeRTOS/Source/stream_buffer.c:39:
+In file included from /workdisk/sourag/3crun/FreeRTOS/FreeRTOS/Source/include/FreeRTOS.h:59:
+In file included from /workdisk/sourag/3crun/FreeRTOS/FreeRTOS/Demo/Posix_GCC/FreeRTOSConfig.h:152:
+In file included from /workdisk/sourag/3crun/FreeRTOS/FreeRTOS-Plus/Source/FreeRTOS-Plus-Trace/Include/trcRecorder.h:320:
+/workdisk/sourag/mine/checkedc-llvm-project/build/lib/clang/12.0.0/include/stdarg.h:14:27: warning: Root cause for 0 unchecked pointers: Source code in non-writable file.
+typedef __builtin_va_list va_list;
+                          ^
+/workdisk/sourag/mine/checkedc-llvm-project/build/lib/clang/12.0.0/include/stdarg.h:32:27: warning: Root cause for 0 unchecked pointers: Source code in non-writable file.
+typedef __builtin_va_list __gnuc_va_list;
+                          ^
+In file included from /workdisk/sourag/3crun/FreeRTOS/FreeRTOS/Source/stream_buffer.c:39:
+In file included from /workdisk/sourag/3crun/FreeRTOS/FreeRTOS/Source/include/FreeRTOS.h:59:
+In file included from /workdisk/sourag/3crun/FreeRTOS/FreeRTOS/Demo/Posix_GCC/FreeRTOSConfig.h:152:
+/workdisk/sourag/3crun/FreeRTOS/FreeRTOS-Plus/Source/FreeRTOS-Plus-Trace/Include/trcRecorder.h:358:6: warning: Root cause for 0 unchecked pointers: Source code in non-writable file.
+void prvAddTaskToStackMonitor(void* task);
+     ^
+/workdisk/sourag/3crun/FreeRTOS/FreeRTOS-Plus/Source/FreeRTOS-Plus-Trace/Include/trcRecorder.h:365:6: warning: Root cause for 0 unchecked pointers: Source code in non-writable file.
+void prvRemoveTaskFromStackMonitor(void* task);
+     ^
+/workdisk/sourag/3crun/FreeRTOS/FreeRTOS-Plus/Source/FreeRTOS-Plus-Trace/Include/trcRecorder.h:433:13: warning: Root cause for 0 unchecked pointers: Source code in non-writable file.
+traceResult xTraceStringRegister(const char* label, TraceStringHandle_t* pxString);
+            ^
+/workdisk/sourag/3crun/FreeRTOS/FreeRTOS-Plus/Source/FreeRTOS-Plus-Trace/Include/trcRecorder.h:433:46: warning: Root cause for 0 unchecked pointers: Unchecked pointer in parameter or return of undefined function xTraceStringRegister
+traceResult xTraceStringRegister(const char* label, TraceStringHandle_t* pxString);
+                                             ^
+/workdisk/sourag/3crun/FreeRTOS/FreeRTOS-Plus/Source/FreeRTOS-Plus-Trace/Include/trcRecorder.h:433:74: warning: Root cause for 0 unchecked pointers: Unchecked pointer in parameter or return of undefined function xTraceStringRegister
+traceResult xTraceStringRegister(const char* label, TraceStringHandle_t* pxString);
+                                                                         ^
+/workdisk/sourag/3crun/FreeRTOS/FreeRTOS-Plus/Source/FreeRTOS-Plus-Trace/Include/trcRecorder.h:444:21: warning: Root cause for 0 unchecked pointers: Source code in non-writable file.
+TraceStringHandle_t xTraceRegisterString(const char* name);
+                    ^
+/workdisk/sourag/3crun/FreeRTOS/FreeRTOS-Plus/Source/FreeRTOS-Plus-Trace/Include/trcRecorder.h:444:54: warning: Root cause for 0 unchecked pointers: Unchecked pointer in parameter or return of undefined function xTraceRegisterString
+TraceStringHandle_t xTraceRegisterString(const char* name);
+                                                     ^
+/workdisk/sourag/3crun/FreeRTOS/FreeRTOS-Plus/Source/FreeRTOS-Plus-Trace/Include/trcRecorder.h:525:13: warning: Root cause for 0 unchecked pointers: Source code in non-writable file.
+traceResult xTracePrintF(TraceStringHandle_t chn, const char* fmt, ...);
+            ^
+/workdisk/sourag/3crun/FreeRTOS/FreeRTOS-Plus/Source/FreeRTOS-Plus-Trace/Include/trcRecorder.h:525:63: warning: Root cause for 0 unchecked pointers: Unchecked pointer in parameter or return of undefined function xTracePrintF
+traceResult xTracePrintF(TraceStringHandle_t chn, const char* fmt, ...);
+                                                              ^
+/workdisk/sourag/3crun/FreeRTOS/FreeRTOS-Plus/Source/FreeRTOS-Plus-Trace/Include/trcRecorder.h:544:13: warning: Root cause for 0 unchecked pointers: Source code in non-writable file.
+traceResult xTraceVPrintF(TraceStringHandle_t eventLabel, const char* formatStr, va_list vl);
+            ^
+/workdisk/sourag/3crun/FreeRTOS/FreeRTOS-Plus/Source/FreeRTOS-Plus-Trace/Include/trcRecorder.h:544:71: warning: Root cause for 0 unchecked pointers: Unchecked pointer in parameter or return of undefined function xTraceVPrintF
+traceResult xTraceVPrintF(TraceStringHandle_t eventLabel, const char* formatStr, va_list vl);
+                                                                      ^
+/workdisk/sourag/3crun/FreeRTOS/FreeRTOS-Plus/Source/FreeRTOS-Plus-Trace/Include/trcRecorder.h:544:90: warning: Root cause for 0 unchecked pointers: Variable number of arguments.
+traceResult xTraceVPrintF(TraceStringHandle_t eventLabel, const char* formatStr, va_list vl);
+                                                                                         ^
+/workdisk/sourag/3crun/FreeRTOS/FreeRTOS-Plus/Source/FreeRTOS-Plus-Trace/Include/trcRecorder.h:566:13: warning: Root cause for 0 unchecked pointers: Source code in non-writable file.
+traceResult xTracePrint(TraceStringHandle_t chn, const char* str);
+            ^
+/workdisk/sourag/3crun/FreeRTOS/FreeRTOS-Plus/Source/FreeRTOS-Plus-Trace/Include/trcRecorder.h:566:62: warning: Root cause for 0 unchecked pointers: Unchecked pointer in parameter or return of undefined function xTracePrint
+traceResult xTracePrint(TraceStringHandle_t chn, const char* str);
+                                                             ^
+/workdisk/sourag/3crun/FreeRTOS/FreeRTOS-Plus/Source/FreeRTOS-Plus-Trace/Include/trcRecorder.h:578:15: warning: Root cause for 0 unchecked pointers: Source code in non-writable file.
+typedef void(*TRACE_STOP_HOOK)(void);
+              ^
+/workdisk/sourag/3crun/FreeRTOS/FreeRTOS-Plus/Source/FreeRTOS-Plus-Trace/Include/trcRecorder.h:587:6: warning: Root cause for 0 unchecked pointers: Source code in non-writable file.
+void vTraceSetStopHook(TRACE_STOP_HOOK stopHookFunction);
+     ^
+/workdisk/sourag/3crun/FreeRTOS/FreeRTOS-Plus/Source/FreeRTOS-Plus-Trace/Include/trcRecorder.h:587:40: warning: Root cause for 0 unchecked pointers: Unchecked pointer in parameter or return of undefined function vTraceSetStopHook
+void vTraceSetStopHook(TRACE_STOP_HOOK stopHookFunction);
+                                       ^
+/workdisk/sourag/3crun/FreeRTOS/FreeRTOS-Plus/Source/FreeRTOS-Plus-Trace/Include/trcRecorder.h:991:7: warning: Root cause for 0 unchecked pointers: Source code in non-writable file.
+void* xTraceGetTraceBuffer(void);
+      ^
+/workdisk/sourag/3crun/FreeRTOS/FreeRTOS-Plus/Source/FreeRTOS-Plus-Trace/Include/trcRecorder.h:1082:11: warning: Root cause for 0 unchecked pointers: Source code in non-writable file.
+        uint16_t indexOfNextAvailableHandle[ TRACE_NCLASSES ]; /**< For each object class, the index of the next handle to allocate */
+                 ^
+/workdisk/sourag/3crun/FreeRTOS/FreeRTOS-Plus/Source/FreeRTOS-Plus-Trace/Include/trcRecorder.h:1083:11: warning: Root cause for 0 unchecked pointers: Source code in non-writable file.
+        uint16_t lowestIndexOfClass[ TRACE_NCLASSES ]; /**< The lowest index of this class (constant) */
+                 ^
+/workdisk/sourag/3crun/FreeRTOS/FreeRTOS-Plus/Source/FreeRTOS-Plus-Trace/Include/trcRecorder.h:1084:11: warning: Root cause for 0 unchecked pointers: Source code in non-writable file.
+        uint16_t highestIndexOfClass[ TRACE_NCLASSES ]; /**< The highest index of this class (constant) */
+                 ^
+/workdisk/sourag/3crun/FreeRTOS/FreeRTOS-Plus/Source/FreeRTOS-Plus-Trace/Include/trcRecorder.h:1085:11: warning: Root cause for 0 unchecked pointers: Source code in non-writable file.
+        uint16_t handleCountWaterMarksOfClass[ TRACE_NCLASSES ]; /**< The highest use count for this class (for statistics) */
+                 ^
+/workdisk/sourag/3crun/FreeRTOS/FreeRTOS-Plus/Source/FreeRTOS-Plus-Trace/Include/trcRecorder.h:1086:14: warning: Root cause for 0 unchecked pointers: Source code in non-writable file.
+        traceHandle objectHandles[ TRACE_KERNEL_OBJECT_COUNT ]; /**< The free object handles - a set of stacks within this array */
+                    ^
+/workdisk/sourag/3crun/FreeRTOS/FreeRTOS-Plus/Source/FreeRTOS-Plus-Trace/Include/trcRecorder.h:1119:14: warning: Root cause for 0 unchecked pointers: Source code in non-writable file.
+        traceHandle NumberOfObjectsPerClass[4*((TRACE_NCLASSES+3)/4)]; /** */
+                    ^
+/workdisk/sourag/3crun/FreeRTOS/FreeRTOS-Plus/Source/FreeRTOS-Plus-Trace/Include/trcRecorder.h:1122:10: warning: Root cause for 0 unchecked pointers: Source code in non-writable file.
+        uint8_t NameLengthPerClass[ 4*((TRACE_NCLASSES+3)/4) ]; /**< */
+                ^
+/workdisk/sourag/3crun/FreeRTOS/FreeRTOS-Plus/Source/FreeRTOS-Plus-Trace/Include/trcRecorder.h:1125:10: warning: Root cause for 0 unchecked pointers: Source code in non-writable file.
+        uint8_t TotalPropertyBytesPerClass[ 4*((TRACE_NCLASSES+3)/4) ]; /**< */
+                ^
+/workdisk/sourag/3crun/FreeRTOS/FreeRTOS-Plus/Source/FreeRTOS-Plus-Trace/Include/trcRecorder.h:1128:11: warning: Root cause for 0 unchecked pointers: Source code in non-writable file.
+        uint16_t StartIndexOfClass[ 2*((TRACE_NCLASSES+1)/2) ]; /**< */
+                 ^
+/workdisk/sourag/3crun/FreeRTOS/FreeRTOS-Plus/Source/FreeRTOS-Plus-Trace/Include/trcRecorder.h:1131:10: warning: Root cause for 0 unchecked pointers: Source code in non-writable file.
+        uint8_t objbytes[ 4*((TRACE_OBJECT_TABLE_SIZE+3)/4) ]; /**< */
+                ^
+/workdisk/sourag/3crun/FreeRTOS/FreeRTOS-Plus/Source/FreeRTOS-Plus-Trace/Include/trcRecorder.h:1146:10: warning: Root cause for 0 unchecked pointers: Source code in non-writable file.
+        uint8_t symbytes[4*(((TRC_CFG_SYMBOL_TABLE_SIZE)+3)/4)]; /**< */
+                ^
+/workdisk/sourag/3crun/FreeRTOS/FreeRTOS-Plus/Source/FreeRTOS-Plus-Trace/Include/trcRecorder.h:1151:11: warning: Root cause for 0 unchecked pointers: Source code in non-writable file.
+        uint16_t latestEntryOfChecksum[64]; /**< */
+                 ^
+/workdisk/sourag/3crun/FreeRTOS/FreeRTOS-Plus/Source/FreeRTOS-Plus-Trace/Include/trcRecorder.h:1395:7: warning: Root cause for 0 unchecked pointers: Source code in non-writable file.
+        char systemInfo[80];
+             ^
+/workdisk/sourag/3crun/FreeRTOS/FreeRTOS-Plus/Source/FreeRTOS-Plus-Trace/Include/trcRecorder.h:1401:10: warning: Root cause for 0 unchecked pointers: Source code in non-writable file.
+        uint8_t eventData[ (TRC_CFG_EVENT_BUFFER_SIZE) * 4 ];
+                ^
+/workdisk/sourag/3crun/FreeRTOS/FreeRTOS-Plus/Source/FreeRTOS-Plus-Trace/Include/trcRecorder.h:1424:26: warning: Root cause for 0 unchecked pointers: Source code in non-writable file.
+extern RecorderDataType* RecorderDataPtr;
+                         ^
+/workdisk/sourag/3crun/FreeRTOS/FreeRTOS-Plus/Source/FreeRTOS-Plus-Trace/Include/trcRecorder.h:1433:6: warning: Root cause for 0 unchecked pointers: Source code in non-writable file.
+void prvTraceError(const char* msg);
+     ^
+/workdisk/sourag/3crun/FreeRTOS/FreeRTOS-Plus/Source/FreeRTOS-Plus-Trace/Include/trcRecorder.h:1433:32: warning: Root cause for 0 unchecked pointers: Unchecked pointer in parameter or return of undefined function prvTraceError
+void prvTraceError(const char* msg);
+                               ^
+/workdisk/sourag/3crun/FreeRTOS/FreeRTOS-Plus/Source/FreeRTOS-Plus-Trace/Include/trcRecorder.h:1447:6: warning: Root cause for 0 unchecked pointers: Source code in non-writable file.
+void prvTracePortGetTimeStamp(uint32_t *puiTimestamp);
+     ^
+/workdisk/sourag/3crun/FreeRTOS/FreeRTOS-Plus/Source/FreeRTOS-Plus-Trace/Include/trcRecorder.h:1447:41: warning: Root cause for 0 unchecked pointers: Unchecked pointer in parameter or return of undefined function prvTracePortGetTimeStamp
+void prvTracePortGetTimeStamp(uint32_t *puiTimestamp);
+                                        ^
+/workdisk/sourag/3crun/FreeRTOS/FreeRTOS-Plus/Source/FreeRTOS-Plus-Trace/Include/trcRecorder.h:1476:6: warning: Root cause for 0 unchecked pointers: Source code in non-writable file.
+void prvTraceSetObjectName(traceObjectClass objectclass,
+     ^
+/workdisk/sourag/3crun/FreeRTOS/FreeRTOS-Plus/Source/FreeRTOS-Plus-Trace/Include/trcRecorder.h:1478:20: warning: Root cause for 0 unchecked pointers: Unchecked pointer in parameter or return of undefined function prvTraceSetObjectName
+                                                        const char* name);
+                                                                    ^
+/workdisk/sourag/3crun/FreeRTOS/FreeRTOS-Plus/Source/FreeRTOS-Plus-Trace/Include/trcRecorder.h:1787:13: warning: Root cause for 0 unchecked pointers: Source code in non-writable file.
+traceResult xTraceGetEventBuffer(void** ppvBuffer, TraceUnsignedBaseType_t * puiSize);
+            ^
+/workdisk/sourag/3crun/FreeRTOS/FreeRTOS-Plus/Source/FreeRTOS-Plus-Trace/Include/trcRecorder.h:1787:41: warning: Root cause for 0 unchecked pointers: Unchecked pointer in parameter or return of undefined function xTraceGetEventBuffer
+traceResult xTraceGetEventBuffer(void** ppvBuffer, TraceUnsignedBaseType_t * puiSize);
+                                        ^
+/workdisk/sourag/3crun/FreeRTOS/FreeRTOS-Plus/Source/FreeRTOS-Plus-Trace/Include/trcRecorder.h:1787:78: warning: Root cause for 0 unchecked pointers: Unchecked pointer in parameter or return of undefined function xTraceGetEventBuffer
+traceResult xTraceGetEventBuffer(void** ppvBuffer, TraceUnsignedBaseType_t * puiSize);
+                                                                             ^
+In file included from /workdisk/sourag/3crun/FreeRTOS/FreeRTOS/Source/stream_buffer.c:39:
+In file included from /workdisk/sourag/3crun/FreeRTOS/FreeRTOS/Source/include/FreeRTOS.h:59:
+/workdisk/sourag/3crun/FreeRTOS/FreeRTOS/Demo/Posix_GCC/FreeRTOSConfig.h:161:13: warning: Root cause for 0 unchecked pointers: Source code in non-writable file.
+extern void vLoggingPrintf( const char * pcFormatString,
+            ^
+/workdisk/sourag/3crun/FreeRTOS/FreeRTOS/Demo/Posix_GCC/FreeRTOSConfig.h:161:42: warning: Root cause for 0 unchecked pointers: Unchecked pointer in parameter or return of undefined function vLoggingPrintf
+extern void vLoggingPrintf( const char * pcFormatString,
+                                         ^
+In file included from /workdisk/sourag/3crun/FreeRTOS/FreeRTOS/Source/stream_buffer.c:39:
+In file included from /workdisk/sourag/3crun/FreeRTOS/FreeRTOS/Source/include/FreeRTOS.h:65:
+In file included from /workdisk/sourag/3crun/FreeRTOS/FreeRTOS/Source/include/portable.h:53:
+/workdisk/sourag/3crun/FreeRTOS/FreeRTOS/Source/portable/ThirdParty/GCC/Posix/portmacro.h:107:13: warning: Root cause for 1 unchecked pointer: Default void* type
+extern void vPortThreadDying( void *pxTaskToDelete, volatile BaseType_t *pxPendYield );
+            ^
+/workdisk/sourag/3crun/FreeRTOS/FreeRTOS/Source/portable/ThirdParty/GCC/Posix/portmacro.h:107:74: warning: Root cause for 1 unchecked pointer: Unchecked pointer in parameter or return of undefined function vPortThreadDying
+extern void vPortThreadDying( void *pxTaskToDelete, volatile BaseType_t *pxPendYield );
+                                                                         ^
+/workdisk/sourag/3crun/FreeRTOS/FreeRTOS/Source/portable/ThirdParty/GCC/Posix/portmacro.h:108:13: warning: Root cause for 1 unchecked pointer: Default void* type
+extern void vPortCancelThread( void *pxTaskToDelete );
+            ^
+In file included from /workdisk/sourag/3crun/FreeRTOS/FreeRTOS/Source/stream_buffer.c:39:
+In file included from /workdisk/sourag/3crun/FreeRTOS/FreeRTOS/Source/include/FreeRTOS.h:65:
+/workdisk/sourag/3crun/FreeRTOS/FreeRTOS/Source/include/portable.h:122:60: warning: Root cause for 1 unchecked pointer: Unchecked pointer in parameter or return of undefined function pxPortInitialiseStack
+        StackType_t * pxPortInitialiseStack( StackType_t * pxTopOfStack,
+                                                           ^
+/workdisk/sourag/3crun/FreeRTOS/FreeRTOS/Source/include/portable.h:123:60: warning: Root cause for 1 unchecked pointer: Unchecked pointer in parameter or return of undefined function pxPortInitialiseStack
+                                             StackType_t * pxEndOfStack,
+                                                           ^
+/workdisk/sourag/3crun/FreeRTOS/FreeRTOS/Source/include/portable.h:124:61: warning: Root cause for 1 unchecked pointer: Unchecked pointer in parameter or return of undefined function pxPortInitialiseStack
+                                             TaskFunction_t pxCode,
+                                                            ^
+/workdisk/sourag/3crun/FreeRTOS/FreeRTOS/Source/include/portable.h:122:23: warning: Root cause for 1 unchecked pointer: Default void* type
+        StackType_t * pxPortInitialiseStack( StackType_t * pxTopOfStack,
+                      ^
+/workdisk/sourag/3crun/FreeRTOS/FreeRTOS/Source/include/portable.h:164:57: warning: Root cause for 1 unchecked pointer: Unchecked pointer in parameter or return of undefined function vPortDefineHeapRegions
+void vPortDefineHeapRegions( const HeapRegion_t * const pxHeapRegions ) PRIVILEGED_FUNCTION;
+                                                        ^
+/workdisk/sourag/3crun/FreeRTOS/FreeRTOS/Source/include/portable.h:170:39: warning: Root cause for 1 unchecked pointer: Unchecked pointer in parameter or return of undefined function vPortGetHeapStats
+void vPortGetHeapStats( HeapStats_t * pxHeapStats );
+                                      ^
+/workdisk/sourag/3crun/FreeRTOS/FreeRTOS/Source/include/portable.h:175:8: warning: Root cause for 1 unchecked pointer: Default void* type
+void * pvPortMalloc( size_t xSize ) PRIVILEGED_FUNCTION;
+       ^
+/workdisk/sourag/3crun/FreeRTOS/FreeRTOS/Source/include/portable.h:176:8: warning: Root cause for 1 unchecked pointer: Default void* type
+void * pvPortCalloc( size_t xNum,
+       ^
+/workdisk/sourag/3crun/FreeRTOS/FreeRTOS/Source/include/portable.h:178:6: warning: Root cause for 58 unchecked pointers: Default void* type
+void vPortFree( void * pv ) PRIVILEGED_FUNCTION;
+     ^
+In file included from /workdisk/sourag/3crun/FreeRTOS/FreeRTOS/Source/stream_buffer.c:39:
+/workdisk/sourag/3crun/FreeRTOS/FreeRTOS/Source/include/FreeRTOS.h:1229:12: warning: Root cause for 1 unchecked pointer: Default void* type
+    void * pvDummy3;
+           ^
+/workdisk/sourag/3crun/FreeRTOS/FreeRTOS/Source/include/FreeRTOS.h:1251:12: warning: Root cause for 1 unchecked pointer: Default void* type
+    void * pxDummy1;
+           ^
+/workdisk/sourag/3crun/FreeRTOS/FreeRTOS/Source/include/FreeRTOS.h:1257:12: warning: Root cause for 1 unchecked pointer: Default void* type
+    void * pxDummy6;
+           ^
+/workdisk/sourag/3crun/FreeRTOS/FreeRTOS/Source/include/FreeRTOS.h:1272:16: warning: Root cause for 1 unchecked pointer: Default void* type
+        void * pxDummy14;
+               ^
+/workdisk/sourag/3crun/FreeRTOS/FreeRTOS/Source/include/FreeRTOS.h:1332:16: warning: Root cause for 1 unchecked pointer: Default void* type
+        void * pvDummy7;
+               ^
+/workdisk/sourag/3crun/FreeRTOS/FreeRTOS/Source/include/FreeRTOS.h:1319:16: warning: Root cause for 1 unchecked pointer: Default void* type
+        void * pvDummy2;
+               ^
+/workdisk/sourag/3crun/FreeRTOS/FreeRTOS/Source/include/FreeRTOS.h:1386:12: warning: Root cause for 1 unchecked pointer: Default void* type
+    void * pvDummy1;
+           ^
+/workdisk/sourag/3crun/FreeRTOS/FreeRTOS/Source/include/FreeRTOS.h:1389:12: warning: Root cause for 1 unchecked pointer: Default void* type
+    void * pvDummy5;
+           ^
+/workdisk/sourag/3crun/FreeRTOS/FreeRTOS/Source/include/FreeRTOS.h:1390:20: warning: Root cause for 5 unchecked pointers: Default void* type
+    TaskFunction_t pvDummy6;
+                   ^
+In file included from /workdisk/sourag/3crun/FreeRTOS/FreeRTOS/Source/stream_buffer.c:40:
+In file included from /workdisk/sourag/3crun/FreeRTOS/FreeRTOS/Source/include/task.h:37:
+/workdisk/sourag/3crun/FreeRTOS/FreeRTOS/Source/include/list.h:150:12: warning: Root cause for 1 unchecked pointer: Default void* type
+    void * pvOwner;                                     /*< Pointer to the object (normally a TCB) that contains the list item.  There is therefore a two way link between the object containing the list item and the list item itself. */
+           ^
+/workdisk/sourag/3crun/FreeRTOS/FreeRTOS/Source/include/list.h:151:40: warning: Root cause for 1 unchecked pointer: Pointer in Macro declaration.
+    struct xLIST * configLIST_VOLATILE pxContainer;     /*< Pointer to the list in which this list item is placed (if any). */
+                                       ^
+/workdisk/sourag/3crun/FreeRTOS/FreeRTOS/Source/include/list.h:433:38: warning: Root cause for 1 unchecked pointer: Unchecked pointer in parameter or return of undefined function vListInitialise
+void vListInitialise( List_t * const pxList ) PRIVILEGED_FUNCTION;
+                                     ^
+/workdisk/sourag/3crun/FreeRTOS/FreeRTOS/Source/include/list.h:444:46: warning: Root cause for 1 unchecked pointer: Unchecked pointer in parameter or return of undefined function vListInitialiseItem
+void vListInitialiseItem( ListItem_t * const pxItem ) PRIVILEGED_FUNCTION;
+                                             ^
+/workdisk/sourag/3crun/FreeRTOS/FreeRTOS/Source/include/list.h:457:34: warning: Root cause for 1 unchecked pointer: Unchecked pointer in parameter or return of undefined function vListInsert
+void vListInsert( List_t * const pxList,
+                                 ^
+/workdisk/sourag/3crun/FreeRTOS/FreeRTOS/Source/include/list.h:458:38: warning: Root cause for 1 unchecked pointer: Unchecked pointer in parameter or return of undefined function vListInsert
+                  ListItem_t * const pxNewListItem ) PRIVILEGED_FUNCTION;
+                                     ^
+/workdisk/sourag/3crun/FreeRTOS/FreeRTOS/Source/include/list.h:479:37: warning: Root cause for 1 unchecked pointer: Unchecked pointer in parameter or return of undefined function vListInsertEnd
+void vListInsertEnd( List_t * const pxList,
+                                    ^
+/workdisk/sourag/3crun/FreeRTOS/FreeRTOS/Source/include/list.h:480:41: warning: Root cause for 1 unchecked pointer: Unchecked pointer in parameter or return of undefined function vListInsertEnd
+                     ListItem_t * const pxNewListItem ) PRIVILEGED_FUNCTION;
+                                        ^
+/workdisk/sourag/3crun/FreeRTOS/FreeRTOS/Source/include/list.h:495:46: warning: Root cause for 1 unchecked pointer: Unchecked pointer in parameter or return of undefined function uxListRemove
+UBaseType_t uxListRemove( ListItem_t * const pxItemToRemove ) PRIVILEGED_FUNCTION;
+                                             ^
+In file included from /workdisk/sourag/3crun/FreeRTOS/FreeRTOS/Source/stream_buffer.c:40:
+/workdisk/sourag/3crun/FreeRTOS/FreeRTOS/Source/include/task.h:130:12: warning: Root cause for 1 unchecked pointer: Default void* type
+    void * pvBaseAddress;
+           ^
+/workdisk/sourag/3crun/FreeRTOS/FreeRTOS/Source/include/task.h:140:20: warning: Root cause for 5 unchecked pointers: Default void* type
+    TaskFunction_t pvTaskCode;
+                   ^
+/workdisk/sourag/3crun/FreeRTOS/FreeRTOS/Source/include/task.h:143:12: warning: Root cause for 1 unchecked pointer: Default void* type
+    void * pvParameters;
+           ^
+/workdisk/sourag/3crun/FreeRTOS/FreeRTOS/Source/include/task.h:355:44: warning: Root cause for 1 unchecked pointer: Unchecked pointer in parameter or return of undefined function xTaskCreate
+    BaseType_t xTaskCreate( TaskFunction_t pxTaskCode,
+                                           ^
+/workdisk/sourag/3crun/FreeRTOS/FreeRTOS/Source/include/task.h:356:48: warning: Root cause for 1 unchecked pointer: Unchecked pointer in parameter or return of undefined function xTaskCreate
+                            const char * const pcName, /*lint !e971 Unqualified char types are allowed for strings and single characters only. */
+                                               ^
+/workdisk/sourag/3crun/FreeRTOS/FreeRTOS/Source/include/task.h:355:16: warning: Root cause for 1 unchecked pointer: Default void* type
+    BaseType_t xTaskCreate( TaskFunction_t pxTaskCode,
+               ^
+/workdisk/sourag/3crun/FreeRTOS/FreeRTOS/Source/include/task.h:360:50: warning: Root cause for 1 unchecked pointer: Unchecked pointer in parameter or return of undefined function xTaskCreate
+                            TaskHandle_t * const pxCreatedTask ) PRIVILEGED_FUNCTION;
+                                                 ^
+/workdisk/sourag/3crun/FreeRTOS/FreeRTOS/Source/include/task.h:472:52: warning: Root cause for 1 unchecked pointer: Unchecked pointer in parameter or return of undefined function xTaskCreateStatic
+    TaskHandle_t xTaskCreateStatic( TaskFunction_t pxTaskCode,
+                                                   ^
+/workdisk/sourag/3crun/FreeRTOS/FreeRTOS/Source/include/task.h:473:56: warning: Root cause for 1 unchecked pointer: Unchecked pointer in parameter or return of undefined function xTaskCreateStatic
+                                    const char * const pcName, /*lint !e971 Unqualified char types are allowed for strings and single characters only. */
+                                                       ^
+/workdisk/sourag/3crun/FreeRTOS/FreeRTOS/Source/include/task.h:472:18: warning: Root cause for 1 unchecked pointer: Default void* type
+    TaskHandle_t xTaskCreateStatic( TaskFunction_t pxTaskCode,
+                 ^
+/workdisk/sourag/3crun/FreeRTOS/FreeRTOS/Source/include/task.h:477:57: warning: Root cause for 1 unchecked pointer: Unchecked pointer in parameter or return of undefined function xTaskCreateStatic
+                                    StackType_t * const puxStackBuffer,
+                                                        ^
+/workdisk/sourag/3crun/FreeRTOS/FreeRTOS/Source/include/task.h:478:58: warning: Root cause for 1 unchecked pointer: Unchecked pointer in parameter or return of undefined function xTaskCreateStatic
+                                    StaticTask_t * const pxTaskBuffer ) PRIVILEGED_FUNCTION;
+                                                         ^
+/workdisk/sourag/3crun/FreeRTOS/FreeRTOS/Source/include/task.h:696:44: warning: Root cause for 1 unchecked pointer: Unchecked pointer in parameter or return of undefined function vTaskAllocateMPURegions
+void vTaskAllocateMPURegions( TaskHandle_t xTask,
+                                           ^
+/workdisk/sourag/3crun/FreeRTOS/FreeRTOS/Source/include/task.h:697:60: warning: Root cause for 1 unchecked pointer: Unchecked pointer in parameter or return of undefined function vTaskAllocateMPURegions
+                              const MemoryRegion_t * const pxRegions ) PRIVILEGED_FUNCTION;
+                                                           ^
+/workdisk/sourag/3crun/FreeRTOS/FreeRTOS/Source/include/task.h:740:32: warning: Root cause for 1 unchecked pointer: Unchecked pointer in parameter or return of undefined function vTaskDelete
+void vTaskDelete( TaskHandle_t xTaskToDelete ) PRIVILEGED_FUNCTION;
+                               ^
+/workdisk/sourag/3crun/FreeRTOS/FreeRTOS/Source/include/task.h:861:48: warning: Root cause for 1 unchecked pointer: Unchecked pointer in parameter or return of undefined function xTaskDelayUntil
+BaseType_t xTaskDelayUntil( TickType_t * const pxPreviousWakeTime,
+                                               ^
+/workdisk/sourag/3crun/FreeRTOS/FreeRTOS/Source/include/task.h:904:42: warning: Root cause for 1 unchecked pointer: Unchecked pointer in parameter or return of undefined function xTaskAbortDelay
+BaseType_t xTaskAbortDelay( TaskHandle_t xTask ) PRIVILEGED_FUNCTION;
+                                         ^
+/workdisk/sourag/3crun/FreeRTOS/FreeRTOS/Source/include/task.h:953:51: warning: Root cause for 1 unchecked pointer: Unchecked pointer in parameter or return of undefined function uxTaskPriorityGet
+UBaseType_t uxTaskPriorityGet( const TaskHandle_t xTask ) PRIVILEGED_FUNCTION;
+                                                  ^
+/workdisk/sourag/3crun/FreeRTOS/FreeRTOS/Source/include/task.h:963:58: warning: Root cause for 1 unchecked pointer: Unchecked pointer in parameter or return of undefined function uxTaskPriorityGetFromISR
+UBaseType_t uxTaskPriorityGetFromISR( const TaskHandle_t xTask ) PRIVILEGED_FUNCTION;
+                                                         ^
+/workdisk/sourag/3crun/FreeRTOS/FreeRTOS/Source/include/task.h:983:40: warning: Root cause for 1 unchecked pointer: Unchecked pointer in parameter or return of undefined function eTaskGetState
+eTaskState eTaskGetState( TaskHandle_t xTask ) PRIVILEGED_FUNCTION;
+                                       ^
+/workdisk/sourag/3crun/FreeRTOS/FreeRTOS/Source/include/task.h:1041:33: warning: Root cause for 1 unchecked pointer: Unchecked pointer in parameter or return of undefined function vTaskGetInfo
+void vTaskGetInfo( TaskHandle_t xTask,
+                                ^
+/workdisk/sourag/3crun/FreeRTOS/FreeRTOS/Source/include/task.h:1042:35: warning: Root cause for 1 unchecked pointer: Unchecked pointer in parameter or return of undefined function vTaskGetInfo
+                   TaskStatus_t * pxTaskStatus,
+                                  ^
+/workdisk/sourag/3crun/FreeRTOS/FreeRTOS/Source/include/task.h:1088:37: warning: Root cause for 1 unchecked pointer: Unchecked pointer in parameter or return of undefined function vTaskPrioritySet
+void vTaskPrioritySet( TaskHandle_t xTask,
+                                    ^
+/workdisk/sourag/3crun/FreeRTOS/FreeRTOS/Source/include/task.h:1142:33: warning: Root cause for 1 unchecked pointer: Unchecked pointer in parameter or return of undefined function vTaskSuspend
+void vTaskSuspend( TaskHandle_t xTaskToSuspend ) PRIVILEGED_FUNCTION;
+                                ^
+/workdisk/sourag/3crun/FreeRTOS/FreeRTOS/Source/include/task.h:1193:32: warning: Root cause for 1 unchecked pointer: Unchecked pointer in parameter or return of undefined function vTaskResume
+void vTaskResume( TaskHandle_t xTaskToResume ) PRIVILEGED_FUNCTION;
+                               ^
+/workdisk/sourag/3crun/FreeRTOS/FreeRTOS/Source/include/task.h:1224:45: warning: Root cause for 1 unchecked pointer: Unchecked pointer in parameter or return of undefined function xTaskResumeFromISR
+BaseType_t xTaskResumeFromISR( TaskHandle_t xTaskToResume ) PRIVILEGED_FUNCTION;
+                                            ^
+/workdisk/sourag/3crun/FreeRTOS/FreeRTOS/Source/include/task.h:1492:36: warning: Root cause for 1 unchecked pointer: Unchecked pointer in parameter or return of undefined function pcTaskGetName
+char * pcTaskGetName( TaskHandle_t xTaskToQuery ) PRIVILEGED_FUNCTION; /*lint !e971 Unqualified char types are allowed for strings and single characters only. */
+                                   ^
+/workdisk/sourag/3crun/FreeRTOS/FreeRTOS/Source/include/task.h:1492:8: warning: Root cause for 1 unchecked pointer: Unchecked pointer in parameter or return of undefined function pcTaskGetName
+char * pcTaskGetName( TaskHandle_t xTaskToQuery ) PRIVILEGED_FUNCTION; /*lint !e971 Unqualified char types are allowed for strings and single characters only. */
+       ^
+/workdisk/sourag/3crun/FreeRTOS/FreeRTOS/Source/include/task.h:1510:43: warning: Root cause for 1 unchecked pointer: Unchecked pointer in parameter or return of undefined function xTaskGetHandle
+TaskHandle_t xTaskGetHandle( const char * pcNameToQuery ) PRIVILEGED_FUNCTION; /*lint !e971 Unqualified char types are allowed for strings and single characters only. */
+                                          ^
+/workdisk/sourag/3crun/FreeRTOS/FreeRTOS/Source/include/task.h:1510:14: warning: Root cause for 1 unchecked pointer: Unchecked pointer in parameter or return of undefined function xTaskGetHandle
+TaskHandle_t xTaskGetHandle( const char * pcNameToQuery ) PRIVILEGED_FUNCTION; /*lint !e971 Unqualified char types are allowed for strings and single characters only. */
+             ^
+/workdisk/sourag/3crun/FreeRTOS/FreeRTOS/Source/include/task.h:1539:55: warning: Root cause for 1 unchecked pointer: Unchecked pointer in parameter or return of undefined function uxTaskGetStackHighWaterMark
+UBaseType_t uxTaskGetStackHighWaterMark( TaskHandle_t xTask ) PRIVILEGED_FUNCTION;
+                                                      ^
+/workdisk/sourag/3crun/FreeRTOS/FreeRTOS/Source/include/task.h:1568:67: warning: Root cause for 1 unchecked pointer: Unchecked pointer in parameter or return of undefined function uxTaskGetStackHighWaterMark2
+configSTACK_DEPTH_TYPE uxTaskGetStackHighWaterMark2( TaskHandle_t xTask ) PRIVILEGED_FUNCTION;
+                                                                  ^
+/workdisk/sourag/3crun/FreeRTOS/FreeRTOS/Source/include/task.h:1589:55: warning: Root cause for 1 unchecked pointer: Unchecked pointer in parameter or return of undefined function vTaskSetApplicationTaskTag
+        void vTaskSetApplicationTaskTag( TaskHandle_t xTask,
+                                                      ^
+/workdisk/sourag/3crun/FreeRTOS/FreeRTOS/Source/include/task.h:1590:61: warning: Root cause for 1 unchecked pointer: Unchecked pointer in parameter or return of undefined function vTaskSetApplicationTaskTag
+                                         TaskHookFunction_t pxHookFunction ) PRIVILEGED_FUNCTION;
+                                                            ^
+/workdisk/sourag/3crun/FreeRTOS/FreeRTOS/Source/include/task.h:1602:69: warning: Root cause for 1 unchecked pointer: Unchecked pointer in parameter or return of undefined function xTaskGetApplicationTaskTag
+        TaskHookFunction_t xTaskGetApplicationTaskTag( TaskHandle_t xTask ) PRIVILEGED_FUNCTION;
+                                                                    ^
+/workdisk/sourag/3crun/FreeRTOS/FreeRTOS/Source/include/task.h:1602:28: warning: Root cause for 1 unchecked pointer: Unchecked pointer in parameter or return of undefined function xTaskGetApplicationTaskTag
+        TaskHookFunction_t xTaskGetApplicationTaskTag( TaskHandle_t xTask ) PRIVILEGED_FUNCTION;
+                           ^
+/workdisk/sourag/3crun/FreeRTOS/FreeRTOS/Source/include/task.h:1613:76: warning: Root cause for 1 unchecked pointer: Unchecked pointer in parameter or return of undefined function xTaskGetApplicationTaskTagFromISR
+        TaskHookFunction_t xTaskGetApplicationTaskTagFromISR( TaskHandle_t xTask ) PRIVILEGED_FUNCTION;
+                                                                           ^
+/workdisk/sourag/3crun/FreeRTOS/FreeRTOS/Source/include/task.h:1613:28: warning: Root cause for 1 unchecked pointer: Unchecked pointer in parameter or return of undefined function xTaskGetApplicationTaskTagFromISR
+        TaskHookFunction_t xTaskGetApplicationTaskTagFromISR( TaskHandle_t xTask ) PRIVILEGED_FUNCTION;
+                           ^
+/workdisk/sourag/3crun/FreeRTOS/FreeRTOS/Source/include/task.h:1699:57: warning: Root cause for 1 unchecked pointer: Unchecked pointer in parameter or return of undefined function vApplicationGetIdleTaskMemory
+    void vApplicationGetIdleTaskMemory( StaticTask_t ** ppxIdleTaskTCBBuffer,
+                                                        ^
+/workdisk/sourag/3crun/FreeRTOS/FreeRTOS/Source/include/task.h:1700:56: warning: Root cause for 1 unchecked pointer: Unchecked pointer in parameter or return of undefined function vApplicationGetIdleTaskMemory
+                                        StackType_t ** ppxIdleTaskStackBuffer,
+                                                       ^
+/workdisk/sourag/3crun/FreeRTOS/FreeRTOS/Source/include/task.h:1701:52: warning: Root cause for 1 unchecked pointer: Unchecked pointer in parameter or return of undefined function vApplicationGetIdleTaskMemory
+                                        uint32_t * pulIdleTaskStackSize ); /*lint !e526 Symbol not defined as it is an application callback. */
+                                                   ^
+/workdisk/sourag/3crun/FreeRTOS/FreeRTOS/Source/include/task.h:1717:55: warning: Root cause for 1 unchecked pointer: Unchecked pointer in parameter or return of undefined function xTaskCallApplicationTaskHook
+BaseType_t xTaskCallApplicationTaskHook( TaskHandle_t xTask,
+                                                      ^
+/workdisk/sourag/3crun/FreeRTOS/FreeRTOS/Source/include/task.h:1717:12: warning: Root cause for 1 unchecked pointer: Default void* type
+BaseType_t xTaskCallApplicationTaskHook( TaskHandle_t xTask,
+           ^
+/workdisk/sourag/3crun/FreeRTOS/FreeRTOS/Source/include/task.h:1727:14: warning: Root cause for 1 unchecked pointer: Unchecked pointer in parameter or return of undefined function xTaskGetIdleTaskHandle
+TaskHandle_t xTaskGetIdleTaskHandle( void ) PRIVILEGED_FUNCTION;
+             ^
+/workdisk/sourag/3crun/FreeRTOS/FreeRTOS/Source/include/task.h:1826:56: warning: Root cause for 1 unchecked pointer: Unchecked pointer in parameter or return of undefined function uxTaskGetSystemState
+UBaseType_t uxTaskGetSystemState( TaskStatus_t * const pxTaskStatusArray,
+                                                       ^
+/workdisk/sourag/3crun/FreeRTOS/FreeRTOS/Source/include/task.h:1828:71: warning: Root cause for 1 unchecked pointer: Unchecked pointer in parameter or return of undefined function uxTaskGetSystemState
+                                  configRUN_TIME_COUNTER_TYPE * const pulTotalRunTime ) PRIVILEGED_FUNCTION;
+                                                                      ^
+/workdisk/sourag/3crun/FreeRTOS/FreeRTOS/Source/include/task.h:1879:24: warning: Root cause for 1 unchecked pointer: Unchecked pointer in parameter or return of undefined function vTaskList
+void vTaskList( char * pcWriteBuffer ) PRIVILEGED_FUNCTION; /*lint !e971 Unqualified char types are allowed for strings and single characters only. */
+                       ^
+/workdisk/sourag/3crun/FreeRTOS/FreeRTOS/Source/include/task.h:1935:35: warning: Root cause for 1 unchecked pointer: Unchecked pointer in parameter or return of undefined function vTaskGetRunTimeStats
+void vTaskGetRunTimeStats( char * pcWriteBuffer ) PRIVILEGED_FUNCTION; /*lint !e971 Unqualified char types are allowed for strings and single characters only. */
+                                  ^
+/workdisk/sourag/3crun/FreeRTOS/FreeRTOS/Source/include/task.h:2086:45: warning: Root cause for 1 unchecked pointer: Unchecked pointer in parameter or return of undefined function xTaskGenericNotify
+BaseType_t xTaskGenericNotify( TaskHandle_t xTaskToNotify,
+                                            ^
+/workdisk/sourag/3crun/FreeRTOS/FreeRTOS/Source/include/task.h:2090:43: warning: Root cause for 1 unchecked pointer: Unchecked pointer in parameter or return of undefined function xTaskGenericNotify
+                               uint32_t * pulPreviousNotificationValue ) PRIVILEGED_FUNCTION;
+                                          ^
+/workdisk/sourag/3crun/FreeRTOS/FreeRTOS/Source/include/task.h:2238:52: warning: Root cause for 1 unchecked pointer: Unchecked pointer in parameter or return of undefined function xTaskGenericNotifyFromISR
+BaseType_t xTaskGenericNotifyFromISR( TaskHandle_t xTaskToNotify,
+                                                   ^
+/workdisk/sourag/3crun/FreeRTOS/FreeRTOS/Source/include/task.h:2242:50: warning: Root cause for 1 unchecked pointer: Unchecked pointer in parameter or return of undefined function xTaskGenericNotifyFromISR
+                                      uint32_t * pulPreviousNotificationValue,
+                                                 ^
+/workdisk/sourag/3crun/FreeRTOS/FreeRTOS/Source/include/task.h:2243:52: warning: Root cause for 1 unchecked pointer: Unchecked pointer in parameter or return of undefined function xTaskGenericNotifyFromISR
+                                      BaseType_t * pxHigherPriorityTaskWoken ) PRIVILEGED_FUNCTION;
+                                                   ^
+/workdisk/sourag/3crun/FreeRTOS/FreeRTOS/Source/include/task.h:2385:47: warning: Root cause for 1 unchecked pointer: Unchecked pointer in parameter or return of undefined function xTaskGenericNotifyWait
+                                   uint32_t * pulNotificationValue,
+                                              ^
+/workdisk/sourag/3crun/FreeRTOS/FreeRTOS/Source/include/task.h:2548:50: warning: Root cause for 1 unchecked pointer: Unchecked pointer in parameter or return of undefined function vTaskGenericNotifyGiveFromISR
+void vTaskGenericNotifyGiveFromISR( TaskHandle_t xTaskToNotify,
+                                                 ^
+/workdisk/sourag/3crun/FreeRTOS/FreeRTOS/Source/include/task.h:2550:50: warning: Root cause for 1 unchecked pointer: Unchecked pointer in parameter or return of undefined function vTaskGenericNotifyGiveFromISR
+                                    BaseType_t * pxHigherPriorityTaskWoken ) PRIVILEGED_FUNCTION;
+                                                 ^
+/workdisk/sourag/3crun/FreeRTOS/FreeRTOS/Source/include/task.h:2719:55: warning: Root cause for 1 unchecked pointer: Unchecked pointer in parameter or return of undefined function xTaskGenericNotifyStateClear
+BaseType_t xTaskGenericNotifyStateClear( TaskHandle_t xTask,
+                                                      ^
+/workdisk/sourag/3crun/FreeRTOS/FreeRTOS/Source/include/task.h:2784:54: warning: Root cause for 1 unchecked pointer: Unchecked pointer in parameter or return of undefined function ulTaskGenericNotifyValueClear
+uint32_t ulTaskGenericNotifyValueClear( TaskHandle_t xTask,
+                                                     ^
+/workdisk/sourag/3crun/FreeRTOS/FreeRTOS/Source/include/task.h:2806:46: warning: Root cause for 1 unchecked pointer: Unchecked pointer in parameter or return of undefined function vTaskSetTimeOutState
+void vTaskSetTimeOutState( TimeOut_t * const pxTimeOut ) PRIVILEGED_FUNCTION;
+                                             ^
+/workdisk/sourag/3crun/FreeRTOS/FreeRTOS/Source/include/task.h:2891:52: warning: Root cause for 1 unchecked pointer: Unchecked pointer in parameter or return of undefined function xTaskCheckForTimeOut
+BaseType_t xTaskCheckForTimeOut( TimeOut_t * const pxTimeOut,
+                                                   ^
+/workdisk/sourag/3crun/FreeRTOS/FreeRTOS/Source/include/task.h:2892:53: warning: Root cause for 1 unchecked pointer: Unchecked pointer in parameter or return of undefined function xTaskCheckForTimeOut
+                                 TickType_t * const pxTicksToWait ) PRIVILEGED_FUNCTION;
+                                                    ^
+/workdisk/sourag/3crun/FreeRTOS/FreeRTOS/Source/include/task.h:2975:44: warning: Root cause for 1 unchecked pointer: Unchecked pointer in parameter or return of undefined function vTaskPlaceOnEventList
+void vTaskPlaceOnEventList( List_t * const pxEventList,
+                                           ^
+/workdisk/sourag/3crun/FreeRTOS/FreeRTOS/Source/include/task.h:2977:47: warning: Root cause for 1 unchecked pointer: Unchecked pointer in parameter or return of undefined function vTaskPlaceOnUnorderedEventList
+void vTaskPlaceOnUnorderedEventList( List_t * pxEventList,
+                                              ^
+/workdisk/sourag/3crun/FreeRTOS/FreeRTOS/Source/include/task.h:2992:54: warning: Root cause for 1 unchecked pointer: Unchecked pointer in parameter or return of undefined function vTaskPlaceOnEventListRestricted
+void vTaskPlaceOnEventListRestricted( List_t * const pxEventList,
+                                                     ^
+/workdisk/sourag/3crun/FreeRTOS/FreeRTOS/Source/include/task.h:3020:59: warning: Root cause for 1 unchecked pointer: Unchecked pointer in parameter or return of undefined function xTaskRemoveFromEventList
+BaseType_t xTaskRemoveFromEventList( const List_t * const pxEventList ) PRIVILEGED_FUNCTION;
+                                                          ^
+/workdisk/sourag/3crun/FreeRTOS/FreeRTOS/Source/include/task.h:3021:54: warning: Root cause for 1 unchecked pointer: Unchecked pointer in parameter or return of undefined function vTaskRemoveFromUnorderedEventList
+void vTaskRemoveFromUnorderedEventList( ListItem_t * pxEventListItem,
+                                                     ^
+/workdisk/sourag/3crun/FreeRTOS/FreeRTOS/Source/include/task.h:3043:14: warning: Root cause for 1 unchecked pointer: Unchecked pointer in parameter or return of undefined function xTaskGetCurrentTaskHandle
+TaskHandle_t xTaskGetCurrentTaskHandle( void ) PRIVILEGED_FUNCTION;
+             ^
+/workdisk/sourag/3crun/FreeRTOS/FreeRTOS/Source/include/task.h:3061:53: warning: Root cause for 1 unchecked pointer: Unchecked pointer in parameter or return of undefined function xTaskPriorityInherit
+BaseType_t xTaskPriorityInherit( TaskHandle_t const pxMutexHolder ) PRIVILEGED_FUNCTION;
+                                                    ^
+/workdisk/sourag/3crun/FreeRTOS/FreeRTOS/Source/include/task.h:3067:56: warning: Root cause for 1 unchecked pointer: Unchecked pointer in parameter or return of undefined function xTaskPriorityDisinherit
+BaseType_t xTaskPriorityDisinherit( TaskHandle_t const pxMutexHolder ) PRIVILEGED_FUNCTION;
+                                                       ^
+/workdisk/sourag/3crun/FreeRTOS/FreeRTOS/Source/include/task.h:3077:62: warning: Root cause for 1 unchecked pointer: Unchecked pointer in parameter or return of undefined function vTaskPriorityDisinheritAfterTimeout
+void vTaskPriorityDisinheritAfterTimeout( TaskHandle_t const pxMutexHolder,
+                                                             ^
+/workdisk/sourag/3crun/FreeRTOS/FreeRTOS/Source/include/task.h:3083:47: warning: Root cause for 1 unchecked pointer: Unchecked pointer in parameter or return of undefined function uxTaskGetTaskNumber
+UBaseType_t uxTaskGetTaskNumber( TaskHandle_t xTask ) PRIVILEGED_FUNCTION;
+                                              ^
+/workdisk/sourag/3crun/FreeRTOS/FreeRTOS/Source/include/task.h:3089:39: warning: Root cause for 1 unchecked pointer: Unchecked pointer in parameter or return of undefined function vTaskSetTaskNumber
+void vTaskSetTaskNumber( TaskHandle_t xTask,
+                                      ^
+/workdisk/sourag/3crun/FreeRTOS/FreeRTOS/Source/include/task.h:3122:14: warning: Root cause for 1 unchecked pointer: Unchecked pointer in parameter or return of undefined function pvTaskIncrementMutexHeldCount
+TaskHandle_t pvTaskIncrementMutexHeldCount( void ) PRIVILEGED_FUNCTION;
+             ^
+/workdisk/sourag/3crun/FreeRTOS/FreeRTOS/Source/include/task.h:3128:54: warning: Root cause for 1 unchecked pointer: Unchecked pointer in parameter or return of undefined function vTaskInternalSetTimeOutState
+void vTaskInternalSetTimeOutState( TimeOut_t * const pxTimeOut ) PRIVILEGED_FUNCTION;
+                                                     ^
+In file included from /workdisk/sourag/3crun/FreeRTOS/FreeRTOS/Source/stream_buffer.c:41:
+/workdisk/sourag/3crun/FreeRTOS/FreeRTOS/Source/include/stream_buffer.h:355:8: warning: Root cause for 1 unchecked pointer: Default void* type
+size_t xStreamBufferSend( StreamBufferHandle_t xStreamBuffer,
+       ^
+/workdisk/sourag/3crun/FreeRTOS/FreeRTOS/Source/include/stream_buffer.h:456:8: warning: Root cause for 1 unchecked pointer: Default void* type
+size_t xStreamBufferSendFromISR( StreamBufferHandle_t xStreamBuffer,
+       ^
+/workdisk/sourag/3crun/FreeRTOS/FreeRTOS/Source/include/stream_buffer.h:545:8: warning: Root cause for 1 unchecked pointer: Default void* type
+size_t xStreamBufferReceive( StreamBufferHandle_t xStreamBuffer,
+       ^
+/workdisk/sourag/3crun/FreeRTOS/FreeRTOS/Source/include/stream_buffer.h:631:8: warning: Root cause for 1 unchecked pointer: Default void* type
+size_t xStreamBufferReceiveFromISR( StreamBufferHandle_t xStreamBuffer,
+       ^
+/workdisk/sourag/3crun/FreeRTOS/FreeRTOS/Source/stream_buffer.c:272:15: warning: Root cause for 1 unchecked pointer: Default void* type
+static size_t prvReadMessageFromBuffer( StreamBuffer_t * pxStreamBuffer,
+              ^
+/workdisk/sourag/3crun/FreeRTOS/FreeRTOS/Source/stream_buffer.c:284:15: warning: Root cause for 1 unchecked pointer: Default void* type
+static size_t prvWriteMessageToBuffer( StreamBuffer_t * const pxStreamBuffer,
+              ^
+/workdisk/sourag/3crun/FreeRTOS/FreeRTOS/Source/stream_buffer.c:384:13: warning: Root cause for 2 unchecked pointers: Cast from uint8_t * to StreamBuffer_t *
+            traceSTREAM_BUFFER_CREATE( ( ( StreamBuffer_t * ) pucAllocatedMemory ), xIsMessageBuffer );
+            ^
+/workdisk/sourag/3crun/FreeRTOS/FreeRTOS/Source/stream_buffer.c:1264:14: warning: Root cause for 0 unchecked pointers: Used with inconsistent type variable.
+    ( void ) memcpy( ( void * ) ( &( pxStreamBuffer->pucBuffer[ xHead ] ) ), ( const void * ) pucData, xFirstLength ); /*lint !e9087 memcpy() requires void *. */
+             ^
+/workdisk/sourag/3crun/FreeRTOS/FreeRTOS/Source/stream_buffer.c:1264:22: warning: Root cause for 2 unchecked pointers: Default void* type
+    ( void ) memcpy( ( void * ) ( &( pxStreamBuffer->pucBuffer[ xHead ] ) ), ( const void * ) pucData, xFirstLength ); /*lint !e9087 memcpy() requires void *. */
+                     ^
+/workdisk/sourag/3crun/FreeRTOS/FreeRTOS/Source/stream_buffer.c:1264:78: warning: Root cause for 1 unchecked pointer: Default void* type
+    ( void ) memcpy( ( void * ) ( &( pxStreamBuffer->pucBuffer[ xHead ] ) ), ( const void * ) pucData, xFirstLength ); /*lint !e9087 memcpy() requires void *. */
+                                                                             ^
+/workdisk/sourag/3crun/FreeRTOS/FreeRTOS/Source/stream_buffer.c:1272:18: warning: Root cause for 0 unchecked pointers: Used with inconsistent type variable.
+        ( void ) memcpy( ( void * ) pxStreamBuffer->pucBuffer, ( const void * ) &( pucData[ xFirstLength ] ), xCount - xFirstLength ); /*lint !e9087 memcpy() requires void *. */
+                 ^
+/workdisk/sourag/3crun/FreeRTOS/FreeRTOS/Source/stream_buffer.c:1272:26: warning: Root cause for 2 unchecked pointers: Default void* type
+        ( void ) memcpy( ( void * ) pxStreamBuffer->pucBuffer, ( const void * ) &( pucData[ xFirstLength ] ), xCount - xFirstLength ); /*lint !e9087 memcpy() requires void *. */
+                         ^
+/workdisk/sourag/3crun/FreeRTOS/FreeRTOS/Source/stream_buffer.c:1272:64: warning: Root cause for 1 unchecked pointer: Default void* type
+        ( void ) memcpy( ( void * ) pxStreamBuffer->pucBuffer, ( const void * ) &( pucData[ xFirstLength ] ), xCount - xFirstLength ); /*lint !e9087 memcpy() requires void *. */
+                                                               ^
+/workdisk/sourag/3crun/FreeRTOS/FreeRTOS/Source/stream_buffer.c:1312:14: warning: Root cause for 0 unchecked pointers: Used with inconsistent type variable.
+    ( void ) memcpy( ( void * ) pucData, ( const void * ) &( pxStreamBuffer->pucBuffer[ xTail ] ), xFirstLength ); /*lint !e9087 memcpy() requires void *. */
+             ^
+/workdisk/sourag/3crun/FreeRTOS/FreeRTOS/Source/stream_buffer.c:1312:22: warning: Root cause for 1 unchecked pointer: Default void* type
+    ( void ) memcpy( ( void * ) pucData, ( const void * ) &( pxStreamBuffer->pucBuffer[ xTail ] ), xFirstLength ); /*lint !e9087 memcpy() requires void *. */
+                     ^
+/workdisk/sourag/3crun/FreeRTOS/FreeRTOS/Source/stream_buffer.c:1312:42: warning: Root cause for 2 unchecked pointers: Default void* type
+    ( void ) memcpy( ( void * ) pucData, ( const void * ) &( pxStreamBuffer->pucBuffer[ xTail ] ), xFirstLength ); /*lint !e9087 memcpy() requires void *. */
+                                         ^
+/workdisk/sourag/3crun/FreeRTOS/FreeRTOS/Source/stream_buffer.c:1319:18: warning: Root cause for 0 unchecked pointers: Used with inconsistent type variable.
+        ( void ) memcpy( ( void * ) &( pucData[ xFirstLength ] ), ( void * ) ( pxStreamBuffer->pucBuffer ), xCount - xFirstLength ); /*lint !e9087 memcpy() requires void *. */
+                 ^
+/workdisk/sourag/3crun/FreeRTOS/FreeRTOS/Source/stream_buffer.c:1319:26: warning: Root cause for 1 unchecked pointer: Default void* type
+        ( void ) memcpy( ( void * ) &( pucData[ xFirstLength ] ), ( void * ) ( pxStreamBuffer->pucBuffer ), xCount - xFirstLength ); /*lint !e9087 memcpy() requires void *. */
+                         ^
+/workdisk/sourag/3crun/FreeRTOS/FreeRTOS/Source/stream_buffer.c:1319:67: warning: Root cause for 2 unchecked pointers: Default void* type
+        ( void ) memcpy( ( void * ) &( pucData[ xFirstLength ] ), ( void * ) ( pxStreamBuffer->pucBuffer ), xCount - xFirstLength ); /*lint !e9087 memcpy() requires void *. */
+                                                                  ^
+/workdisk/sourag/3crun/FreeRTOS/FreeRTOS/Source/stream_buffer.c:367:34: warning: Root cause for 2 unchecked pointers: Cast from void * to uint8_t *
+            pucAllocatedMemory = ( uint8_t * ) pvPortMalloc( xBufferSizeBytes + sizeof( StreamBuffer_t ) ); /*lint !e9079 malloc() only returns void*. */
+                                 ^
+/workdisk/sourag/3crun/FreeRTOS/FreeRTOS/Source/stream_buffer.c:376:43: warning: Root cause for 2 unchecked pointers: Cast from uint8_t * to StreamBuffer_t *
+            prvInitialiseNewStreamBuffer( ( StreamBuffer_t * ) pucAllocatedMemory,       /* Structure at the start of the allocated memory. */ /*lint !e9087 Safe cast as allocated memory is aligned. */ /*lint !e826 Area is not too small and alignment is guaranteed provided malloc() behaves as expected and returns aligned buffer. */
+                                          ^
+/workdisk/sourag/3crun/FreeRTOS/FreeRTOS/Source/stream_buffer.c:388:13: warning: Root cause for 0 unchecked pointers: Default void* type
+            traceSTREAM_BUFFER_CREATE_FAILED( xIsMessageBuffer );
+            ^
+/workdisk/sourag/3crun/FreeRTOS/FreeRTOS/Source/stream_buffer.c:406:49: warning: Root cause for 57 unchecked pointers: Cast from StaticStreamBuffer_t * to StreamBuffer_t *
+        StreamBuffer_t * const pxStreamBuffer = ( StreamBuffer_t * ) pxStaticStreamBuffer; /*lint !e740 !e9087 Safe cast as StaticStreamBuffer_t is opaque Streambuffer_t. */
+                                                ^
+/workdisk/sourag/3crun/FreeRTOS/FreeRTOS/Source/stream_buffer.c:462:13: warning: Root cause for 57 unchecked pointers: Default void* type
+            traceSTREAM_BUFFER_CREATE( pxStreamBuffer, xIsMessageBuffer );
+            ^
+/workdisk/sourag/3crun/FreeRTOS/FreeRTOS/Source/stream_buffer.c:469:13: warning: Root cause for 0 unchecked pointers: Default void* type
+            traceSTREAM_BUFFER_CREATE_STATIC_FAILED( xReturn, xIsMessageBuffer );
+            ^
+/workdisk/sourag/3crun/FreeRTOS/FreeRTOS/Source/stream_buffer.c:483:5: warning: Root cause for 0 unchecked pointers: Default void* type
+    traceSTREAM_BUFFER_DELETE( xStreamBuffer );
+    ^
+/workdisk/sourag/3crun/FreeRTOS/FreeRTOS/Source/stream_buffer.c:491:24: warning: Root cause for 57 unchecked pointers: Default void* type
+            vPortFree( ( void * ) pxStreamBuffer ); /*lint !e9087 Standard free() semantics require void *, plus pxStreamBuffer was allocated by pvPortMalloc(). */
+                       ^
+/workdisk/sourag/3crun/FreeRTOS/FreeRTOS/Source/stream_buffer.c:556:13: warning: Root cause for 0 unchecked pointers: Default void* type
+            traceSTREAM_BUFFER_RESET( xStreamBuffer );
+            ^
+/workdisk/sourag/3crun/FreeRTOS/FreeRTOS/Source/stream_buffer.c:728:13: warning: Root cause for 0 unchecked pointers: Default void* type
+            traceBLOCKING_ON_STREAM_BUFFER_SEND( xStreamBuffer );
+            ^
+/workdisk/sourag/3crun/FreeRTOS/FreeRTOS/Source/stream_buffer.c:751:9: warning: Root cause for 0 unchecked pointers: Default void* type
+        traceSTREAM_BUFFER_SEND( xStreamBuffer, xReturn );
+        ^
+/workdisk/sourag/3crun/FreeRTOS/FreeRTOS/Source/stream_buffer.c:766:9: warning: Root cause for 0 unchecked pointers: Default void* type
+        traceSTREAM_BUFFER_SEND_FAILED( xStreamBuffer );
+        ^
+/workdisk/sourag/3crun/FreeRTOS/FreeRTOS/Source/stream_buffer.c:818:5: warning: Root cause for 57 unchecked pointers: Default void* type
+    traceSTREAM_BUFFER_SEND_FROM_ISR( xStreamBuffer, xReturn );
+    ^
+/workdisk/sourag/3crun/FreeRTOS/FreeRTOS/Source/stream_buffer.c:848:64: warning: Root cause for 0 unchecked pointers: Cast from size_t * to const uint8_t *
+            xNextHead = prvWriteBytesToBuffer( pxStreamBuffer, ( const uint8_t * ) &( xMessageLength ), sbBYTES_TO_STORE_MESSAGE_LENGTH, xNextHead );
+                                                               ^
+/workdisk/sourag/3crun/FreeRTOS/FreeRTOS/Source/stream_buffer.c:867:72: warning: Root cause for 3 unchecked pointers: Cast from const void * to const uint8_t *
+        pxStreamBuffer->xHead = prvWriteBytesToBuffer( pxStreamBuffer, ( const uint8_t * ) pvTxData, xDataLengthBytes, xNextHead ); /*lint !e9079 Storage buffer is implemented as uint8_t for ease of sizing, alignment and access. */
+                                                                       ^
+/workdisk/sourag/3crun/FreeRTOS/FreeRTOS/Source/stream_buffer.c:931:13: warning: Root cause for 0 unchecked pointers: Default void* type
+            traceBLOCKING_ON_STREAM_BUFFER_RECEIVE( xStreamBuffer );
+            ^
+/workdisk/sourag/3crun/FreeRTOS/FreeRTOS/Source/stream_buffer.c:960:13: warning: Root cause for 0 unchecked pointers: Default void* type
+            traceSTREAM_BUFFER_RECEIVE( xStreamBuffer, xReceivedLength );
+            ^
+/workdisk/sourag/3crun/FreeRTOS/FreeRTOS/Source/stream_buffer.c:970:9: warning: Root cause for 0 unchecked pointers: Default void* type
+        traceSTREAM_BUFFER_RECEIVE_FAILED( xStreamBuffer );
+        ^
+/workdisk/sourag/3crun/FreeRTOS/FreeRTOS/Source/stream_buffer.c:996:62: warning: Root cause for 0 unchecked pointers: Cast from size_t * to uint8_t *
+            ( void ) prvReadBytesFromBuffer( pxStreamBuffer, ( uint8_t * ) &xTempReturn, sbBYTES_TO_STORE_MESSAGE_LENGTH, pxStreamBuffer->xTail );
+                                                             ^
+/workdisk/sourag/3crun/FreeRTOS/FreeRTOS/Source/stream_buffer.c:1069:5: warning: Root cause for 57 unchecked pointers: Default void* type
+    traceSTREAM_BUFFER_RECEIVE_FROM_ISR( xStreamBuffer, xReceivedLength );
+    ^
+/workdisk/sourag/3crun/FreeRTOS/FreeRTOS/Source/stream_buffer.c:1088:61: warning: Root cause for 0 unchecked pointers: Cast from size_t * to uint8_t *
+        xNextTail = prvReadBytesFromBuffer( pxStreamBuffer, ( uint8_t * ) &xTempNextMessageLength, sbBYTES_TO_STORE_MESSAGE_LENGTH, xNextTail );
+                                                            ^
+/workdisk/sourag/3crun/FreeRTOS/FreeRTOS/Source/stream_buffer.c:1120:73: warning: Root cause for 3 unchecked pointers: Cast from void * to uint8_t *
+        pxStreamBuffer->xTail = prvReadBytesFromBuffer( pxStreamBuffer, ( uint8_t * ) pvRxData, xCount, xNextTail ); /*lint !e9079 Data storage area is implemented as uint8_t array for ease of sizing, indexing and alignment. */
+                                                                        ^
+/workdisk/sourag/3crun/FreeRTOS/FreeRTOS/Source/stream_buffer.c:1380:22: warning: Root cause for 1 unchecked pointer: Default void* type
+    ( void ) memset( ( void * ) pxStreamBuffer, 0x00, sizeof( StreamBuffer_t ) ); /*lint !e9087 memset() requires void *. */
+                     ^

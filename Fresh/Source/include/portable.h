@@ -119,7 +119,10 @@
     #endif
 #else /* if ( portUSING_MPU_WRAPPERS == 1 ) */
     #if ( portHAS_STACK_OVERFLOW_CHECKING == 1 )
-        StackType_t *pxPortInitialiseStack(StackType_t *pxTopOfStack : itype(_Ptr<StackType_t>), StackType_t *pxEndOfStack : itype(_Ptr<StackType_t>), TaskFunction_t pxCode : itype(_Ptr<void (void *)>), void * pvParameters) : itype(_Ptr<StackType_t>) PRIVILEGED_FUNCTION;
+        StackType_t * pxPortInitialiseStack( StackType_t * pxTopOfStack,
+                                             StackType_t * pxEndOfStack,
+                                             TaskFunction_t pxCode,
+                                             void * pvParameters ) PRIVILEGED_FUNCTION;
     #else
         StackType_t * pxPortInitialiseStack( StackType_t * pxTopOfStack,
                                              TaskFunction_t pxCode,
@@ -131,7 +134,7 @@
  * that together comprise the total FreeRTOS heap space. */
 typedef struct HeapRegion
 {
-    uint8_t *pucStartAddress : itype(_Ptr<uint8_t>);
+    uint8_t * pucStartAddress;
     size_t xSizeInBytes;
 } HeapRegion_t;
 
@@ -158,13 +161,13 @@ typedef struct xHeapStats
  * terminated by a HeapRegions_t structure that has a size of 0.  The region
  * with the lowest start address must appear first in the array.
  */
-void vPortDefineHeapRegions(const HeapRegion_t *const pxHeapRegions : itype(const _Ptr<const HeapRegion_t>)) PRIVILEGED_FUNCTION;
+void vPortDefineHeapRegions( const HeapRegion_t * const pxHeapRegions ) PRIVILEGED_FUNCTION;
 
 /*
  * Returns a HeapStats_t structure filled with information about the current
  * heap state.
  */
-void vPortGetHeapStats(HeapStats_t *pxHeapStats : itype(_Ptr<HeapStats_t>));
+void vPortGetHeapStats( HeapStats_t * pxHeapStats );
 
 /*
  * Map to the memory management routines required for the port.
