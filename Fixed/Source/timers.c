@@ -174,7 +174,7 @@
 
 /* A queue that is used to send commands to the timer service task. */
     PRIVILEGED_DATA static QueueHandle_t xTimerQueue = NULL;
-    PRIVILEGED_DATA static TaskHandle_t xTimerTaskHandle = NULL;
+    PRIVILEGED_DATA static _SafeTaskHandle_t xTimerTaskHandle = NULL;
 
 /*lint -restore */
 

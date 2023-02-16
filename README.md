@@ -1,4 +1,4 @@
-### Note: Example and tasks.c inside `Fixed` is yet to be updated.
+### Note: Example inside `Fixed` is yet to be updated.
 # Checkec C FreeRTOS Kernel
 
 This repo contains the FreeRTOS kernel code that is converted to use Checked C. Checked C extends C with

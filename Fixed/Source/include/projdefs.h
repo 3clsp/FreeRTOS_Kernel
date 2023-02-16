@@ -33,7 +33,8 @@
  * Defines the prototype to which task functions must conform.  Defined in this
  * file to ensure the type is known before portable.h is included.
  */
-typedef _Ptr<void ( _Ptr<void> )> TaskFunction_t;
+typedef void (* TaskFunction_t)( void * );
+typedef _Ptr<void ( _Ptr<void> )> _SafeTaskFunction_t;
 
 /* Converts a time in milliseconds to a time in ticks.  This macro can be
  * overridden by a macro of the same name defined in FreeRTOSConfig.h in case the

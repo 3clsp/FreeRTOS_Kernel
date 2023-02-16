@@ -108,12 +108,12 @@
     #if ( portHAS_STACK_OVERFLOW_CHECKING == 1 )
         _Ptr<StackType_t> pxPortInitialiseStack( _Ptr<StackType_t> pxTopOfStack,
                                              _Ptr<StackType_t> pxEndOfStack,
-                                             TaskFunction_t pxCode,
+                                             _SafeTaskFunction_t pxCode,
                                              _Ptr<void> pvParameters,
                                              BaseType_t xRunPrivileged ) PRIVILEGED_FUNCTION;
     #else
         _Ptr<StackType_t> pxPortInitialiseStack( _Ptr<StackType_t> pxTopOfStack,
-                                             TaskFunction_t pxCode,
+                                             _SafeTaskFunction_t pxCode,
                                              _Ptr<void> pvParameters,
                                              BaseType_t xRunPrivileged ) PRIVILEGED_FUNCTION;
     #endif
@@ -121,11 +121,11 @@
     #if ( portHAS_STACK_OVERFLOW_CHECKING == 1 )
         _Ptr<StackType_t> pxPortInitialiseStack( _Ptr<StackType_t> pxTopOfStack,
                                              _Ptr<StackType_t> pxEndOfStack,
-                                             TaskFunction_t pxCode,
+                                             _SafeTaskFunction_t pxCode,
                                              _Ptr<void> pvParameters ) PRIVILEGED_FUNCTION;
     #else
         _Ptr<StackType_t> pxPortInitialiseStack( _Ptr<StackType_t> pxTopOfStack,
-                                             TaskFunction_t pxCode,
+                                             _SafeTaskFunction_t pxCode,
                                              _Ptr<void> pvParameters ) PRIVILEGED_FUNCTION;
     #endif
 #endif /* if ( portUSING_MPU_WRAPPERS == 1 ) */
