@@ -149,7 +149,7 @@
                                                                               \
         /* listGET_OWNER_OF_NEXT_ENTRY indexes through the list, so the tasks of \
          * the  same priority get an equal share of the processor time. */                    \
-        _SafelistGET_OWNER_OF_NEXT_ENTRY( tmppxCurrentTCB, &( pxReadyTasksLists[ uxTopPriority ] ) ); \
+        listGET_OWNER_OF_NEXT_ENTRY( tmppxCurrentTCB, &( pxReadyTasksLists[ uxTopPriority ] ) ); \
         uxTopReadyPriority = uxTopPriority;                                                   \
     } /* taskSELECT_HIGHEST_PRIORITY_TASK */
 
@@ -375,8 +375,8 @@ typedef struct tskTaskControlBlock       /* The old naming convention is used to
     ListItem_t xStateListItem;                  /*< The list that the state list item of a task is reference from denotes the state of that task (Ready, Blocked, Suspended ). */
     ListItem_t xEventListItem;                  /*< Used to reference a task from an event list. */
     UBaseType_t uxPriority;                     /*< The priority of the task.  0 is the lowest priority. */
-    _Array_ptr<StackType_t> pxStack : bounds(pxStack, pxStack + usStackDepth);                      /*< Points to the start of the stack. */
     uint32_t usStackDepth;                /*< The stack size defined as the number of StackType_t the stack can hold, not the number of bytes. */    
+    _Array_ptr<StackType_t> pxStack : bounds(pxStack, pxStack + usStackDepth);                      /*< Points to the start of the stack. */
     char pcTaskName[ configMAX_TASK_NAME_LEN ] : itype(char _Nt_checked[configMAX_TASK_NAME_LEN]); /*< Descriptive name given to the task when created.  Facilitates debugging only. */ /*lint !e971 Unqualified char types are allowed for strings and single characters only. */
 
     #if ( ( portSTACK_GROWTH > 0 ) || ( configRECORD_STACK_HIGH_ADDRESS == 1 ) )
@@ -2528,11 +2528,11 @@ char * pcTaskGetName( TaskHandle_t xTaskToQuery : itype(_SafeTaskHandle_t) ) : i
 
         if( listCURRENT_LIST_LENGTH( pxList ) > ( UBaseType_t ) 0 )
         {
-            _SafelistGET_OWNER_OF_NEXT_ENTRY( pxFirstTCB, pxList ); /*lint !e9079 void * is used as this macro is used with timers too.  Alignment is known to be fine as the type of the pointer stored and retrieved is the same. */
+            listGET_OWNER_OF_NEXT_ENTRY( pxFirstTCB, pxList ); /*lint !e9079 void * is used as this macro is used with timers too.  Alignment is known to be fine as the type of the pointer stored and retrieved is the same. */
 
             do
             {
-                _SafelistGET_OWNER_OF_NEXT_ENTRY( pxNextTCB, pxList ); /*lint !e9079 void * is used as this macro is used with timers too.  Alignment is known to be fine as the type of the pointer stored and retrieved is the same. */
+                listGET_OWNER_OF_NEXT_ENTRY( pxNextTCB, pxList ); /*lint !e9079 void * is used as this macro is used with timers too.  Alignment is known to be fine as the type of the pointer stored and retrieved is the same. */
 
                 /* Check each character in the name looking for a match or
                  * mismatch. */
@@ -3340,7 +3340,7 @@ void vTaskPlaceOnUnorderedEventList( List_t * pxEventList : itype(_Ptr<List_t>),
 #endif /* configUSE_TIMERS */
 /*-----------------------------------------------------------*/
 
-BaseType_t xTaskRemoveFromEventList( const List_t * const pxEventList : itype(const _Ptr<const List_t>) )
+_Unchecked BaseType_t xTaskRemoveFromEventList( const List_t * const pxEventList : itype(const _Ptr<const List_t>) )
 {
     _Ptr<TCB_t> pxUnblockedTCB = NULL;
     BaseType_t xReturn;
@@ -3362,11 +3362,11 @@ BaseType_t xTaskRemoveFromEventList( const List_t * const pxEventList : itype(co
         pxUnblockedTCB = _Assume_bounds_cast<_Ptr<TCB_t>>(listGET_OWNER_OF_HEAD_ENTRY( pxEventList )); /*lint !e9079 void * is used as this macro is used with timers and co-routines too.  Alignment is known to be fine as the type of the pointer stored and retrieved is the same. */
     }
     _Unchecked_configASSERT( pxUnblockedTCB );
-    listREMOVE_ITEM( &( pxUnblockedTCB->xEventListItem ) );
+    // _UnsafelistREMOVE_ITEM( &( pxUnblockedTCB->xEventListItem ) );                                
 
     if( uxSchedulerSuspended == ( UBaseType_t ) pdFALSE )
     {
-        listREMOVE_ITEM( &( pxUnblockedTCB->xStateListItem ) );
+        _UnsafelistREMOVE_ITEM( &( pxUnblockedTCB->xStateListItem ) );
         prvAddTaskToReadyList( pxUnblockedTCB );
 
         #if ( configUSE_TICKLESS_IDLE != 0 )
@@ -4004,7 +4004,7 @@ static void prvCheckTasksWaitingTermination( void )
 
         if( listCURRENT_LIST_LENGTH( pxList ) > ( UBaseType_t ) 0 )
         {
-            _SafelistGET_OWNER_OF_NEXT_ENTRY( pxFirstTCB, pxList ); /*lint !e9079 void * is used as this macro is used with timers too.  Alignment is known to be fine as the type of the pointer stored and retrieved is the same. */
+            listGET_OWNER_OF_NEXT_ENTRY( pxFirstTCB, pxList ); /*lint !e9079 void * is used as this macro is used with timers too.  Alignment is known to be fine as the type of the pointer stored and retrieved is the same. */
 
             /* Populate an TaskStatus_t structure within the
              * pxTaskStatusArray array for each task that is referenced from
@@ -4012,7 +4012,7 @@ static void prvCheckTasksWaitingTermination( void )
              * meaning of each TaskStatus_t structure member. */
             do
             {
-                _SafelistGET_OWNER_OF_NEXT_ENTRY( pxNextTCB, pxList ); /*lint !e9079 void * is used as this macro is used with timers too.  Alignment is known to be fine as the type of the pointer stored and retrieved is the same. */
+                listGET_OWNER_OF_NEXT_ENTRY( pxNextTCB, pxList ); /*lint !e9079 void * is used as this macro is used with timers too.  Alignment is known to be fine as the type of the pointer stored and retrieved is the same. */
                 vTaskGetInfo( ( _SafeTaskHandle_t ) pxNextTCB, &( pxTaskStatusArray[ uxTask ] ), pdTRUE, eState );
                 uxTask++;
             } while( pxNextTCB != pxFirstTCB );
